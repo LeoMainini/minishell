@@ -1,7 +1,8 @@
 NAME = minishell
 
-SOURCES = 	m-shell.c\
-			signals.c
+BUILTINS_DIR =	builtins
+
+SOURCES = 	m-shell.c signals.c $(BUILTINS_DIR)/cd.c\
 
 OBJS =	$(SOURCES:.c=.o)
 

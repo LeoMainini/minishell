@@ -11,9 +11,10 @@
 /* ************************************************************************** */
 
 #include "libft/libft.h"
-#include <stdio.h>
-#include <readline/readline.h>
+#include "pipex/pipex.h"
 #include <readline/history.h>
+#include <readline/readline.h>
 #include <signal.h>
+#include <stdio.h>
 
 void	sighandler(int signum);

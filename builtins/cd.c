@@ -1,28 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signals.c                                          :+:      :+:    :+:   */
+/*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/24 15:59:48 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/10/24 16:03:03 by bcarreir         ###   ########.fr       */
+/*   Created: 2022/10/24 18:37:49 by leferrei          #+#    #+#             */
+/*   Updated: 2022/10/24 18:47:27 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-
-void	sighandler(int signum)
+int change_dir(char **path)
 {
-	if (signum == SIGINT)
-	{
-		rl_on_new_line();
-		printf("\n");
-		rl_redisplay();
-		return ;
-	}
-	else if (signum == SIGQUIT)
-		return ;
-	return ;
+    if (!path)
+        return (1);
+    
 }

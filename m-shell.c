@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   m-shell.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/24 16:06:35 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/10/24 19:32:20 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char **g_envs;
 
 void exit_status(int status, char **line)
 {
@@ -19,7 +21,7 @@ void exit_status(int status, char **line)
 	exit(status);
 }
 
-int	main(void)
+int	main(int agrc, char **argv, char **envp)
 {
 	char *read_line;
 
@@ -29,8 +31,8 @@ int	main(void)
 	while (read_line)
 	{
 		add_history(read_line);
+
 		free(read_line);
-		read_line = NULL;
 		read_line = readline("shell:>");
 	}
 	exit_status(1, &read_line);
