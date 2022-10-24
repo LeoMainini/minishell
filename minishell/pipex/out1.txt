@@ -1,0 +1,10 @@
+/usr/bin
+/usr/bin/mpg123
+/usr/bin/rstpep2html.py
+/usr/bin/sm-notify
+/usr/bin/kdb5_ldap_util
+/usr/bin/any2djvu
+/usr/bin/git-receive-pack
+/usr/bin/gdk-pixbuf-pixdata
+/usr/bin/xdg-settings
+/usr/bin/poly-unfilled32
