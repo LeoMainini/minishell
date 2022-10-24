@@ -15,8 +15,10 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-void exit_status(int status)
+void exit_status(int status, char **line)
 {
+
+	free(*line);
 	rl_clear_history();
 	exit(status);
 }
@@ -29,8 +31,9 @@ int	main(void)
 	while (read_line)
 	{
 		add_history(read_line);
+
 		free(read_line);
 		read_line = readline("shell:>");
 	}
-	exit_status(1);
+	exit_status(1, &read_line);
 }

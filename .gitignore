@@ -1,0 +1,8 @@
+*.o
+/*.o
+*.swp
+.idea
+.code
+.nfs*
+minishell
+.vscode 
