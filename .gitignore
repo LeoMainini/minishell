@@ -3,6 +3,8 @@
 *.swp
 .idea
 .idea/*
+.idea/*.xml
+.idea/workspace.xml
 .code
 .code/*
 .nfs*
