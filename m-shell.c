@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/24 19:34:15 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/24 19:53:25 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,48 @@ void exit_status(int status, char **line)
 	exit(status);
 }
 
-int	main(int agrc, char **argv, char **envp)
+char	**duplicate_envp(char **envs)
 {
-	char *read_line;
+	int		i;
+	char	**temp;
+
+	if (!envs)
+		return (0);
+	i = 0;
+	while (envs[i])
+		i++;
+	temp = (char **)ft_calloc(i + 1, sizeof(char *));
+	if (!temp)
+		return (0);
+	while (i--)
+		temp[i] = ft_strdup(envs[i]);
+	return (temp);
+}
+
+int	check_envp_duplicate_error(char **envs)
+{
+	int	i;
+
+	i = -1;
+	while (envs[++i])
+		if (ft_strcmp(envs[i], g_envs[i]))
+			return (i);
+	return (0);
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	char	*read_line;
+
+	(void)argc;
+	(void)argv;
 
 	signal(SIGINT, sighandler);
 	signal(SIGQUIT, sighandler);
+	g_envs = duplicate_envp(envp);
+	if (check_envp_duplicate_error(envp))
+		return (check_envp_duplicate_error(envp));
+	printf("GOT VARS WOOO\n");
 	read_line = readline("shell:>");
 	while (read_line)
 	{

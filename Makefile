@@ -18,10 +18,11 @@ INC = -I. -I libft
 
 LINK = -L . -L ./libft -lreadline -lft
 
-.c.o: $(CC) $(CFLAGS) $(INC) -c $< -o $(<:.c=.o)
+.c.o: 
+	$(CC) $(CFLAGS) $(INC) -c $< -o $(<:.c=.o)
 
 $(NAME): $(OBJS) $(NAME)
-			$(CC) $(CFLAGS) $(OBJS) $(LINK) -o $(NAME)
+			$(CC) $(CFLAGS) $(INC) $(OBJS) $(LINK) -o $(NAME)
 
 all: $(NAME)
 
