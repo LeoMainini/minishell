@@ -2,8 +2,10 @@ NAME = minishell
 
 BUILTINS_DIR =	builtins
 
-SOURCES = 	m-shell.c signals.c $(BUILTINS_DIR)/cd.c\
-
+SOURCES = 	m-shell.c\
+			parsing.c\
+			signals.c\
+			$(BUILTINS_DIR)/cd.c
 OBJS =	$(SOURCES:.c=.o)
 
 CC = gcc
