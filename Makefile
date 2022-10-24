@@ -1,6 +1,7 @@
 NAME = minishell
 
 SOURCES = 	m-shell.c\
+			parsing.c\
 			signals.c
 
 OBJS =	$(SOURCES:.c=.o)

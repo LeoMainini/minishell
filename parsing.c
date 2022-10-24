@@ -1,29 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/10/24 18:59:02 by bcarreir         ###   ########.fr       */
+/*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
+/*   Updated: 2022/10/24 19:29:47 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "minishell.h"
 
-# include "libft/libft.h"
-# include <stdio.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <signal.h>
-
-typedef struct s_ms
-{
-    int ret;
-}   t_ms;
-
-void	sighandler(int signum);
-
-#endif
+//> redirections, >> redir append
+//< redir file to stdin, << stdin to stdin
+//"" interprets vars, '' text only,
+// get command, llok for 2 quotes if yes - 1 arg, if no - stderr
