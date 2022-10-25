@@ -1,30 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signals.c                                          :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/24 15:59:48 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/10/25 16:21:02 by leferrei         ###   ########.fr       */
+/*   Created: 2022/10/25 17:26:35 by leferrei          #+#    #+#             */
+/*   Updated: 2022/10/25 17:28:03 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <signal.h>
+#include	"minishell.h"
 
-void	sighandler(int signum)
+int	set_ret_return(t_ms *data, int code)
 {
-	if (signum == SIGINT)
-	{
-		rl_on_new_line();
-		printf("\n");
-		rl_redisplay();
-		return ;
-	}
-	else if (signum == SIGQUIT)
-		exit(131);
-	return ;
+	data->ret = code;
+	return (code);
 }

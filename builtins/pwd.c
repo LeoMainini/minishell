@@ -1,30 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signals.c                                          :+:      :+:    :+:   */
+/*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/24 15:59:48 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/10/25 16:21:02 by leferrei         ###   ########.fr       */
+/*   Created: 2022/10/25 16:35:28 by leferrei          #+#    #+#             */
+/*   Updated: 2022/10/25 16:59:59 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <signal.h>
+#include "../minishell.h"
+#include <unistd.h>
 
-void	sighandler(int signum)
+char	*get_pwd()
 {
-	if (signum == SIGINT)
+	int		i;
+	char	*resp;
+	char	*pwd;
+
+	i = 1;
+	pwd = (char *)ft_calloc(i, sizeof(char));
+	resp = getcwd(pwd, i);
+	while (!resp && i++)
 	{
-		rl_on_new_line();
-		printf("\n");
-		rl_redisplay();
-		return ;
+		free(pwd);
+		pwd = (char *)ft_calloc(i, sizeof(char));
+		resp = getcwd(pwd, i);
 	}
-	else if (signum == SIGQUIT)
-		exit(131);
-	return ;
+	return (pwd);
 }

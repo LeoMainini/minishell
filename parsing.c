@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/10/25 15:22:49 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/25 16:17:34 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,11 @@ void    ft_parsing(char *str)
         if (str[i] == '|' && ((sqtctr == 0 && dqtctr == 0) || sqtctr % 2 == 0 || dqtctr % 2 == 0))
             pipctr++;
     }
-    if (pipctr)
-        cmdsplit(str);
+    //if (pipctr)
+     //   cmdsplit(str);
 }
 
-char    **cmdsplit(char *str)
-{
-
-}
+//char    **cmdsplit(char *str)
+//{
+//
+//}

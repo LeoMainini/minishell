@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/25 14:40:13 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/25 16:54:14 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,13 @@ int	check_envp_duplicate_error(char **envs)
 int	main(int argc, char **argv, char **envp)
 {
 	char	*read_line;
+	t_ms	data;
 
 	(void)argc;
 	(void)argv;
-
+	data.ret = 0;
+	if (data.ret)
+		return (1);
 	signal(SIGINT, sighandler);
 	signal(SIGQUIT, sighandler);
 	g_envs = duplicate_envp(envp);
@@ -70,7 +73,16 @@ int	main(int argc, char **argv, char **envp)
 	while (read_line)
 	{
 		add_history(read_line);
-		ft_parsing(read_line);
+		//ft_parsing(read_line);
+		char **temp = ft_split(read_line, ' ');
+		if (!ft_strcmp(temp[0], "cd"))
+		{
+			t_cmdd cmds;
+			cmds.args = temp;
+			cmds.in_fd = 0;
+			cmds.out_fd = 0;
+			change_dir(&cmds, &data);
+		}
 		free(read_line);
 		read_line = readline("shell:> ");
 	}
