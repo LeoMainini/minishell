@@ -21,6 +21,8 @@ typedef struct s_ms
     int ret;
 }   t_ms;
 
+char    **cmdsplit(char *str);
+void    ft_parsing(char *str);
 void	sighandler(int signum);
 
 #endif

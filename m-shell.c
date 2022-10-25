@@ -70,7 +70,7 @@ int	main(int argc, char **argv, char **envp)
 	while (read_line)
 	{
 		add_history(read_line);
-
+		ft_parsing(read_line);
 		free(read_line);
 		read_line = readline("shell:> ");
 	}
