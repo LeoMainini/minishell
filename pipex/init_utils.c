@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com>   +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:08:53 by leferrei          #+#    #+#             */
-/*   Updated: 2022/07/27 15:08:55 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/25 15:18:47 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ int	check_hd_get_cmds(t_vars *data, int argc, char **argv)
 		data->lines_in = parse_stdin_tolimit(argv[2]);
 		data->here_doc = 1;
 		data->cmds = get_hd_commands(argc, argv);
-		data->out_fd = open(argv[argc - 1], O_RDWR | O_CREAT | O_APPEND, 0666);
+		//data->out_fd = open(argv[argc - 1], O_RDWR | O_CREAT | O_APPEND, 0666);
+		data->out_fd = ft_atoi(argv[argc - 1]);
 		if (data->out_fd < 0 && ft_printf("ERROR:\tOutput file error\n"))
 			return (0);
 	}
@@ -29,10 +30,12 @@ int	check_hd_get_cmds(t_vars *data, int argc, char **argv)
 		data->here_doc = 0;
 		data->lines_in = 0;
 		data->in_fd = open(argv[1], O_RDONLY);
+		//data->in_fd = ft_atoi(argv[1]);
 		if (data->in_fd < 0 && ft_printf("ERROR:\tIncorrect input file path\n"))
 			return (0);
 		data->cmds = get_commands(argc, argv);
-		data->out_fd = open(argv[argc - 1], O_RDWR | O_CREAT | O_TRUNC, 0666);
+		// data->out_fd = open(argv[argc - 1], O_RDWR | O_CREAT | O_TRUNC, 0666);
+		data->out_fd = ft_atoi(argv[argc - 1]);
 		if (data->out_fd < 0 && ft_printf("ERROR:\tOutput file error\n"))
 			return (0);
 	}
