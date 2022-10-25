@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:59:48 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/10/24 16:03:03 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/10/25 14:36:45 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <signal.h>
 
 void	sighandler(int signum)
 {

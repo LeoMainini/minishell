@@ -6,11 +6,11 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:37:49 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/24 19:48:58 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/25 14:36:04 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int change_dir(char **path)
 {

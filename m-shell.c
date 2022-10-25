@@ -6,11 +6,14 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/24 19:53:25 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/25 14:40:13 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <signal.h>
 
 char **g_envs;
 
@@ -63,13 +66,13 @@ int	main(int argc, char **argv, char **envp)
 	if (check_envp_duplicate_error(envp))
 		return (check_envp_duplicate_error(envp));
 	printf("GOT VARS WOOO\n");
-	read_line = readline("shell:>");
+	read_line = readline("shell:> ");
 	while (read_line)
 	{
 		add_history(read_line);
 
 		free(read_line);
-		read_line = readline("shell:>");
+		read_line = readline("shell:> ");
 	}
 	exit_status(1, &read_line);
 }
