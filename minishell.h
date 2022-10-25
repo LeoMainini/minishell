@@ -28,7 +28,7 @@ typedef struct s_cmdd
     char	**args;
 }	t_cmdd;
 
-char    **cmdsplit(char *str);
+char    **cmdsplit(char *str, int i);
 void    ft_parsing(char *str);
 void	sighandler(int signum);
 
