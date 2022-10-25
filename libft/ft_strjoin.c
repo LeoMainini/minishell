@@ -12,7 +12,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../ft_printf/ft_printf.h"
 
 char	*ft_strjoin(char *s1, char *s2)
 {
