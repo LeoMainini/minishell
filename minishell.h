@@ -28,11 +28,11 @@ typedef struct s_cmdd
     char	**args;
 }	t_cmdd;
 
+int		change_dir(t_cmdd *argd, t_ms *data);
 char    **cmdsplit(char *str, int i);
 void    ft_parsing(char *str);
-void	sighandler(int signum);
 char	*get_pwd();
-int		change_dir(t_cmdd *argd, t_ms *data);
 int		set_ret_return(t_ms *data, int code);
+void	sighandler(int signum);
 
 #endif

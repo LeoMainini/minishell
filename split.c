@@ -17,14 +17,21 @@
 static int	ft_wordcount(char const *s, char c)
 {
 	int	wc;
+    int i;
+    int dqtctr;
+    int sqtctr;
+
+    dqtctr = 0;
+    sqtctr = 0;
 
 	wc = 0;
-	while (*s)
+    i = -1;
+	while (s[++i])
 	{
-		 if (str[i] == '|' && ((sqtctr % 2 == 0 || sqtctr % 2 == 2)
+		 if (s[i] == '|' && ((sqtctr % 2 == 0 || sqtctr % 2 == 2)
             && (dqtctr % 2 == 0 || dqtctr % 2 == 2)))
         {
-            
+            wc++;
         }
 	}
 	return (wc);
