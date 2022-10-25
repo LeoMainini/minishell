@@ -5,7 +5,9 @@ BUILTINS_DIR =	builtins
 SOURCES = 	m-shell.c\
 			parsing.c\
 			signals.c\
-			$(BUILTINS_DIR)/cd.c
+			utils.c\
+			$(BUILTINS_DIR)/cd.c\
+			$(BUILTINS_DIR)/pwd.c
 
 OBJS =	$(SOURCES:.c=.o)
 
@@ -23,7 +25,7 @@ LINK = -L . -L ./libft -lreadline -lft
 	$(CC) $(CFLAGS) $(INC) -c $< -o $(<:.c=.o)
 
 $(NAME): $(OBJS)
-			$(CC) $(CFLAGS) $(INC) $(OBJS) -o $(NAME) $(LINK)
+			$(CC) $(CFLAGS) $(INC) $(DEBUG) $(OBJS) -o $(NAME) $(LINK)
 all: $(NAME)
 
 re: fclean all
