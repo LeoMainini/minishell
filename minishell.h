@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/10/25 17:28:10 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/26 17:28:51 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,11 @@ typedef struct s_cmdd
 int		change_dir(t_cmdd *argd, t_ms *data);
 char    **cmdsplit(char *str, int i);
 void    ft_parsing(char *str);
+int		env(t_cmdd *argd, t_ms *data);
+char	**duplicate_envp(char **envs, int offset);
+int		export(t_cmdd *argd, t_ms *data);
+char	**get_env(char *env, t_ms *data);
 char	*get_pwd();
 int		set_ret_return(t_ms *data, int code);
 void	sighandler(int signum);
-
 #endif

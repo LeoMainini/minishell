@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/25 16:54:14 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/26 17:07:51 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void exit_status(int status, char **line)
 	exit(status);
 }
 
-char	**duplicate_envp(char **envs)
+char	**duplicate_envp(char **envs, int offset)
 {
 	int		i;
 	char	**temp;
@@ -34,7 +34,7 @@ char	**duplicate_envp(char **envs)
 	i = 0;
 	while (envs[i])
 		i++;
-	temp = (char **)ft_calloc(i + 1, sizeof(char *));
+	temp = (char **)ft_calloc(i + offset + 1, sizeof(char *));
 	if (!temp)
 		return (0);
 	while (i--)
@@ -65,7 +65,7 @@ int	main(int argc, char **argv, char **envp)
 		return (1);
 	signal(SIGINT, sighandler);
 	signal(SIGQUIT, sighandler);
-	g_envs = duplicate_envp(envp);
+	g_envs = duplicate_envp(envp, 0);
 	if (check_envp_duplicate_error(envp))
 		return (check_envp_duplicate_error(envp));
 	printf("GOT VARS WOOO\n");
@@ -82,6 +82,14 @@ int	main(int argc, char **argv, char **envp)
 			cmds.in_fd = 0;
 			cmds.out_fd = 0;
 			change_dir(&cmds, &data);
+		}
+		if (!ft_strcmp(temp[0], "env"))
+		{
+			t_cmdd cmds;
+			cmds.args = temp;
+			cmds.in_fd = 0;
+			cmds.out_fd = 0;
+			env(&cmds, &data);
 		}
 		free(read_line);
 		read_line = readline("shell:> ");

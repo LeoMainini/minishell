@@ -4,11 +4,10 @@ BUILTINS_DIR =	builtins
 
 SOURCES = 	m-shell.c\
 			signals.c\
-			parsing.c\
-			split.c\
 			utils.c\
 			$(BUILTINS_DIR)/cd.c\
-			$(BUILTINS_DIR)/pwd.c
+			$(BUILTINS_DIR)/pwd.c\
+			$(BUILTINS_DIR)/env.c
 
 OBJS =	$(SOURCES:.c=.o)
 
@@ -26,6 +25,7 @@ LINK = -L . -L ./libft -lreadline -lft
 	$(CC) $(CFLAGS) $(INC) -c $< -o $(<:.c=.o)
 
 $(NAME): $(OBJS)
+			@make -C libft -s
 			$(CC) $(CFLAGS) $(INC) $(DEBUG) $(OBJS) -o $(NAME) $(LINK)
 all: $(NAME)
 

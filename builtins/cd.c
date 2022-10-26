@@ -6,12 +6,14 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:37:49 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/25 17:34:53 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/26 17:38:34 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	"../minishell.h"
 #include	<unistd.h>
+
+extern	char**g_envs;
 
 char	*ft_strfree_join(char **s1, char *s2)
 {
@@ -106,6 +108,25 @@ char	*rel_to_abs_pwd(t_cmdd *argd, int i, char *pwd)
 	return (absolute);
 }
 
+int	change_back(t_ms *data, char *pwd)
+{
+		t_cmdd	temp;
+		int		i;
+		temp.args = ft_calloc(3, sizeof(char *));
+		if(!temp.args)
+			return (0);
+		temp.args[0] = ft_strdup("export");
+		temp.args[1] = ft_strjoin("PWD=", pwd);
+		printf("%s\n", *(get_env("OLDPWD", data)) + 7);
+		chdir(*((get_env("OLDPWD", data)) + 7));
+		i = export(&temp, data);
+		free (temp.args[0]);
+		free (temp.args[1]);
+		free (temp.args);
+		printf("i = %d\n", i);
+		return (i == 0);
+}
+
 int change_dir(t_cmdd *argd, t_ms *data)
 {
 	int		i;
@@ -113,7 +134,7 @@ int change_dir(t_cmdd *argd, t_ms *data)
 	char	*pwd;
 
 	absolute_path = 0;
-	if (!argd->args[1] && !chdir(getenv("HOME")))
+	if (!argd->args[1] && !chdir(*(get_env("HOME", data)) + 5))
 		return (set_ret_return(data, 0));
 	i = check_folder(argd, 1);
 	if (!i)
@@ -121,6 +142,7 @@ int change_dir(t_cmdd *argd, t_ms *data)
 	pwd = get_pwd();
 	if (i == 1 && argd->args[1])
 		chdir(argd->args[1]);
+	//missing printing old pwd and changing on cd - -> missing env implementation
 	if (i == 2 && argd->args[1])
 	{
 		absolute_path = rel_to_abs_pwd(argd, 1, pwd);
@@ -128,7 +150,8 @@ int change_dir(t_cmdd *argd, t_ms *data)
 		free(absolute_path);
 	}
 	if (i == 3 && argd->args[1])
-		printf("%s\n", pwd);
+		if (!change_back(data, pwd) && printf("Failed to change directory\n"))
+			return (set_ret_return(data, 1));
 	free(pwd);
 	return (set_ret_return(data, 0));
 }
