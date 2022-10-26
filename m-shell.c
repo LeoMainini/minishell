@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/26 17:07:51 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/26 22:10:31 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,27 +73,22 @@ int	main(int argc, char **argv, char **envp)
 	while (read_line)
 	{
 		add_history(read_line);
-		cmd_split(read_line);
+		//cmd_split(read_line);
 		char **temp = ft_split(read_line, ' ');
 		if (temp && *temp)
-		{
-			if (!ft_strcmp(temp[0], "cd"))
-			{
-				t_cmdd cmds;
-				cmds.args = temp;
-				cmds.in_fd = 0;
-				cmds.out_fd = 0;
-				(void)cmds;
-				change_dir(&cmds, &data);
-			}
-		}
-		if (!ft_strcmp(temp[0], "env"))
 		{
 			t_cmdd cmds;
 			cmds.args = temp;
 			cmds.in_fd = 0;
 			cmds.out_fd = 0;
-			env(&cmds, &data);
+			if (!ft_strcmp(temp[0], "cd"))
+				change_dir(&cmds, &data);
+			if (!ft_strcmp(temp[0], "env"))
+				env(&cmds, &data);
+			if (!ft_strcmp(temp[0], "pwd"))
+				pwd(&cmds, &data);
+			if (!ft_strcmp(temp[0], "export"))
+				export(&cmds, &data);
 		}
 		free(read_line);
 		read_line = readline("shell:> ");

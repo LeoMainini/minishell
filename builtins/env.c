@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:29:45 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/26 17:39:38 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/26 22:29:51 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ int	export(t_cmdd *argd, t_ms *data)
 	envi = get_env(env_d[0], data);
 	if (envi)
 	{
-		printf("got here\n");
 		free(*envi);
 		*envi = ft_strdup(argd->args[1]);
 		return (set_ret_return(data, 0));
