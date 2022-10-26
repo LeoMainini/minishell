@@ -3,8 +3,9 @@ NAME = minishell
 BUILTINS_DIR =	builtins
 
 SOURCES = 	m-shell.c\
-			parsing.c\
 			signals.c\
+			parsing.c\
+			split.c\
 			utils.c\
 			$(BUILTINS_DIR)/cd.c\
 			$(BUILTINS_DIR)/pwd.c
