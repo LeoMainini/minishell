@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+//MISSING QUOTE VALIDATION "'"
+
 int	isvalidpipe(char *str, int i)
 {
 	int	j;
@@ -29,9 +31,44 @@ int	isvalidpipe(char *str, int i)
 			sqtctr++;
 		j++;
 	}
-	if (str[i] == '|' && ((sqtctr % 2 == 0 || sqtctr % 2 == 2)
-		&& (dqtctr % 2 == 0 || dqtctr % 2 == 2)))
+	if (str[i] == '|')
+	{
+		
+		if ((sqtctr % 2 == 0 || sqtctr % 2 == 2) && (dqtctr % 2 == 0 || dqtctr % 2 == 2))
+			return (1);
+	}
+	return (0);
+}
+
+int	isvalidcmd(char *s)
+{
+	int	j;
+    int dqtctr;
+    int sqtctr;
+
+    dqtctr = 0;
+    sqtctr = 0;
+	j = -1;
+	while (s[++j])
+	{
+		if (s[j] == 34)
+			dqtctr++;
+		if (s[j] == 39)
+			sqtctr++;
+		if (s[j] == '|' && isvalidpipe(s, j))
+		{
+			if (s[j+1] == '|')
+			{
+				printf("parse error near `|'\n");
+				return (1);
+			}
+		}
+	}
+	if ((sqtctr % 2 != 0 && sqtctr % 2 != 2) || (dqtctr % 2 != 0 && dqtctr % 2 != 2))
+	{
+		printf("parse error, invalid number of quotes\n");
 		return (1);
+	}
 	return (0);
 }
 
@@ -52,27 +89,24 @@ static int	ft_cmdcount(char *s)
 	return (cmdnr);
 }
 
-static void	*ft_dealmem(char **a, int j, char *str)
+static int	ft_dealmem(char **a, char *str)
 {
-	char	**b;
-	int		i;
+	char		**b;
+	static int	i;
 
 	b = a;
-	i = 0;
 	while (str[i])
 	{
 		if (str[i] == '|' && isvalidpipe(str, i))
+		{
+			i++;
 			break ;
+		}
 		i++;
 	}
-	b[j] = (char *)malloc(sizeof(char) * (i + 1));
-	if (!b[j])
-	{
-		while (j--)
-			free(b[j]);
-		free(b);
-		return (NULL);
-	}
+	*b = malloc(sizeof(char) * (i + 1));
+	if (!b)
+		return (1);
 	return (0);
 }
 
@@ -86,6 +120,8 @@ char	**cmd_split(char *s)
 
 	if (!s)
 		return (NULL);
+	if (isvalidcmd(s))
+		return (NULL);
 	cmdnr = ft_cmdcount(s);
 	a = (char **)malloc(sizeof(char *) * (cmdnr + 1));
 	if (!a)
@@ -94,9 +130,10 @@ char	**cmd_split(char *s)
 	i = 0;
 	while (j != cmdnr)
 	{
-		while (s[i] && (ft_isspace(s[i]) || (j && s[i] == '|')))
+		while (s[i] && (j && s[i] == '|'))
 			i++;
-		ft_dealmem(a, j, s);
+		if (ft_dealmem(&a[j], s))
+			return (NULL);
 		k = 0;
 		while (s[i])
 		{
@@ -113,6 +150,6 @@ char	**cmd_split(char *s)
 
 	j = 0;
 	while (a[j])
-		printf("%s a\n", a[j++]);
+		printf("%s\n", a[j++]);
 	return (a);
 }
