@@ -29,7 +29,7 @@ typedef struct s_cmdd
 }	t_cmdd;
 
 int		change_dir(t_cmdd *argd, t_ms *data);
-char    **cmdsplit(char *str, int i);
+char	**cmd_split(char *s);
 void    ft_parsing(char *str);
 char	*get_pwd();
 int		set_ret_return(t_ms *data, int code);
