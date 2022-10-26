@@ -73,15 +73,19 @@ int	main(int argc, char **argv, char **envp)
 	while (read_line)
 	{
 		add_history(read_line);
-		//ft_parsing(read_line);
+		cmd_split(read_line);
 		char **temp = ft_split(read_line, ' ');
-		if (!ft_strcmp(temp[0], "cd"))
+		if (temp && *temp)
 		{
-			t_cmdd cmds;
-			cmds.args = temp;
-			cmds.in_fd = 0;
-			cmds.out_fd = 0;
-			change_dir(&cmds, &data);
+			if (!ft_strcmp(temp[0], "cd"))
+			{
+				t_cmdd cmds;
+				cmds.args = temp;
+				cmds.in_fd = 0;
+				cmds.out_fd = 0;
+				(void)cmds;
+				change_dir(&cmds, &data);
+			}
 		}
 		if (!ft_strcmp(temp[0], "env"))
 		{

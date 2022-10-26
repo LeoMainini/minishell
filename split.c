@@ -35,11 +35,14 @@ int	isvalidpipe(char *str, int i)
 	return (0);
 }
 
-static int	ft_cmdcount(char const *s, char c)
+static int	ft_cmdcount(char *s)
 {
 	int	cmdnr;
     int i;
+
 	cmdnr = 0;
+	if (*s)
+		cmdnr++;
     i = -1;
 	while (s[++i])
 	{
@@ -49,7 +52,7 @@ static int	ft_cmdcount(char const *s, char c)
 	return (cmdnr);
 }
 
-static void	*ft_dealmem(char **a, int j, char const *str, char c)
+static void	*ft_dealmem(char **a, int j, char *str)
 {
 	char	**b;
 	int		i;
@@ -73,7 +76,7 @@ static void	*ft_dealmem(char **a, int j, char const *str, char c)
 	return (0);
 }
 
-char	**ft_split(char const *s, char c)
+char	**cmd_split(char *s)
 {
 	char	**a;
 	int		i;
@@ -83,7 +86,7 @@ char	**ft_split(char const *s, char c)
 
 	if (!s)
 		return (NULL);
-	cmdnr = ft_cmdcount(s, c);
+	cmdnr = ft_cmdcount(s);
 	a = (char **)malloc(sizeof(char *) * (cmdnr + 1));
 	if (!a)
 		return (NULL);
@@ -91,9 +94,9 @@ char	**ft_split(char const *s, char c)
 	i = 0;
 	while (j != cmdnr)
 	{
-		while (s[i] && (ft_isspace(s[i]) || (j && s[i] == '|' && isvalidpipe(s, i))))
+		while (s[i] && (ft_isspace(s[i]) || (j && s[i] == '|')))
 			i++;
-		ft_dealmem(a, j, s, c);
+		ft_dealmem(a, j, s);
 		k = 0;
 		while (s[i])
 		{
@@ -107,5 +110,9 @@ char	**ft_split(char const *s, char c)
 		j++;
 	}
 	a[j] = NULL;
+
+	j = 0;
+	while (a[j])
+		printf("%s a\n", a[j++]);
 	return (a);
 }

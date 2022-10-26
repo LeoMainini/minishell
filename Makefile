@@ -4,6 +4,7 @@ BUILTINS_DIR =	builtins
 
 SOURCES = 	m-shell.c\
 			signals.c\
+			split.c\
 			utils.c\
 			$(BUILTINS_DIR)/cd.c\
 			$(BUILTINS_DIR)/pwd.c\
@@ -15,7 +16,7 @@ CC = gcc
 
 CFLAGS = -Wall -Werror -Wextra
 
-DEBUG = -fsanitize=address -g
+DEBUG = #-fsanitize=address -g
 
 INC = -I. -I libft
 
