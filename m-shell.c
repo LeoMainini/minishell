@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/26 22:10:31 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/27 14:52:37 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int	main(int argc, char **argv, char **envp)
 	while (read_line)
 	{
 		add_history(read_line);
-		//cmd_split(read_line);
+		cmd_split(read_line);
 		char **temp = ft_split(read_line, ' ');
 		if (temp && *temp)
 		{

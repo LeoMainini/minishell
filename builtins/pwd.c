@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 16:35:28 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/26 22:31:19 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/27 15:18:01 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	pwd(t_cmdd *argd, t_ms *data)
 	char	*pwd;
 
 	if (argd->args[1] && printf("Too many arguments.\n"))
-		set_ret_return(data, 1);
+		return (set_ret_return(data, 1));
 	pwd = get_pwd();
 	if (!pwd)
 		return (set_ret_return(data, 1));
