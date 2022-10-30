@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/27 14:52:37 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/30 13:51:22 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,22 @@ void exit_status(int status, char **line)
 	free(*line);
 	rl_clear_history();
 	exit(status);
+}
+
+char	**alloc_envmem(char **envs, int	offset)
+{
+	int	i;
+	char **temp;
+
+	if (!envs)
+		return (0);
+	i = 0;
+	while (envs[i])
+		i++;
+	temp = (char **)ft_calloc(i + offset + 1, sizeof(char *));
+	if (!temp)
+		return (0);
+	return (temp);
 }
 
 char	**duplicate_envp(char **envs, int offset)
@@ -56,6 +72,7 @@ int	check_envp_duplicate_error(char **envs)
 int	main(int argc, char **argv, char **envp)
 {
 	char	*read_line;
+	int		i;
 	t_ms	data;
 
 	(void)argc;
@@ -66,8 +83,6 @@ int	main(int argc, char **argv, char **envp)
 	signal(SIGINT, sighandler);
 	signal(SIGQUIT, sighandler);
 	g_envs = duplicate_envp(envp, 0);
-	if (check_envp_duplicate_error(envp))
-		return (check_envp_duplicate_error(envp));
 	printf("GOT VARS WOOO\n");
 	read_line = readline("shell:> ");
 	while (read_line)
@@ -89,9 +104,15 @@ int	main(int argc, char **argv, char **envp)
 				pwd(&cmds, &data);
 			if (!ft_strcmp(temp[0], "export"))
 				export(&cmds, &data);
+			if (!ft_strcmp(temp[0], "unset"))
+				unset(&cmds, &data);
 		}
 		free(read_line);
 		read_line = readline("shell:> ");
 	}
+	i = -1;
+	while (g_envs[++i])
+		free(g_envs[i]);
+	free(g_envs);
 	exit_status(1, &read_line);
 }

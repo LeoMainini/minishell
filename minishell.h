@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/10/26 22:31:25 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/30 13:30:12 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,5 +40,7 @@ int		set_ret_return(t_ms *data, int code);
 void	sighandler(int signum);
 int     pwd(t_cmdd *argd, t_ms *data);
 int     set_pwd(t_ms *data);
+int	    unset(t_cmdd *argd, t_ms *data);
+char	**alloc_envmem(char **envs, int	offset);
 
 #endif
