@@ -6,11 +6,11 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:34:10 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/31 16:13:18 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/31 16:39:18 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "minishell.h"
 
 int	check_numeric(char *str)
 {

@@ -6,10 +6,12 @@ SOURCES = 	m-shell.c\
 			signals.c\
 			split.c\
 			utils.c\
+			interpreter.c\
 			$(BUILTINS_DIR)/cd.c\
 			$(BUILTINS_DIR)/pwd.c\
 			$(BUILTINS_DIR)/env.c\
-			$(BUILTINS_DIR)/exit.c
+			$(BUILTINS_DIR)/exit.c\
+			$(BUILTINS_DIR)/echo.c
 
 OBJS =	$(SOURCES:.c=.o)
 

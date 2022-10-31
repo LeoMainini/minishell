@@ -1,30 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signals.c                                          :+:      :+:    :+:   */
+/*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/24 15:59:48 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/10/31 17:16:46 by leferrei         ###   ########.fr       */
+/*   Created: 2022/10/31 16:38:25 by leferrei          #+#    #+#             */
+/*   Updated: 2022/10/31 16:49:12 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <signal.h>
 
-void	sighandler(int signum)
+int	echo(t_cmdd *argd, t_ms *data)
 {
-	if (signum == SIGINT)
+	int	n_line;
+	int	i;
+
+	n_line = 1;
+	if (argd->args[1] && !ft_strcmp(argd->args[1], "-n"))
+		n_line = 0;
+	i = 1;
+	while (argd->args[++i - n_line])
 	{
-		rl_on_new_line();
-		printf("\n");
-		rl_redisplay();
-		return ;
+		printf("%s", argd->args[i - n_line]);
+		if (argd->args[i - n_line + 1])
+			printf(" ");
 	}
-	else if (signum == SIGQUIT)
-		exit(131);
-	return ;
+	if (n_line)
+		printf("\n");
+	return (set_ret_return(data, 0));
 }

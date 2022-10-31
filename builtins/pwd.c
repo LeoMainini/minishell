@@ -6,11 +6,11 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 16:35:28 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/27 15:18:01 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/31 16:39:22 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "minishell.h"
 #include <unistd.h>
 
 char	*get_pwd()
