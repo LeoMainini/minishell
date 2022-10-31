@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:29:45 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/30 13:49:33 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/31 15:27:12 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,7 +208,6 @@ int	unset(t_cmdd *argd, t_ms *data)
 		if (found_i == -1)
 			continue ;
 		result = 0;
-		printf("env = %s index = %d\n", g_envs[found_i], found_i);
 		temp = alloc_envmem(g_envs, -1);
 		k = -1;
 		while (g_envs[++k])
