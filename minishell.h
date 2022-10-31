@@ -21,6 +21,13 @@ typedef struct s_ms
     int ret;
 }   t_ms;
 
+typedef struct s_spl
+{
+    char    **ss;
+    int     cmd_count;
+    int     quotebool;
+}   t_spl;
+
 typedef struct s_cmdd
 {
     int		in_fd;

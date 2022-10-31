@@ -40,53 +40,52 @@ int	isvalidpipe(char *str, int i)
 	return (0);
 }
 
-int	isvalidcmd(char *s)
+int	ffquotedtext(t_spl *spl, char *s, int *j, char qt)
+{
+	spl->quotebool *= -1;
+	(*j)++;
+	while (s[(*j)] && s[(*j)] != qt)
+		(*j)++;
+	if (s[(*j)] == qt)
+	{
+		spl->quotebool *= -1;
+		(*j)++;
+		return (0);
+	}
+	else
+		return (1);
+}
+
+int	isvalidcmd(char *s,  t_spl *spl)
 {
 	int	j;
-    int dqtctr;
-    int sqtctr;
 
-    dqtctr = 0;
-    sqtctr = 0;
-	j = -1;
-	while (s[++j])
+	j = 0;
+	if (*s)
+		spl->cmd_count++;
+	while (s[j])
 	{
-		if (s[j] == 34)
-			dqtctr++;
-		if (s[j] == 39)
-			sqtctr++;
-		if (s[j] == '|' && isvalidpipe(s, j))
+		if (s[j] == 34 || s[j] == 39)
+		{
+			if (ffquotedtext(spl, s, &j, s[j]))
+			{
+				printf("parse error missing quotes\n");
+				return (1);
+			}
+			continue ;
+		}
+		if (s[j] == '|')
 		{
 			if (s[j+1] == '|')
 			{
 				printf("parse error near `|'\n");
 				return (1);
 			}
+			spl->cmd_count++;
 		}
-	}
-	if ((sqtctr % 2 != 0 && sqtctr % 2 != 2) || (dqtctr % 2 != 0 && dqtctr % 2 != 2))
-	{
-		printf("parse error, invalid number of quotes\n");
-		return (1);
+		j++;
 	}
 	return (0);
-}
-
-static int	ft_cmdcount(char *s)
-{
-	int	cmdnr;
-    int i;
-
-	cmdnr = 0;
-	if (*s)
-		cmdnr++;
-    i = -1;
-	while (s[++i])
-	{
-		if (s[i] == '|' && isvalidpipe(s, i))
-			cmdnr++;
-	}
-	return (cmdnr);
 }
 
 static int	ft_dealmem(char **a, char *str)
@@ -110,46 +109,63 @@ static int	ft_dealmem(char **a, char *str)
 	return (0);
 }
 
+void	init_spl(t_spl *spl)
+{
+	spl->cmd_count = 0;
+	spl->ss = NULL;
+	spl->quotebool = 1;
+}
+
+int	checkemptycmds(char **s)
+{
+	int	i;
+	int	j;
+
+	while (s[j])
+	{
+		whle (s[j][i])
+	}
+}
+
 char	**cmd_split(char *s)
 {
-	char	**a;
+	t_spl	spl;
 	int		i;
 	int		j;
 	int		k;
-	int		cmdnr;
 
 	if (!s)
 		return (NULL);
-	if (isvalidcmd(s))
+	init_spl(&spl);
+	if (isvalidcmd(s, &spl))
 		return (NULL);
-	cmdnr = ft_cmdcount(s);
-	a = (char **)malloc(sizeof(char *) * (cmdnr + 1));
-	if (!a)
+	spl.ss = (char **)malloc(sizeof(char *) * (spl.cmd_count + 1));
+	if (!spl.ss)
 		return (NULL);
 	j = 0;
 	i = 0;
-	while (j != cmdnr)
+	while (j != spl.cmd_count)
 	{
 		while (s[i] && (j && s[i] == '|'))
 			i++;
-		if (ft_dealmem(&a[j], s))
+		if (ft_dealmem(&spl.ss[j], s))
 			return (NULL);
 		k = 0;
 		while (s[i])
 		{
 			if (s[i] == '|' && isvalidpipe(s, i))
 				break ;
-			a[j][k] = s[i];
+			spl.ss[j][k] = s[i];
 			k++;
 			i++;
 		}
-		a[j][k] = '\0';
+		spl.ss[j][k] = '\0';
 		j++;
 	}
-	a[j] = NULL;
-
+	spl.ss[j] = NULL;
+	checkemptycmds(spl.ss);
 	j = 0;
-	while (a[j])
-		printf("%s\n", a[j++]);
-	return (a);
+	while (spl.ss[j])
+		printf("%s\n", spl.ss[j++]);
+	return (spl.ss);
 }

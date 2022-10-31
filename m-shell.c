@@ -83,7 +83,6 @@ int	main(int argc, char **argv, char **envp)
 	signal(SIGINT, sighandler);
 	signal(SIGQUIT, sighandler);
 	g_envs = duplicate_envp(envp, 0);
-	printf("GOT VARS WOOO\n");
 	read_line = readline("shell:> ");
 	while (read_line)
 	{
@@ -107,8 +106,8 @@ int	main(int argc, char **argv, char **envp)
 			if (!ft_strcmp(temp[0], "unset"))
 				unset(&cmds, &data);
 		}
-		free(read_line);
-		read_line = readline("shell:> ");
+			free(read_line);
+			read_line = readline("shell:> ");
 	}
 	i = -1;
 	while (g_envs[++i])
