@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/10/30 13:30:12 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/31 16:01:57 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@
 
 typedef struct s_ms
 {
-    int ret;
+    int		ret;
+	char	**rl_addr;
 }   t_ms;
 
 typedef struct s_cmdd
@@ -42,5 +43,8 @@ int     pwd(t_cmdd *argd, t_ms *data);
 int     set_pwd(t_ms *data);
 int	    unset(t_cmdd *argd, t_ms *data);
 char	**alloc_envmem(char **envs, int	offset);
+void	exit_status(int status, char **line);
+int		exit_shell(t_cmdd *argd, t_ms *data);
+
 
 #endif

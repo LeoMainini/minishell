@@ -8,7 +8,8 @@ SOURCES = 	m-shell.c\
 			utils.c\
 			$(BUILTINS_DIR)/cd.c\
 			$(BUILTINS_DIR)/pwd.c\
-			$(BUILTINS_DIR)/env.c
+			$(BUILTINS_DIR)/env.c\
+			$(BUILTINS_DIR)/exit.c
 
 OBJS =	$(SOURCES:.c=.o)
 
@@ -16,7 +17,7 @@ CC = gcc
 
 CFLAGS = -Wall -Werror -Wextra
 
-DEBUG = -fsanitize=address -g
+DEBUG = #-fsanitize=address -g
 
 INC = -I. -I libft
 

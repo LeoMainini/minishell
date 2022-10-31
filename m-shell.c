@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/30 13:51:22 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/10/31 16:02:01 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,13 @@ char **g_envs;
 
 void exit_status(int status, char **line)
 {
+	int	i;
+
 	free(*line);
+	i = -1;
+	while (g_envs[++i])
+		free(g_envs[i]);
+	free(g_envs);
 	rl_clear_history();
 	exit(status);
 }
@@ -72,7 +78,6 @@ int	check_envp_duplicate_error(char **envs)
 int	main(int argc, char **argv, char **envp)
 {
 	char	*read_line;
-	int		i;
 	t_ms	data;
 
 	(void)argc;
@@ -88,6 +93,7 @@ int	main(int argc, char **argv, char **envp)
 	while (read_line)
 	{
 		add_history(read_line);
+		data.rl_addr = &read_line;
 		cmd_split(read_line);
 		char **temp = ft_split(read_line, ' ');
 		if (temp && *temp)
@@ -106,13 +112,11 @@ int	main(int argc, char **argv, char **envp)
 				export(&cmds, &data);
 			if (!ft_strcmp(temp[0], "unset"))
 				unset(&cmds, &data);
+			if (!ft_strcmp(temp[0], "exit"))
+				exit_shell(&cmds, &data);
 		}
 		free(read_line);
 		read_line = readline("shell:> ");
 	}
-	i = -1;
-	while (g_envs[++i])
-		free(g_envs[i]);
-	free(g_envs);
 	exit_status(1, &read_line);
 }
