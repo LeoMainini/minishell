@@ -6,7 +6,7 @@
 /*   By: ben <ben@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/03 14:52:05 by ben              ###   ########.fr       */
+/*   Updated: 2022/11/04 18:38:52 by ben              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,9 +127,9 @@ int	checkemptycmds(char **s)
 	{
 		while (s[j][i])
 		{
-			while (ft_isspace(s[j][i]))
+			while (s[j][i] && ft_isspace(s[j][i]))
 				i++;
-			if (s[j][i] == 0 && i > 0)
+			if (!s[j][i] || (**s && **s == '|'))
 				return (1);
 			else
 				break ;
@@ -175,10 +175,13 @@ char	**cmd_split(char *s)
 		j++;
 	}
 	spl.ss[j] = NULL;
-	if (checkemptycmds(spl.ss))
-	{
-		printf("parse error near '|'\n");
-		return (NULL);
+	if (*spl.ss)
+	{	
+		if (*spl.ss && checkemptycmds(spl.ss))
+		{
+			printf("parse error near '|'\n");
+			return (NULL);
+		}
 	}
 	j = 0;
 	while (spl.ss[j])
