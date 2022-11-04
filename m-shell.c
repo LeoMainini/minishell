@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m-shell.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: ben <ben@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/31 17:10:18 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/03 14:14:08 by ben              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int	main(int argc, char **argv, char **envp)
 	{
 		add_history(read_line);
 		data.rl_addr = &read_line;
-		//cmd_split(read_line);
+		cmd_split(read_line);
 		char **temp = ft_split(read_line, ' ');
 		if (temp && *temp)
 		{

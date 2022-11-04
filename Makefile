@@ -15,7 +15,7 @@ SOURCES = 	m-shell.c\
 
 OBJS =	$(SOURCES:.c=.o)
 
-CC = clang
+CC = gcc
 
 CFLAGS = -Wall -Werror -Wextra
 

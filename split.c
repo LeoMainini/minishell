@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: benmonico <benmonico@student.42.fr>        +#+  +:+       +#+        */
+/*   By: ben <ben@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/10/26 14:36:01 by benmonico        ###   ########.fr       */
+/*   Updated: 2022/11/03 14:52:05 by ben              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,10 +121,22 @@ int	checkemptycmds(char **s)
 	int	i;
 	int	j;
 
+	j = 0;
+	i = 0;
 	while (s[j])
 	{
-		whle (s[j][i])
+		while (s[j][i])
+		{
+			while (ft_isspace(s[j][i]))
+				i++;
+			if (s[j][i] == 0 && i > 0)
+				return (1);
+			else
+				break ;
+		}
+		j++;
 	}
+	return (0);
 }
 
 char	**cmd_split(char *s)
@@ -163,7 +175,11 @@ char	**cmd_split(char *s)
 		j++;
 	}
 	spl.ss[j] = NULL;
-	checkemptycmds(spl.ss);
+	if (checkemptycmds(spl.ss))
+	{
+		printf("parse error near '|'\n");
+		return (NULL);
+	}
 	j = 0;
 	while (spl.ss[j])
 		printf("%s\n", spl.ss[j++]);
