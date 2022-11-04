@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
+#    Updated: 2022/11/04 17:54:05 by leferrei         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = minishell
 
 BUILTINS_DIR =	builtins
@@ -17,9 +29,9 @@ OBJS =	$(SOURCES:.c=.o)
 
 CC = gcc
 
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = #-Wall -Werror -Wextra
 
-DEBUG = #-fsanitize=address -g
+DEBUG = -fsanitize=address -g
 
 INC = -I. -I libft
 

@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:29:45 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/31 15:27:12 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/04 17:59:49 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ int	env(t_cmdd *argd, t_ms *data)
 {
 	int	i;
 	
-	//TODO:Should not show variables without valye
 	if (argd->args[1] && printf("Too many arguments.\n"))
 		return (set_ret_return(data, 1));
 	i = -1;
