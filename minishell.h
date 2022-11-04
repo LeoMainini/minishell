@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/04 17:38:43 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/04 19:51:44 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,6 @@ int		exit_shell(t_cmdd *argd, t_ms *data);
 int		echo(t_cmdd *argd, t_ms *data);
 void	interpret_strings(t_cmdd *argd, t_ms *data);
 char	**get_sep_env_values(char *str);
+char	*ft_strfree_join(char **s1, char *s2);
 
 #endif
