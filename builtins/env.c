@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:29:45 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/04 17:59:49 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/07 16:28:59 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,13 +81,11 @@ char	**get_env(char *env, t_ms *data)
 {
 	int	i;
 
+	(void)data;
 	i = -1;
 	i = get_index(env);
 	if (i == -1)
-	{
-		set_ret_return(data, 127);
 		return (0);
-	}
 	return (&g_envs[i]);
 }
 
@@ -197,16 +195,13 @@ int	unset(t_cmdd *argd, t_ms *data)
 	int		k;
 	int		found_i;
 	char	**temp;
-	int		result;
 
 	i = 0;
-	result = 1;
 	while (argd->args[++i])
 	{
 		found_i = get_index(argd->args[i]);
 		if (found_i == -1)
 			continue ;
-		result = 0;
 		temp = alloc_envmem(g_envs, -1);
 		k = -1;
 		while (g_envs[++k])
@@ -220,5 +215,5 @@ int	unset(t_cmdd *argd, t_ms *data)
 		free(g_envs);
 		g_envs = temp;
 	}
-	return (set_ret_return(data, result));
+	return (set_ret_return(data, 0));
 }
