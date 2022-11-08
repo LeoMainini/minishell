@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
+#    By: ben <ben@student.42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/11/07 16:31:51 by leferrei         ###   ########.fr        #
+#    Updated: 2022/11/08 20:13:31 by ben              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ BUILTINS_DIR =	builtins
 
 SOURCES = 	m-shell.c\
 			signals.c\
-			split.c\
+			split.c\leak
 			utils.c\
 			interpreter.c\
 			$(BUILTINS_DIR)/cd.c\
@@ -31,7 +31,7 @@ CC = gcc
 
 CFLAGS = -Wall -Werror -Wextra
 
-DEBUG =# -fsanitize=address -g
+DEBUG = -fsanitize=address -g
 
 INC = -I. -I libft
 
