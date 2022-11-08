@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/07 16:19:25 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/08 18:41:59 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,30 +91,35 @@ int	main(int argc, char **argv, char **envp)
 	{
 		add_history(read_line);
 		data.rl_addr = &read_line;
-		cmd_split(read_line);
-		char **temp = ft_split(read_line, ' ');
-		if (temp && *temp)
+		char ***temp = cmd_split(read_line);
+		if (temp && *temp && **temp)
 		{
-			t_cmdd cmds;
-			cmds.args = temp;
-			cmds.in_fd = 0;
-			cmds.out_fd = 0;
-			if (!interpret_strings(&cmds, &data))
-				printf("String missing quotes\n");
-			if (!ft_strcmp(temp[0], "cd"))
-				change_dir(&cmds, &data);
-			if (!ft_strcmp(temp[0], "env"))
-				env(&cmds, &data);
-			if (!ft_strcmp(temp[0], "pwd"))
-				pwd(&cmds, &data);
-			if (!ft_strcmp(temp[0], "export"))
-				export(&cmds, &data);
-			if (!ft_strcmp(temp[0], "unset"))
-				unset(&cmds, &data);
-			if (!ft_strcmp(temp[0], "exit"))
-				exit_shell(&cmds, &data);
-			if (!ft_strcmp(temp[0], "echo"))
-				echo(&cmds, &data);
+			int	i = -1;
+			while (temp[++i])
+			{
+
+				t_cmdd cmds;
+				cmds.args = temp[i];
+				cmds.in_fd = 0;
+				cmds.out_fd = 0;
+				if (!interpret_strings(&cmds, &data))
+					printf("String missing quotes\n");
+				if (!ft_strcmp(temp[i][0], "cd"))
+					change_dir(&cmds, &data);
+				if (!ft_strcmp(temp[i][0], "env"))
+					env(&cmds, &data);
+				if (!ft_strcmp(temp[i][0], "pwd"))
+					pwd(&cmds, &data);
+				if (!ft_strcmp(temp[i][0], "export"))
+					export(&cmds, &data);
+				if (!ft_strcmp(temp[i][0], "unset"))
+					unset(&cmds, &data);
+				if (!ft_strcmp(temp[i][0], "exit"))
+					exit_shell(&cmds, &data);
+				if (!ft_strcmp(temp[i][0], "echo"))
+					echo(&cmds, &data);
+
+			}
 		}
 			free(read_line);
 			read_line = readline("shell:> ");
