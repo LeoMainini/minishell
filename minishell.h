@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: ben <ben@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/10/31 17:09:53 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/06 17:12:11 by ben              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "libft/libft.h"
 # include <stdio.h>
+# include <unistd.h>
 
 typedef struct s_ms
 {
@@ -24,7 +25,7 @@ typedef struct s_ms
 
 typedef struct s_spl
 {
-    char    **ss;
+    char    ***ss;
     int     cmd_count;
     int     quotebool;
 }   t_spl;
@@ -37,7 +38,7 @@ typedef struct s_cmdd
 }	t_cmdd;
 
 int		change_dir(t_cmdd *argd, t_ms *data);
-char	**cmd_split(char *s);
+char	***cmd_split(char *s);
 void    ft_parsing(char *str);
 int		env(t_cmdd *argd, t_ms *data);
 char	**duplicate_envp(char **envs, int offset);

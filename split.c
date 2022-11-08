@@ -6,7 +6,7 @@
 /*   By: ben <ben@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/04 18:38:52 by ben              ###   ########.fr       */
+/*   Updated: 2022/11/06 17:32:39 by ben              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int	isvalidcmd(char *s,  t_spl *spl)
 		}
 		if (s[j] == '|')
 		{
-			if (s[j+1] == '|')
+			if (s[j+1] == '|' || j == 0)
 			{
 				printf("parse error near `|'\n");
 				return (1);
@@ -85,27 +85,6 @@ int	isvalidcmd(char *s,  t_spl *spl)
 		}
 		j++;
 	}
-	return (0);
-}
-
-static int	ft_dealmem(char **a, char *str)
-{
-	char		**b;
-	static int	i;
-
-	b = a;
-	while (str[i])
-	{
-		if (str[i] == '|' && isvalidpipe(str, i))
-		{
-			i++;
-			break ;
-		}
-		i++;
-	}
-	*b = malloc(sizeof(char) * (i + 1));
-	if (!b)
-		return (1);
 	return (0);
 }
 
@@ -129,7 +108,7 @@ int	checkemptycmds(char **s)
 		{
 			while (s[j][i] && ft_isspace(s[j][i]))
 				i++;
-			if (!s[j][i] || (**s && **s == '|'))
+			if (!s[j][i])
 				return (1);
 			else
 				break ;
@@ -139,11 +118,64 @@ int	checkemptycmds(char **s)
 	return (0);
 }
 
-char	**cmd_split(char *s)
+static int	ft_alloc_arg(char **b,char *str)
+{
+	static int	i;
+
+	while (str[i])
+	{
+		if (str[i] == '|' && isvalidpipe(str, i))
+		{
+			i++;
+			break ;
+		}
+		i++;
+	}
+	*b = malloc(sizeof(char) * (i + 1));
+	if (!b)
+		return (1);
+	printf("%d arg size\n", i);
+
+	return (0);
+}
+
+static int	ft_alloc_cmd(char ***b, char *str)
+{
+	static int	i;
+	int			j;
+
+	j = 0;
+	while (str[i])
+	{
+		while (ft_isspace(str[i]))
+			i++;
+		if (str[i] && str[i] == '|' && isvalidpipe(str, i))
+		{
+			i++;
+			break ;
+		}
+		else if (str[i])
+		{
+			if (str[i] == 34 || str[i] == 39)
+				ffquotedtext(NULL, str, &i, str[i]);
+			while(str[i] && !ft_isspace(str[i]))
+				i++;
+			j++;
+		}
+	}
+	*b = malloc(sizeof(char*) * (j + 1));
+	if (!b)
+		return (1);
+	printf("%d cmd size\n", j);
+	return (0);
+}
+
+char	***cmd_split(char *s)
 {
 	t_spl	spl;
 	int		i;
 	int		j;
+	int		l;
 	int		k;
 
 	if (!s)
@@ -151,40 +183,61 @@ char	**cmd_split(char *s)
 	init_spl(&spl);
 	if (isvalidcmd(s, &spl))
 		return (NULL);
-	spl.ss = (char **)malloc(sizeof(char *) * (spl.cmd_count + 1));
+	spl.ss = (char ***)malloc(sizeof(char **) * (spl.cmd_count + 1));
 	if (!spl.ss)
 		return (NULL);
+	printf("%d cmds\n", spl.cmd_count);
+	l = 0;
 	j = 0;
 	i = 0;
-	while (j != spl.cmd_count)
+	while (l != spl.cmd_count)
 	{
-		while (s[i] && (j && s[i] == '|'))
+		if (j == 0)
+		{	
+			ft_alloc_cmd(&spl.ss[l], s);
+			l++;
+		}
+		else if (s[i] && s[i] == '|' && j > 0)
+		{
 			i++;
-		if (ft_dealmem(&spl.ss[j], s))
-			return (NULL);
+			l++;
+			j=0;
+			ft_alloc_cmd(&spl.ss[l], s);
+		}
+		else
+		{
+			while (s[i] && ft_isspace(s[i]))
+				i++;
+			if (s[i] && s[i] != '|')
+				if (ft_alloc_arg(&spl.ss[l][j], s))
+				{
+					j++;
+					return (NULL);
+				}
+		}
 		k = 0;
 		while (s[i])
 		{
 			if (s[i] == '|' && isvalidpipe(s, i))
 				break ;
-			spl.ss[j][k] = s[i];
+			spl.ss[l][j][k] = s[i];
 			k++;
 			i++;
 		}
-		spl.ss[j][k] = '\0';
-		j++;
+		spl.ss[l][j][k] = '\0';
 	}
-	spl.ss[j] = NULL;
+	spl.ss[l][j] = NULL;
+	write(1, "end\n", 4);
 	if (*spl.ss)
 	{	
-		if (*spl.ss && checkemptycmds(spl.ss))
+		if (spl.ss[l] && checkemptycmds(spl.ss[l]))
 		{
-			printf("parse error near '|'\n");
+			printf("parse error near. empty cmd '|'\n");
 			return (NULL);
 		}
 	}
 	j = 0;
-	while (spl.ss[j])
-		printf("%s\n", spl.ss[j++]);
+	while (spl.ss[l][j])
+		printf("%s\n", spl.ss[l][j++]);
 	return (spl.ss);
 }
