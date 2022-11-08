@@ -6,13 +6,11 @@
 /*   By: ben <ben@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/06 17:32:39 by ben              ###   ########.fr       */
+/*   Updated: 2022/11/08 13:34:36 by ben              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-//MISSING QUOTE VALIDATION "'"
 
 int	isvalidpipe(char *str, int i)
 {

@@ -6,7 +6,7 @@
 /*   By: ben <ben@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/06 17:12:11 by ben              ###   ########.fr       */
+/*   Updated: 2022/11/08 13:35:21 by ben              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ char	**alloc_envmem(char **envs, int	offset);
 void	exit_status(int status, char **line);
 int		exit_shell(t_cmdd *argd, t_ms *data);
 int		echo(t_cmdd *argd, t_ms *data);
-void	interpret_strings(t_cmdd *argd, t_ms *data);
+int	interpret_strings(t_cmdd *argd, t_ms *data);
+char	**get_sep_env_values(char *str);
+char	*ft_strfree_join(char **s1, char *s2);
 
 #endif

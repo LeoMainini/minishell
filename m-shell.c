@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m-shell.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ben <ben@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/03 14:14:08 by ben              ###   ########.fr       */
+/*   Updated: 2022/11/07 16:19:25 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,6 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	data.ret = 0;
-	if (data.ret)
-		return (1);
 	signal(SIGINT, sighandler);
 	signal(SIGQUIT, sighandler);
 	g_envs = duplicate_envp(envp, 0);
@@ -101,7 +99,8 @@ int	main(int argc, char **argv, char **envp)
 			cmds.args = temp;
 			cmds.in_fd = 0;
 			cmds.out_fd = 0;
-			interpret_strings(&cmds, &data);
+			if (!interpret_strings(&cmds, &data))
+				printf("String missing quotes\n");
 			if (!ft_strcmp(temp[0], "cd"))
 				change_dir(&cmds, &data);
 			if (!ft_strcmp(temp[0], "env"))
