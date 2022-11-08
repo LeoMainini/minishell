@@ -6,7 +6,7 @@
 #    By: ben <ben@student.42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/11/08 20:21:04 by ben              ###   ########.fr        #
+#    Updated: 2022/11/08 20:23:24 by ben              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ BUILTINS_DIR =	builtins
 
 SOURCES = 	m-shell.c\
 			signals.c\
-			split.c\leak
+			split.c\
 			utils.c\
 			interpreter.c\
 			$(BUILTINS_DIR)/cd.c\

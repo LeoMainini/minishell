@@ -6,7 +6,7 @@
 /*   By: ben <ben@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/08 17:00:28 by ben              ###   ########.fr       */
+/*   Updated: 2022/11/08 21:11:45 by ben              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int	isvalidcmd(char *s,  t_spl *spl)
 			k = j + 1;
 			while(s[k] && ft_isspace(s[k]))
 				k++;
-			if (s[k]== '|' || s[j+1] == '|' || j == 0)
+			if (!s[k] || s[k]== '|' || s[j+1] == '|' || j == 0)
 			{
 				printf("parse error near `|'\n");
 				return (1);
@@ -266,6 +266,8 @@ char	***cmd_split(char *s)
 	{
 		while (s[i] && ft_isspace(s[i]))
 				i++;
+		if (!s[i])
+			break;
 		if (s[i] && s[i] == '|')
 		{
 			// printf("NEW PIPE l%d j%d\n", l, j);
@@ -311,18 +313,20 @@ char	***cmd_split(char *s)
 	}
 	spl.ss[l][j] = NULL;
 	spl.ss[++l] = NULL;
-	l = 0;
-	j = 0;
-	while (spl.ss[l])
-	{
-		j = 0;
-		while (spl.ss[l][j])
-		{
-			printf("%d %d %s\n",l,j, spl.ss[l][j]);
-			j++;
-		}
-		l++;
-	}
+	
+	//printing
+	// l = 0;
+	// j = 0;
+	// while (spl.ss[l])
+	// {
+	// 	j = 0;
+	// 	while (spl.ss[l][j])
+	// 	{
+	// 		printf("%d %d %s\n",l,j, spl.ss[l][j]);
+	// 		j++;
+	// 	}
+	// 	l++;
+	// }
 	return (spl.ss);
 }
 
