@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 16:38:25 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/04 19:57:45 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/09 18:36:03 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,11 @@ int	echo(t_cmdd *argd, t_ms *data)
 	i = 1;
 	while (argd->args[++i - n_line])
 	{
-		printed_c = printf("%s", argd->args[i - n_line]);
+		printed_c = ft_putstr_fd(argd->args[i - n_line], argd->out_fd);
 		if (argd->args[i - n_line + 1] && printed_c)
-			printf(" ");
+			ft_putstr_fd(" ", argd->out_fd);
 	}
 	if (n_line)
-		printf("\n");
+		ft_putstr_fd("\n", argd->out_fd);
 	return (set_ret_return(data, 0));
 }

@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:29:45 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/09 16:25:33 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/09 18:48:37 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ void	ft_str_swap(char ***s1, char ***s2)
 	*s2 = temp;
 }
 
-void	print_free_3darray(char ****str_array)
+void	print_free_3darray(char ****str_array, int fd)
 {
 	char	***strs;
 	int		i;
@@ -109,13 +109,18 @@ void	print_free_3darray(char ****str_array)
 	{
 		if (strs[i][1])
 		{
-			printf("declare -x %s=\"%s\"\n", strs[i][0], strs[i][1]);
+			ft_putstr_fd("declare -x ", fd);
+			ft_putstr_fd(strs[i][0], fd);
+			ft_putchar_fd('"', fd);
+			ft_putstr_fd(strs[i][1], fd);
+			ft_putendl_fd("\"\n", fd);
 			free(strs[i][0]);
 			free(strs[i][1]);
 		}
 		else
 		{
-			printf("declare -x %s\n", strs[i][0]);
+			ft_putstr_fd("declare -x ", fd);
+			ft_putendl_fd(strs[i][0], fd);
 			free(strs[i][0]);
 		}
 		free(strs[i]);
@@ -123,7 +128,7 @@ void	print_free_3darray(char ****str_array)
 	free(strs);
 }
 
-int	print_sorted_envs()
+int	print_sorted_envs(int fd)
 {
 	char	***split_envs;
 	int		i;
@@ -144,7 +149,7 @@ int	print_sorted_envs()
 			if (ft_strcmp(split_envs[i][0], split_envs[k][0]) < 0)
 				ft_str_swap(&split_envs[i], &split_envs[k]);
 	}
-	print_free_3darray(&split_envs);
+	print_free_3darray(&split_envs, fd);
 	return (0);
 }
 
@@ -157,7 +162,7 @@ int	export(t_cmdd *argd, t_ms *data, int before_pipe)
 
 	envi = 0;
 	if (!argd->args[1])
-		return (print_sorted_envs());
+		return (print_sorted_envs(argd->out_fd));
 	i = 0;
 	while (!before_pipe && argd->args[++i])
 	{

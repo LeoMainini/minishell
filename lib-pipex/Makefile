@@ -30,8 +30,7 @@ CFLAGS	=	-Wall -Werror -Wextra -D BUFFER_SIZE=1 -g  #-fsanitize=address -g
 INC		=	 -Lft_printf -Llibft -Lget_next_line -I . -lftprintf -lft
 
 %.o: %.c
-	@$(ECHO) "\033[32mCompiling $< in fancy colors"
-	@$(CC) $(CFLAGS) -Wall -Wextra -Werror -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME):	$(OBJS) $(PF_NAME) $(LFT_NAME)
 			@$(AR) $(NAME) $(OBJS)

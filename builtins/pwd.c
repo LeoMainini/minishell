@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 16:35:28 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/31 16:39:22 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/09 18:47:18 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	pwd(t_cmdd *argd, t_ms *data)
 	pwd = get_pwd();
 	if (!pwd)
 		return (set_ret_return(data, 1));
-	printf("%s\n", pwd);
+	ft_putendl_fd(pwd, argd->out_fd);
 	free(pwd);
 	return (set_ret_return(data, 0));
 }
@@ -59,7 +59,7 @@ int set_pwd(t_ms *data)
 		return (0);
 	temp.args[0] = ft_strdup("export");
 	temp.args[1] = ft_strjoin("PWD=", pwd);
-	i = export(&temp, data);
+	i = export(&temp, data, 0);
 	free(pwd);
 	free (temp.args[1]);
 	free (temp.args[0]);

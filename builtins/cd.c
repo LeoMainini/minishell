@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:37:49 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/09 16:21:52 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/09 21:06:45 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ char	*join_chunks(char **str_chunks, char *sep, int limiter)
 
 	k = -1;
 	complete_str = 0;
-	while (++k < limiter)
+	while (str_chunks[++k] && (k < limiter || limiter < 0))
 	{
 		if (!complete_str)
 			complete_str = ft_strjoin(sep, str_chunks[k]);
@@ -106,12 +106,12 @@ char	*rel_to_abs_pwd(t_cmdd *argd, int i, char *pwd)
 	return (absolute);
 }
 
-int	change_back(t_ms *data, char *pwd, int before_pipe)
+int	change_back(t_ms *data, char *pwd, int fd, int before_pipe)
 {
 		t_cmdd	temp;
 		int		i;
 		
-		printf("%s\n", *(get_env("OLDPWD", data)) + 7);
+		ft_putendl_fd(*(get_env("OLDPWD", data)) + 7, fd);
 		if (before_pipe)
 			return (1);
 		temp.args = ft_calloc(3, sizeof(char *));
@@ -120,7 +120,7 @@ int	change_back(t_ms *data, char *pwd, int before_pipe)
 		temp.args[0] = ft_strdup("export");
 		temp.args[1] = ft_strjoin("OLDPWD=", pwd);
 		chdir(*(get_env("OLDPWD", data)) + 7);
-		i = export(&temp, data);
+		i = export(&temp, data, 0);
 		free (temp.args[1]);
 		free (temp.args[0]);
 		free (temp.args);
@@ -157,7 +157,8 @@ int change_dir(t_cmdd *argd, t_ms *data, int before_pipe)
 		free(absolute_path);
 	}
 	if (i == 3 && argd->args[1])
-		if (!change_back(data, pwd, before_pipe) && printf("Failed to change directory\n"))
+		if (!change_back(data, pwd, argd->out_fd,before_pipe)
+			&& printf("Failed to change directory\n"))
 			return (set_ret_return(data, 1));
 	free(pwd);
 	if (!set_pwd(data))

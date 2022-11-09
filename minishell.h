@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/09 16:43:43 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/09 18:26:31 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ typedef struct	s_ms
 {
     int		ret;
 	char	**rl_addr;
+	int		builtins_outfd;
+	int		system_outfd;
 }   t_ms;
 
 typedef struct	s_spl
