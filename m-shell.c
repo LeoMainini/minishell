@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/09 16:27:18 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/09 16:44:06 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data)
 	if (i == 5)
 		unset(&cmds, data, cmd_argvs[k + 1] != 0);
 	if (i == 6)
-		exit_shell(&cmds, data);
+		exit_shell(&cmds, data, cmd_argvs[k + 1] != 0);
 	if (i == 7)
 		echo(&cmds, data);
 	return (1);
@@ -150,31 +150,7 @@ int	main(int argc, char **argv, char **envp)
 		{
 			i = -1;
 			while (temp[++i])
-			{
-				/*
-				cmds.args = temp[i];
-				cmds.in_fd = 0;
-				cmds.out_fd = 0;
-				if (!interpret_strings(&cmds, &data))
-					printf("String missing quotes\n");
-				if (!ft_strcmp(temp[i][0], "cd"))
-					change_dir(&cmds, &data, temp[i + 1] == 0);
-				if (!ft_strcmp(temp[i][0], "env"))
-					env(&cmds, &data);
-				if (!ft_strcmp(temp[i][0], "pwd"))
-					pwd(&cmds, &data);
-				if (!ft_strcmp(temp[i][0], "export"))
-					export(&cmds, &data);
-				if (!ft_strcmp(temp[i][0], "unset"))
-					unset(&cmds, &data);
-				if (!ft_strcmp(temp[i][0], "exit"))
-					exit_shell(&cmds, &data);
-				if (!ft_strcmp(temp[i][0], "echo"))
-					echo(&cmds, &data);
-				*/
 				execute_builtin(temp, i, &data);
-
-			}
 		}
 			free(read_line);
 			read_line = readline("shell:> ");

@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/09 16:27:03 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/09 16:43:43 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int     set_pwd(t_ms *data);
 int	    unset(t_cmdd *argd, t_ms *data, int before_pipe);
 char	**alloc_envmem(char **envs, int	offset);
 void	exit_status(int status, char **line);
-int		exit_shell(t_cmdd *argd, t_ms *data);
+int		exit_shell(t_cmdd *argd, t_ms *data, int before_pipe);
 int		echo(t_cmdd *argd, t_ms *data);
 int     interpret_strings(t_cmdd *argd, t_ms *data);
 char	**get_sep_env_values(char *str);
