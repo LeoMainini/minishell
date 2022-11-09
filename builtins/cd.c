@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:37:49 by leferrei          #+#    #+#             */
-/*   Updated: 2022/10/27 15:20:49 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/09 16:21:52 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ int	check_folder(t_cmdd *argd, int i)
 		free(temp);
 		return (0);
 	}
+	free(temp);
 	if (!ft_strncmp(argd->args[i], "..", 2) 
 		|| !ft_strncmp(argd->args[i], "./", 2))
 		return (2);
@@ -105,17 +106,19 @@ char	*rel_to_abs_pwd(t_cmdd *argd, int i, char *pwd)
 	return (absolute);
 }
 
-int	change_back(t_ms *data, char *pwd)
+int	change_back(t_ms *data, char *pwd, int before_pipe)
 {
 		t_cmdd	temp;
 		int		i;
 		
+		printf("%s\n", *(get_env("OLDPWD", data)) + 7);
+		if (before_pipe)
+			return (1);
 		temp.args = ft_calloc(3, sizeof(char *));
 		if(!temp.args)
 			return (0);
 		temp.args[0] = ft_strdup("export");
 		temp.args[1] = ft_strjoin("OLDPWD=", pwd);
-		printf("%s\n", *(get_env("OLDPWD", data)) + 7);
 		chdir(*(get_env("OLDPWD", data)) + 7);
 		i = export(&temp, data);
 		free (temp.args[1]);
@@ -124,33 +127,37 @@ int	change_back(t_ms *data, char *pwd)
 		return (i == 0);
 }
 
-int change_dir(t_cmdd *argd, t_ms *data)
+int change_dir(t_cmdd *argd, t_ms *data, int before_pipe)
 {
 	int		i;
 	char	*absolute_path;
 	char	*pwd;
 
 	absolute_path = 0;
-	if (!argd->args[1] && !chdir(*(get_env("HOME", data)) + 5))
+	if (!argd->args[1])
 	{
-		if (!set_pwd(data))
-			return (set_ret_return(data, 1));
+		if (!before_pipe)
+		{
+			chdir(*(get_env("HOME", data)) + 5);
+			if (!set_pwd(data))
+				return (set_ret_return(data, 1));
+		}
 		return (set_ret_return(data, 0));
 	}
 	i = check_folder(argd, 1);
 	if (!i)
 		return (set_ret_return(data, 1));
 	pwd = get_pwd();
-	if (i == 1 && argd->args[1])
+	if (i == 1 && argd->args[1] && !before_pipe)
 		chdir(argd->args[1]);
-	if (i == 2 && argd->args[1])
+	if (i == 2 && argd->args[1] && !before_pipe)
 	{
 		absolute_path = rel_to_abs_pwd(argd, 1, pwd);
 		chdir(absolute_path);
 		free(absolute_path);
 	}
 	if (i == 3 && argd->args[1])
-		if (!change_back(data, pwd) && printf("Failed to change directory\n"))
+		if (!change_back(data, pwd, before_pipe) && printf("Failed to change directory\n"))
 			return (set_ret_return(data, 1));
 	free(pwd);
 	if (!set_pwd(data))

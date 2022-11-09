@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ben <ben@student.42.fr>                    +#+  +:+       +#+         #
+#    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/11/08 20:23:24 by ben              ###   ########.fr        #
+#    Updated: 2022/11/09 15:27:31 by leferrei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,15 +42,20 @@ LINK = -L . -L ./libft -lreadline -lft
 
 $(NAME): $(OBJS)
 			@make -C libft -s
+			@make -C lib-pipex -s
 			$(CC) $(CFLAGS) $(INC) $(DEBUG) $(OBJS) -o $(NAME) $(LINK)
 all: $(NAME)
 
 re: fclean all
 
 clean:
+	@make -C libft clean -s
+	@make -C lib-pipex clean -s 
 	rm -f $(OBJS)
 
 fclean: clean
-	rm -f $(NAME1)
+	@make -C libft clean -s
+	@make -C lib-pipex clean -s
+	rm -f $(NAME)
 
 .PHONY: all re clean fclean

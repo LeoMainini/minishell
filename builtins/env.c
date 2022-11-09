@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:29:45 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/07 16:28:59 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/09 16:25:33 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ int	print_sorted_envs()
 	return (0);
 }
 
-int	export(t_cmdd *argd, t_ms *data)
+int	export(t_cmdd *argd, t_ms *data, int before_pipe)
 {
 	char	**envi;
 	int		last_i;
@@ -159,7 +159,7 @@ int	export(t_cmdd *argd, t_ms *data)
 	if (!argd->args[1])
 		return (print_sorted_envs());
 	i = 0;
-	while (argd->args[++i])
+	while (!before_pipe && argd->args[++i])
 	{
 		if (ft_strchr(argd->args[i], '='))
 			name = ft_substr(argd->args[i], 0,
@@ -189,7 +189,7 @@ int	export(t_cmdd *argd, t_ms *data)
 	return (set_ret_return(data, 0));
 }
 
-int	unset(t_cmdd *argd, t_ms *data)
+int	unset(t_cmdd *argd, t_ms *data, int before_pipe)
 {
 	int		i;
 	int		k;
@@ -197,7 +197,7 @@ int	unset(t_cmdd *argd, t_ms *data)
 	char	**temp;
 
 	i = 0;
-	while (argd->args[++i])
+	while (!before_pipe && argd->args[++i])
 	{
 		found_i = get_index(argd->args[i]);
 		if (found_i == -1)
