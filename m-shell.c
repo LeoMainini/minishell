@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m-shell.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/09 22:10:10 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/10 16:35:31 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,18 +143,24 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data)
 	int	j;
 	int	k;
 	t_simargs *sim_args;
-	
-	(void)data;
+
 	sim_args = malloc(sizeof(t_simargs));
+	if (!sim_args)
+		return ;
 	j = *i;
 	//(void)i;
-	printf("i = %d\n", *i);
-	//j = 0;
-	while (cmd_argv[j][0] && !check_builtin(cmd_argv[j][0]))
+	printf("i = %d & %p %p %p %s\n", *i, cmd_argv, *cmd_argv, **cmd_argv, **cmd_argv);
+	while (**cmd_argv && !check_builtin(**cmd_argv) )
+	{
+		printf("oy\n");
 		j++;
+		(*cmd_argv)++;
+	}
 	sim_args->argc = (j - *i) + 3;
 	printf("value = %p, argc = %d\n", sim_args, sim_args->argc);
 	sim_args->argv = ft_calloc(sim_args->argc + 1, sizeof(char *));
+	if (!sim_args->argv)
+		return ;
 	k = 0;
 	sim_args->argv[k++] = ft_strdup("");
 	sim_args->argv[k++] = ft_itoa(data->builtins_outfd);
@@ -167,12 +173,12 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data)
 		data->system_outfd = open(".system-tempout", O_RDWR | O_CREAT | O_TRUNC, 0666);
 	sim_args->argv[k] = ft_itoa(data->system_outfd);
 	printf("infd in pipex = %d out fd = %d\n", data->builtins_outfd, data->system_outfd);
-	//pipex(sim_args->argc, sim_args->argv, g_envs);
+	pipex(sim_args->argc, sim_args->argv, g_envs);
 	k = -1;
-	while (sim_args->argv[++k])
-		free(sim_args->argv[k]);
-	free(sim_args->argv);
-	free(sim_args);
+	// while (sim_args->argv[++k])
+	// 	free(sim_args->argv[k]);
+	// free(sim_args->argv);
+	// free(sim_args);
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -196,6 +202,10 @@ int	main(int argc, char **argv, char **envp)
 		add_history(read_line);
 		data.rl_addr = &read_line;
 		temp = cmd_split(read_line);
+		(void)temp;
+		(void)i;
+		(void)data;
+
 		if (temp && *temp && **temp)
 		{
 			i = 0;

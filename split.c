@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ben <ben@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/08 21:11:45 by ben              ###   ########.fr       */
+/*   Updated: 2022/11/10 15:59:31 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,9 +250,8 @@ char	***cmd_split(char *s)
 	spl.ss = (char ***)malloc(sizeof(char **) * (spl.cmd_count + 1));
 	if (!spl.ss)
 		return (NULL);
-	spl.ss[spl.cmd_count] = NULL;
 	l = 0;
-	while (l < spl.cmd_count)
+	while (l <= spl.cmd_count)
 	{
 		spl.ss[l] = malloc(sizeof(char*) * (ft_argspercmd(&spl, s) + 1));
 		if (!spl.ss[l])
@@ -314,19 +313,19 @@ char	***cmd_split(char *s)
 	spl.ss[l][j] = NULL;
 	spl.ss[++l] = NULL;
 	
-	//printing
-	// l = 0;
-	// j = 0;
-	// while (spl.ss[l])
-	// {
-	// 	j = 0;
-	// 	while (spl.ss[l][j])
-	// 	{
-	// 		printf("%d %d %s\n",l,j, spl.ss[l][j]);
-	// 		j++;
-	// 	}
-	// 	l++;
-	// }
+	// printing
+	l = 0;
+	j = 0;
+	while (spl.ss[l])
+	{
+		j = 0;
+		while (spl.ss[l][j])
+		{
+			printf("%d %d %s\n",l,j, spl.ss[l][j]);
+			j++;
+		}
+		l++;
+	}
 	return (spl.ss);
 }
 
