@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/10 18:26:47 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/10 18:45:43 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 # include "libft/libft.h"
 # include "lib-pipex/pipex.h"
-# include "lib-pipex/printf/printf.h"
 # include <stdio.h>
 # include <unistd.h>
 

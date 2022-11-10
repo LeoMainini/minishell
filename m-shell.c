@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/10 18:05:50 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/10 19:18:15 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,17 +107,19 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data)
 		return (0);
 	cmds.args = cmd_argvs[k];
 	cmds.in_fd = 0;
+	
 	if (data->builtins_outfd)
 		close(data->builtins_outfd);
 	data->builtins_outfd = 0;
 	if (data->system_outfd)
 		close(data->system_outfd);
 	data->system_outfd = 0;
-	data->builtins_outfd = open(".builtin-tempout", O_RDWR | O_CREAT | O_TRUNC, 0666);
+	data->builtins_outfd = open("./.temp_binout", O_RDWR | O_CREAT | O_TRUNC, 0666);
 	printf("outfd in builtin = %d\n", data->builtins_outfd);
 	if (cmd_argvs[k + 1] != 0)
 		cmds.out_fd = data->builtins_outfd;
 	else
+	
 		cmds.out_fd = STDOUT_FILENO;
 	if (!interpret_strings(&cmds, data))
 		printf("String missing quotes\n");
@@ -135,7 +137,6 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data)
 		exit_shell(&cmds, data, cmd_argvs[k + 1] != 0);
 	if (i == 7)
 		echo(&cmds, data);
-	close(cmds.out_fd);
 	return (1);
 }
 
@@ -149,13 +150,10 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data)
 	if (!sim_args)
 		return ;
 	j = *i;
-	//(void)i;
-	printf("i = %d & %p %p %p %s\n", *i, cmd_argv, *cmd_argv, **cmd_argv, **cmd_argv);
-	while (**cmd_argv && !check_builtin(**cmd_argv) )
+	while (cmd_argv[j] && cmd_argv[j][0] && !check_builtin(cmd_argv[j][0]) )
 	{
 		printf("oy\n");
 		j++;
-		(*cmd_argv)++;
 	}
 	sim_args->argc = (j - *i) + 3;
 	printf("value = %p, argc = %d\n", sim_args, sim_args->argc);
@@ -166,20 +164,23 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data)
 	sim_args->argv[k++] = ft_strdup("");
 	sim_args->argv[k++] = ft_itoa(data->builtins_outfd);
 	while (cmd_argv[*i] && *i < j)
-	{
 		sim_args->argv[k++] = join_chunks(cmd_argv[(*i)++], " ", -1);
-		//printf("cmd %d = %s\n", k - 3, sim_args->argv[k - 1]);
-	}
 	if (!data->system_outfd)
-		data->system_outfd = open(".system-tempout", O_RDWR | O_CREAT | O_TRUNC, 0666);
+	{
+		printf("created new fd\n");
+		data->system_outfd = open("./.temp_sysout", O_RDWR | O_CREAT | O_TRUNC, 0666);
+	}
 	sim_args->argv[k] = ft_itoa(data->system_outfd);
 	printf("infd in pipex = %d out fd = %d\n", data->builtins_outfd, data->system_outfd);
-	pipex(sim_args->argc, sim_args->argv, g_envs);
 	k = -1;
-	// while (sim_args->argv[++k])
-	// 	free(sim_args->argv[k]);
-	// free(sim_args->argv);
-	// free(sim_args);
+	while (sim_args->argv[++k])
+		printf("argc %d = %s\n", k, sim_args->argv[k]);
+	pipex(sim_args->argc, sim_args->argv, g_envs);
+
+	//free(sim_args->argv);
+	close(data->system_outfd);
+	data->system_outfd = 0;
+	free(sim_args);
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -209,14 +210,15 @@ int	main(int argc, char **argv, char **envp)
 
 		if (temp && *temp && **temp)
 		{
-			i = 0;
-			while (temp[i])
+			i = -1;
+			while (temp[++i])
 			{
 				if (!execute_builtin(temp, i, &data))
 					execute_system_funcs(temp, &i, &data);
-				if (temp[i])
-					i++;
+				if (!temp[i])
+					break ;
 			}
+
 		}
 			free(read_line);
 			read_line = readline("shell:> ");

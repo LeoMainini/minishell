@@ -6,7 +6,7 @@
 #    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/10 18:30:02 by leferrei          #+#    #+#              #
-#    Updated: 2022/11/10 18:30:05 by leferrei         ###   ########.fr        #
+#    Updated: 2022/11/10 18:49:51 by leferrei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,7 +42,7 @@ RM		=	rm -f
 
 AR		=	ar rc
 
-CFLAGS	=	-Wall -Werror -Wextra -D BUFFER_SIZE=1 -g  -no-pie#-fsanitize=address -g
+CFLAGS	=	-Wall -Werror -Wextra -D BUFFER_SIZE=1 -g -fPIE#-fsanitize=address -g
 
 INC		=	 -L../libft -Lget_next_line -I . -I .. -lft
 

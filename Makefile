@@ -6,7 +6,7 @@
 #    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/11/10 18:33:52 by leferrei         ###   ########.fr        #
+#    Updated: 2022/11/10 18:49:23 by leferrei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,7 @@ OBJS =	$(SOURCES:.c=.o)
 
 CC = gcc
 
-CFLAGS = -Wall -Werror -Wextra  -no-pie
+CFLAGS = -Wall -Werror -Wextra
 
 DEBUG = -fsanitize=address -g
 

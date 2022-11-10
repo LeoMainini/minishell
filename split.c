@@ -3,40 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/10 15:59:31 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/10 19:21:26 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	isvalidpipe(char *str, int i)
-{
-	int	j;
-    int dqtctr;
-    int sqtctr;
-
-    dqtctr = 0;
-    sqtctr = 0;
-	j = 0;
-	while (str[j] && j < i)
-	{
-		if (str[j] == 34)
-			dqtctr++;
-		if (str[j] == 39)
-			sqtctr++;
-		j++;
-	}
-	if (str[i] == '|')
-	{
-		
-		if ((sqtctr % 2 == 0 || sqtctr % 2 == 2) && (dqtctr % 2 == 0 || dqtctr % 2 == 2))
-			return (1);
-	}
-	return (0);
-}
 
 int	ffquotedtext(t_spl *spl, char *s, int *j, char qt)
 {
@@ -117,58 +91,6 @@ int	checkemptycmds(char **s)
 		}
 		j++;
 	}
-	return (0);
-}
-
-static int	ft_alloc_arg(char **b,char *str)
-{
-	static int	i;
-
-	while (str[i])
-	{
-		if (str[i] == '|' && isvalidpipe(str, i))
-		{
-			i++;
-			break ;
-		}
-		i++;
-	}
-	*b = malloc(sizeof(char) * (50 + 1));
-	if (!b)
-		return (1);
-	printf("%d arg size\n", i);
-
-	return (0);
-}
-
-static int	ft_alloc_cmd(char ***b, char *str)
-{
-	static int	i;
-	int			j;
-
-	j = 0;
-	while (str[i])
-	{
-		while (str[i] && ft_isspace(str[i]))
-			i++;
-		if (str[i] && str[i] == '|' && isvalidpipe(str, i))
-		{
-			i++;
-			break ;
-		}
-		else if (str[i])
-		{
-			if (str[i] == 34 || str[i] == 39)
-				ffquotedtext(NULL, str, &i, str[i]);
-			while(str[i] && !ft_isspace(str[i]))
-				i++;
-			j++;
-		}
-	}
-	*b = malloc(sizeof(char*) * (50 + 1));
-	if (!b)
-		return (1);
-	printf("%d cmd size\n", j);
 	return (0);
 }
 
@@ -314,94 +236,17 @@ char	***cmd_split(char *s)
 	spl.ss[++l] = NULL;
 	
 	// printing
-	l = 0;
-	j = 0;
-	while (spl.ss[l])
-	{
-		j = 0;
-		while (spl.ss[l][j])
-		{
-			printf("%d %d %s\n",l,j, spl.ss[l][j]);
-			j++;
-		}
-		l++;
-	}
-	return (spl.ss);
-}
-
-char	***cmd_split2(char *s)
-{
-	t_spl	spl;
-	int		i;
-	int		j;
-	int		l;
-	int		k;
-
-	if (!s)
-		return (NULL);
-	init_spl(&spl);
-	if (isvalidcmd(s, &spl))
-		return (NULL);
-	spl.ss = (char ***)malloc(sizeof(char **) * (spl.cmd_count + 1));
-	if (!spl.ss)
-		return (NULL);
-	if (ft_alloc_cmd(&*spl.ss, s))
-		return (NULL);
-	printf("%d cmds\n", spl.cmd_count);
-	l = 0;
-	j = 0;
-	i = 0;
-	while (l != spl.cmd_count)
-	{
-		while (s[i] && ft_isspace(s[i]))
-				i++;
-		if (s[i] && s[i] == '|')
-		{
-			i++;
-			l++;
-			ft_alloc_cmd(&spl.ss[l], s);
-			j = 0;
-			if (ft_alloc_arg(&spl.ss[l][j], s))
-					return (NULL);
-		}
-		else if (s[i] && s[i] != '|' && j)
-		{
-			if (s[i] && s[i] != '|')
-				if (ft_alloc_arg(&spl.ss[l][j], s))
-					return (NULL);
-		}
-		k = 0;
-		while (s[i] && !ft_isspace(s[i]))
-		{
-			if (s[i] == '|' && isvalidpipe(s, i))
-				break ;
-			spl.ss[l][j][k] = s[i];
-			k++;
-			i++;
-		}
-		spl.ss[l][j][k] = '\0';
-		j++;
-	}
-	spl.ss[l][j] = NULL;
-	spl.ss[l + 1] = NULL;
-	if (spl.ss[l])
-	{	
-		if (spl.ss[l] && checkemptycmds(spl.ss[l]))
-		{
-			printf("parse error near. empty cmd '|'\n");
-			return (NULL);
-		}
-	}
-	j = 0;
-	while (spl.ss[l] && spl.ss[l][j])
-	{
-		printf("%d %d %s\n",l,j, spl.ss[l][j]);
-		j++;
-		if (!spl.ss[l][j])
-		{
-			j = 0;
-			l++;
-		}
-	}
+	// l = 0;
+	// j = 0;
+	// while (spl.ss[l])
+	// {
+	// 	j = 0;
+	// 	while (spl.ss[l][j])
+	// 	{
+	// 		printf("%d %d %s\n",l,j, spl.ss[l][j]);
+	// 		j++;
+	// 	}
+	// 	l++;
+	// }
 	return (spl.ss);
 }

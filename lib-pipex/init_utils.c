@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:08:53 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/10 18:26:47 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/10 19:06:16 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ char	*get_p_pwd(char **envp)
 
 int	check_file_cmd(t_vars *data, int i)
 {
+	if (!strchr(data->cmds[i][0], '.') && !strchr(data->cmds[i][0], '/'))
+		return (0);
 	if (access(data->cmds[i][0], F_OK) && printf("File not found\n"))
 		return (0);
 	if (access(data->cmds[i][0], X_OK) && printf("File not executable\n"))

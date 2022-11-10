@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:12:40 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/10 16:59:38 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/10 19:15:55 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void	free_and_exit(t_vars *data, int status)
 	int	i;
 	int	k;
 
+	(void)status;
 	i = -1;
 	while (data->cmds[++i])
 	{
@@ -65,5 +66,4 @@ void	free_and_exit(t_vars *data, int status)
 		free(data->path);
 	if (data)
 		free (data);
-	exit (status);
 }
