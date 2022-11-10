@@ -1,7 +1,12 @@
 
-SRCS	=	pipex.c		utils.c		process_utils.c		init_utils.c	\
-			argument_processing.c	path_finding.c						\
-			get_next_line/get_next_line.c	get_next_line/get_next_line_utils.c	\
+SRCS	=	pipex.c\
+			utils.c\
+			process_utils.c\
+			init_utils.c\
+			argument_processing.c\
+			path_finding.c\
+			get_next_line/get_next_line.c\
+			get_next_line/get_next_line_utils.c\
 			stdin_parsing.c
 
 
@@ -32,8 +37,8 @@ INC		=	 -Lft_printf -L../libft -Lget_next_line -I . -I .. -lftprintf -lft
 %.o: %.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME):	$(OBJS) $(LFT_NAME) $(PF_NAME) 
-			@$(AR) $(NAME) $(OBJS)
+$(NAME):	$(OBJS) $(PF_NAME) 
+			
 
 $(PF_NAME):
 			@make -C ft_printf

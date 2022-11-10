@@ -6,7 +6,7 @@
 #    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/11/10 17:16:19 by leferrei         ###   ########.fr        #
+#    Updated: 2022/11/10 17:55:40 by leferrei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,12 +33,13 @@ CFLAGS = -Wall -Werror -Wextra -no-pie
 
 DEBUG = -fsanitize=address -g
 
-INC = -I. -I libft -I lib-pipex
+INC = -I. -I libft -I lib-pipex -I lib-pipex/ft_printf
 
-LINK = -L . -L ./libft -lreadline -lft -L ./lib-pipex -lpipex
+LINK = -L . -L ./libft  -L ./lib-pipex -lft -lreadline
 
 .c.o: 
 	$(CC) $(CFLAGS) $(INC) -c $< -o $(<:.c=.o)
+
 
 $(NAME): $(OBJS)
 			@make -C libft -s
@@ -54,8 +55,8 @@ clean:
 	rm -f $(OBJS)
 
 fclean: clean
-	@make -C libft clean -s
-	@make -C lib-pipex clean -s
+	@make -C libft fclean -s
+	@make -C lib-pipex fclean -s
 	rm -f $(NAME)
 
 .PHONY: all re clean fclean
