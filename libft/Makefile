@@ -52,7 +52,7 @@ RM		= rm -f
 
 AR		= ar rc
 
-CFLAGS	= -Wall -Werror -Wextra 
+CFLAGS	= -Wall -Werror -Wextra -no-pie
 
 .c.o:
 			@${CC} ${CFLAGS} -c $< -o ${<:.c=.o}

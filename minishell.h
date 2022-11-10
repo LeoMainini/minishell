@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/10 17:17:58 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/10 18:26:47 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "libft/libft.h"
 # include "lib-pipex/pipex.h"
-# include "lib-pipex/ft_printf/ft_printf.h"
+# include "lib-pipex/printf/printf.h"
 # include <stdio.h>
 # include <unistd.h>
 
@@ -58,7 +58,6 @@ int		exit_shell(t_cmdd *argd, t_ms *data, int before_pipe);
 int		export(t_cmdd *argd, t_ms *data, int before_pipe);
 char	**duplicate_envp(char **envs, int offset);
 void    ft_parsing(char *str);
-char	*ft_strfree_join(char **s1, char *s2);
 char	**get_env(char *env, t_ms *data);
 char	*get_pwd();
 char	**get_sep_env_values(char *str);

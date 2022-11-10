@@ -6,13 +6,14 @@
 #    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/11/10 17:55:40 by leferrei         ###   ########.fr        #
+#    Updated: 2022/11/10 18:33:52 by leferrei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
 BUILTINS_DIR =	builtins
+
 
 SOURCES = 	m-shell.c\
 			signals.c\
@@ -23,19 +24,20 @@ SOURCES = 	m-shell.c\
 			$(BUILTINS_DIR)/pwd.c\
 			$(BUILTINS_DIR)/env.c\
 			$(BUILTINS_DIR)/exit.c\
-			$(BUILTINS_DIR)/echo.c
+			$(BUILTINS_DIR)/echo.c\
+
 
 OBJS =	$(SOURCES:.c=.o)
 
 CC = gcc
 
-CFLAGS = -Wall -Werror -Wextra -no-pie
+CFLAGS = -Wall -Werror -Wextra  -no-pie
 
 DEBUG = -fsanitize=address -g
 
-INC = -I. -I libft -I lib-pipex -I lib-pipex/ft_printf
+INC = -I. -I libft -I lib-pipex 
 
-LINK = -L . -L ./libft  -L ./lib-pipex -lft -lreadline
+LINK = -L . -L ./libft  -L ./lib-pipex -lpipex -lft -lreadline 
 
 .c.o: 
 	$(CC) $(CFLAGS) $(INC) -c $< -o $(<:.c=.o)

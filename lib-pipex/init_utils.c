@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:08:53 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/10 17:51:07 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/10 18:26:47 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	check_hd_get_cmds(t_vars *data, int argc, char **argv)
 		data->here_doc = 1;
 		data->cmds = get_hd_commands(argc, argv);
 		data->out_fd = ft_atoi(argv[argc - 1]);
-		if (data->out_fd < 0 && ft_printf("ERROR:\tOutput file error\n"))
+		if (data->out_fd < 0 && printf("ERROR:\tOutput file error\n"))
 			return (0);
 	}
 	else
@@ -30,10 +30,10 @@ int	check_hd_get_cmds(t_vars *data, int argc, char **argv)
 		data->lines_in = 0;
 		data->cmds = get_commands(argc, argv);
 		data->in_fd = ft_atoi(argv[1]);
-		if (data->in_fd < 0 && ft_printf("ERROR:\tIncorrect input file path\n"))
+		if (data->in_fd < 0 && printf("ERROR:\tIncorrect input file path\n"))
 			return (0);
 		data->out_fd = ft_atoi(argv[argc - 1]);
-		if (data->out_fd < 0 && ft_printf("ERROR:\tOutput file error\n"))
+		if (data->out_fd < 0 && printf("ERROR:\tOutput file error\n"))
 			return (0);
 	}
 	return (1);
@@ -42,22 +42,22 @@ int	check_hd_get_cmds(t_vars *data, int argc, char **argv)
 int	init_struct(t_vars *data, int argc, char **argv)
 {
 	data->cmds = 0;
-	if (argc < 5 && ft_printf("ERROR:\tMissing arguments\n"))
+	if (argc < 5 && printf("ERROR:\tMissing arguments\n"))
 		return (0);
 	data->arg_count = argc;
 	if (!ft_strcmp(argv[1], argv[argc - 1])
-		&& ft_printf("ERROR:\tInfile same as outfile\n"))
+		&& printf("ERROR:\tInfile same as outfile\n"))
 		return (0);
-	if (!check_hd_get_cmds(data, argc, argv) && ft_printf("Init error\n"))
+	if (!check_hd_get_cmds(data, argc, argv) && printf("Init error\n"))
 		return (0);
 	if (!data->cmds && !data->lines_in
-		&& ft_printf("ERROR:\tArgument parsing error\n"))
+		&& printf("ERROR:\tArgument parsing error\n"))
 		return (0);
-	if (pipe(data->fds) == -1 && ft_printf("Pipe Error\n"))
+	if (pipe(data->fds) == -1 && printf("Pipe Error\n"))
 		return (0);
-	if (pipe(data->xfds) == -1 && ft_printf("Pipe Error\n"))
+	if (pipe(data->xfds) == -1 && printf("Pipe Error\n"))
 		return (0);
-	if (pipe(data->hd_fds) == -1 && ft_printf("Pipe Error\n"))
+	if (pipe(data->hd_fds) == -1 && printf("Pipe Error\n"))
 		return (0);
 	return (1);
 }
@@ -78,9 +78,9 @@ char	*get_p_pwd(char **envp)
 
 int	check_file_cmd(t_vars *data, int i)
 {
-	if (access(data->cmds[i][0], F_OK) && ft_printf("File not found\n"))
+	if (access(data->cmds[i][0], F_OK) && printf("File not found\n"))
 		return (0);
-	if (access(data->cmds[i][0], X_OK) && ft_printf("File not executable\n"))
+	if (access(data->cmds[i][0], X_OK) && printf("File not executable\n"))
 		return (0);
 	if (!ft_strncmp(data->cmds[i][0], "..", 2)
 		|| !ft_strncmp(data->cmds[i][0], "./", 2))

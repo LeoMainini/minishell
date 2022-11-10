@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2022/11/10 18:30:02 by leferrei          #+#    #+#              #
+#    Updated: 2022/11/10 18:30:05 by leferrei         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 
 SRCS	=	pipex.c\
 			utils.c\
@@ -12,7 +24,7 @@ SRCS	=	pipex.c\
 
 OBJS	=	${SRCS:.c=.o}
 
-PF_NAME	=	ft_printf/libftprintf.a
+
 
 LFT_NAME = ../libft/libft.a
 
@@ -30,18 +42,16 @@ RM		=	rm -f
 
 AR		=	ar rc
 
-CFLAGS	=	-Wall -Werror -Wextra -D BUFFER_SIZE=1 -g #-fsanitize=address -g
+CFLAGS	=	-Wall -Werror -Wextra -D BUFFER_SIZE=1 -g  -no-pie#-fsanitize=address -g
 
-INC		=	 -Lft_printf -L../libft -Lget_next_line -I . -I .. -lftprintf -lft
+INC		=	 -L../libft -Lget_next_line -I . -I .. -lft
 
 %.o: %.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME):	$(OBJS) $(PF_NAME) 
-			
+$(NAME):	$(OBJS)
+			@$(AR) $(NAME) $(OBJS)
 
-$(PF_NAME):
-			@make -C ft_printf
 
 $(LFT_NAME):
 			@make -C ../libft
@@ -52,11 +62,11 @@ clean:
 			
 			@$(ECHO) "\033[31mCleaning files in fancy colors"
 			@${RM} ${OBJS}
-			@make -C ft_printf clean && make -C ../libft clean
+			@make -C ../libft clean
 
 fclean:		clean
 			@${RM} ${NAME}
-			@make -C ft_printf fclean && make -C ../libft fclean
+			@make -C ../libft fclean
 
 re:			fclean	all
 

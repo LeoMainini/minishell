@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:09:09 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/09 15:24:55 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/10 18:26:47 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ int	fork_lpipes_execute(t_vars *data, int i, char **envp)
 		data->xfds[1] = data->fds[1];
 	}
 	pid = fork();
-	if (pid == -1 && ft_printf("Fork Error\n"))
+	if (pid == -1 && printf("Fork Error\n"))
 		return (1);
 	else if (pid == 0)
 		exec_child(data, data->cmds[i], i, envp);
