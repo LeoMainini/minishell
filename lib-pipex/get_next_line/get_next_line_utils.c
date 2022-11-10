@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa>       +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/23 16:45:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/04/13 18:45:07 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/10 17:02:34 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
 
-size_t	ft_strlen(const char *s)
+size_t	gnl_strlen(const char *s)
 {
 	int	size;
 
@@ -27,7 +27,7 @@ size_t	ft_strlen(const char *s)
 	return (size);
 }
 
-void	*ft_calloc(size_t count, size_t size)
+void	*gnl_calloc(size_t count, size_t size)
 {
 	char	*area;
 	size_t	i;
@@ -48,7 +48,7 @@ char	*ft_sj(char *read_data, char *buf)
 	char	*result;
 
 	i = 0;
-	result = malloc((ft_strlen(read_data) + ft_strlen(buf) + 1));
+	result = malloc((gnl_strlen(read_data) + gnl_strlen(buf) + 1));
 	if (result == NULL)
 		return (NULL);
 	while (read_data && read_data[i])

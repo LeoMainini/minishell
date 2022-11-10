@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com>   +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 18:00:32 by leferrei          #+#    #+#             */
-/*   Updated: 2022/03/03 13:31:42 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/10 17:13:00 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

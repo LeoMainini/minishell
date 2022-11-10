@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 16:08:37 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/09 15:23:34 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/10 16:39:32 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <unistd.h>
 # include <stdio.h>
 # include "ft_printf/ft_printf.h"
-# include "libft/libft.h"
+# include "../libft/libft.h"
 
 typedef struct s_vars {
 	char	***cmds;

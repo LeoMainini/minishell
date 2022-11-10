@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:37:49 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/09 21:06:45 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/10 16:57:15 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,6 @@
 #include	<unistd.h>
 
 extern	char**g_envs;
-
-char	*ft_strfree_join(char **s1, char *s2)
-{
-	char	*result;
-
-	result = ft_strjoin(*s1, s2);
-	free(*s1);
-	return (result);
-}
 
 int	check_folder(t_cmdd *argd, int i)
 {
@@ -61,28 +52,6 @@ int	steps_back(t_cmdd *argd, int i)
 		free(file_path[k]);
 	free(file_path);
 	return (steps_back);
-}
-
-char	*join_chunks(char **str_chunks, char *sep, int limiter)
-{
-	int		k;
-	char	*complete_str;
-
-	k = -1;
-	complete_str = 0;
-	while (str_chunks[++k] && (k < limiter || limiter < 0))
-	{
-		if (!complete_str)
-			complete_str = ft_strjoin(sep, str_chunks[k]);
-		else
-		{
-			complete_str = ft_strfree_join(&complete_str, sep);
-			complete_str = ft_strfree_join(&complete_str, str_chunks[k]);
-		}
-	}
-	if (complete_str)
-		return (ft_strfree_join(&complete_str, sep));
-	return (complete_str);
 }
 
 char	*rel_to_abs_pwd(t_cmdd *argd, int i, char *pwd)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa>       +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 15:41:59 by leferrei          #+#    #+#             */
-/*   Updated: 2022/04/13 18:25:31 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/10 17:02:34 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@
 
 char	*get_next_line(int fd);
 char	*ft_sj(char *read_data, char *buf);
-void	*ft_calloc(size_t count, size_t size);
-size_t	ft_strlen(const char *s);
+void	*gnl_calloc(size_t count, size_t size);
+size_t	gnl_strlen(const char *s);
 int		clean_buf(char *buf);
 
 #endif

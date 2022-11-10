@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 15:54:22 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/09 13:15:41 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/10 17:23:16 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int	pipex(int argc, char **argv, char **envp)
 	path = find_shell_path(envp);
 	if (!path && ft_printf("Error finding shell path\n"))
 		free_and_exit(data, 0);
+	
 	while (data->cmds[++i])
 	{
 		if (!get_path(data, i, path, envp))

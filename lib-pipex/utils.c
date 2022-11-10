@@ -3,23 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com>   +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:12:40 by leferrei          #+#    #+#             */
-/*   Updated: 2022/07/27 15:12:42 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/10 16:59:38 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-char	*ft_strfree_join(char **s1, char *s2)
-{
-	char	*result;
-
-	result = ft_strjoin(*s1, s2);
-	free(*s1);
-	return (result);
-}
 
 char	*find_shell_path(char **envp)
 {

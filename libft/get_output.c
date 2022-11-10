@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_output.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com>   +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:34:32 by leferrei          #+#    #+#             */
-/*   Updated: 2022/07/27 15:35:18 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/10 16:59:48 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ char	*ft_strfree_join(char **s1, char *s2)
 	free(*s1);
 	return (result);
 }
+
 
 char	*get_output(int fd)
 {

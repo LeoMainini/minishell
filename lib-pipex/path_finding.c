@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 16:13:52 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/09 15:24:43 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/10 16:56:49 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ char	*join_chunks(char **str_chunks, char *sep, int limiter)
 
 	k = -1;
 	complete_str = 0;
-	while (++k < limiter)
+	while (str_chunks[++k] && (k < limiter || limiter < 0))
 	{
 		if (!complete_str)
 			complete_str = ft_strjoin(sep, str_chunks[k]);
