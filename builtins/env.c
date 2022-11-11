@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:29:45 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/09 18:48:37 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/11 09:25:35 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ void	print_free_3darray(char ****str_array, int fd)
 			ft_putstr_fd(strs[i][0], fd);
 			ft_putchar_fd('"', fd);
 			ft_putstr_fd(strs[i][1], fd);
-			ft_putendl_fd("\"\n", fd);
+			ft_putstr_fd("\"\n", fd);
 			free(strs[i][0]);
 			free(strs[i][1]);
 		}

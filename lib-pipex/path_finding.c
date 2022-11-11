@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 16:13:52 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/10 16:56:49 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/11 10:17:02 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ char	*absolute_to_relative_pwd(t_vars *data, int i, char *pwd)
 	while (pwd_chunks[k])
 		k ++;
 	k = k - sb;
+	printf("limiter = %d\n", k);
 	relative_pwd = join_chunks(pwd_chunks, "/", k);
 	k = -1;
 	while (pwd_chunks[++k])

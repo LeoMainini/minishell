@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/11 09:02:08 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/11 10:17:47 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,21 +150,27 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data)
 	if (!sim_args)
 		return ;
 	j = *i;
-	while (cmd_argv[j] && cmd_argv[j][0] && !check_builtin(cmd_argv[j][0]) )
+	while (cmd_argv[j] && !check_builtin(cmd_argv[j][0]) )
 	{
-		printf("oy\n");
+		printf("cmd_argv[j][0] = %s oy\n", cmd_argv[j][0]);
 		j++;
 	}
+	printf("i = %d, j = %d\n", *i, j);
 	sim_args->argc = (j - *i) + 3;
-	printf("value = %p, argc = %d\n", sim_args, sim_args->argc);
 	sim_args->argv = ft_calloc(sim_args->argc + 1, sizeof(char *));
+	printf("value = %p, argv value = %p, argc = %d\n", sim_args, sim_args->argv, sim_args->argc);
 	if (!sim_args->argv)
 		return ;
 	k = 0;
 	sim_args->argv[k++] = ft_strdup("");
 	sim_args->argv[k++] = ft_itoa(data->builtins_outfd);
+	printf("i right before joining chuckero = %d\n", *i);
 	while (cmd_argv[*i] && *i < j)
+	{
+		printf("first arg of argv %d = %s\n", k, cmd_argv[*i][0]);		
 		sim_args->argv[k++] = join_chunks(cmd_argv[(*i)++], " ", -1);
+		printf("argv %d = %s\n", k - 1, sim_args->argv[k - 1]);
+	}
 	if (data->system_outfd == -1)
 		data->system_outfd = open("./.temp_sysout", O_RDWR | O_CREAT | O_TRUNC, 0666);
 	if (sim_args->argc == 4)
@@ -212,7 +218,7 @@ int	main(int argc, char **argv, char **envp)
 			i = -1;
 			while (temp[++i])
 			{
-				if (!execute_builtin(temp, i, &data) && ft_strlen(temp[i][0]) > 1)
+				if (!execute_builtin(temp, i, &data))
 					execute_system_funcs(temp, &i, &data);
 				if (!temp[i])
 					break ;
