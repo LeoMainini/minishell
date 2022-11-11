@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:09:09 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/10 18:26:47 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/11 08:50:54 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	dupe_pipes(t_vars *data, int i)
 	else if (result != -1)
 	{
 		result = dup2(data->fds[1], STDOUT_FILENO);
-		if (!data->here_doc)
+		if (!data->here_doc && data->in_fd > -1)
 		{
 			if (result != -1)
 				result = dup2(data->in_fd, STDIN_FILENO);
@@ -58,7 +58,7 @@ int	dupe_pipes(t_vars *data, int i)
 void	exec_child(t_vars *data, char **cmd_argv, int i, char **envp)
 {
 	if (dupe_pipes(data, i) == -1)
-		free_and_exit(data, 5);
+		return ;
 	close(data->hd_fds[0]);
 	close(data->hd_fds[1]);
 	close(data->fds[0]);
@@ -66,10 +66,10 @@ void	exec_child(t_vars *data, char **cmd_argv, int i, char **envp)
 	close(data->xfds[0]);
 	close(data->xfds[1]);
 	if (execve(data->path, cmd_argv, envp) == -1)
-		perror("Failed executing");
+		printf("Failed executing\n");
 	ft_putstr_fd("Command not found: ", STDERR_FILENO);
 	ft_putendl_fd(data->cmds[i][0], STDERR_FILENO);
-	free_and_exit(data, 6);
+	return ;
 }
 
 void	exec_parent(t_vars *data, int i, int pid)
@@ -108,5 +108,33 @@ int	fork_lpipes_execute(t_vars *data, int i, char **envp)
 		exec_child(data, data->cmds[i], i, envp);
 	else
 		exec_parent(data, i, pid);
+	return (0);
+}
+
+int	exec_one(t_vars *data, int i, char **envp)
+{
+	pid_t	pid;
+	int		status;
+
+	status = 0;
+	pid = fork();
+	if (pid == -1 && printf("Fork Error\n"))
+		return (1);
+	if (pid==0)
+	{
+		if (data->in_fd > -1)
+			dup2(data->in_fd, STDIN_FILENO);
+		dup2(data->out_fd, STDOUT_FILENO);
+		if (execve(data->path, data->cmds[i], envp) == -1)
+			printf("Failed executing\n");
+		ft_putstr_fd("Command not found: ", STDERR_FILENO);
+		ft_putendl_fd(data->cmds[i][0], STDERR_FILENO);
+		return (5);
+	}
+	else
+	{
+		waitpid(pid, &status, 0);
+		return (status);
+	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/10 19:18:15 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/11 09:02:08 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,12 +108,12 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data)
 	cmds.args = cmd_argvs[k];
 	cmds.in_fd = 0;
 	
-	if (data->builtins_outfd)
+	if (data->builtins_outfd > -1)
 		close(data->builtins_outfd);
-	data->builtins_outfd = 0;
-	if (data->system_outfd)
+	data->builtins_outfd = -1;
+	if (data->system_outfd > -1)
 		close(data->system_outfd);
-	data->system_outfd = 0;
+	data->system_outfd = -1;
 	data->builtins_outfd = open("./.temp_binout", O_RDWR | O_CREAT | O_TRUNC, 0666);
 	printf("outfd in builtin = %d\n", data->builtins_outfd);
 	if (cmd_argvs[k + 1] != 0)
@@ -165,21 +165,19 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data)
 	sim_args->argv[k++] = ft_itoa(data->builtins_outfd);
 	while (cmd_argv[*i] && *i < j)
 		sim_args->argv[k++] = join_chunks(cmd_argv[(*i)++], " ", -1);
-	if (!data->system_outfd)
-	{
-		printf("created new fd\n");
+	if (data->system_outfd == -1)
 		data->system_outfd = open("./.temp_sysout", O_RDWR | O_CREAT | O_TRUNC, 0666);
-	}
+	if (sim_args->argc == 4)
+		dup2(STDOUT_FILENO, data->system_outfd);
 	sim_args->argv[k] = ft_itoa(data->system_outfd);
 	printf("infd in pipex = %d out fd = %d\n", data->builtins_outfd, data->system_outfd);
 	k = -1;
 	while (sim_args->argv[++k])
 		printf("argc %d = %s\n", k, sim_args->argv[k]);
 	pipex(sim_args->argc, sim_args->argv, g_envs);
-
-	//free(sim_args->argv);
 	close(data->system_outfd);
-	data->system_outfd = 0;
+	data->system_outfd = -1;
+	free(sim_args->argv);
 	free(sim_args);
 }
 
@@ -188,13 +186,14 @@ int	main(int argc, char **argv, char **envp)
 	char		*read_line;
 	t_ms		data;
 	char		***temp;
+	char		*sys_output;
 	int			i;
 
 	(void)argc;
 	(void)argv;
 	data.ret = 0;
-	data.builtins_outfd = 0;
-	data.system_outfd = 0;
+	data.builtins_outfd = -1;
+	data.system_outfd = -1;
 	signal(SIGINT, sighandler);
 	signal(SIGQUIT, sighandler);
 	g_envs = duplicate_envp(envp, 0);
@@ -213,15 +212,27 @@ int	main(int argc, char **argv, char **envp)
 			i = -1;
 			while (temp[++i])
 			{
-				if (!execute_builtin(temp, i, &data))
+				if (!execute_builtin(temp, i, &data) && ft_strlen(temp[i][0]) > 1)
 					execute_system_funcs(temp, &i, &data);
 				if (!temp[i])
 					break ;
 			}
-
 		}
-			free(read_line);
-			read_line = readline("shell:> ");
+		data.system_outfd = open(".temp_sysout", O_RDONLY);
+		sys_output = get_next_line(data.system_outfd);
+		if (sys_output)
+			printf("here\n");
+		printf("here\n");
+		while(sys_output)
+		{
+			printf(sys_output);
+			free(sys_output);
+			sys_output = get_next_line(data.system_outfd);
+		}
+		close(data.system_outfd);
+		data.system_outfd = -1;
+		free(read_line);
+		read_line = readline("shell:> ");
 	}
 	exit_status(1, &read_line);
 }

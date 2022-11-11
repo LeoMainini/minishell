@@ -6,7 +6,7 @@
 #    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/10 18:30:02 by leferrei          #+#    #+#              #
-#    Updated: 2022/11/10 18:49:51 by leferrei         ###   ########.fr        #
+#    Updated: 2022/11/11 07:57:00 by leferrei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,10 +21,11 @@ SRCS	=	pipex.c\
 			get_next_line/get_next_line_utils.c\
 			stdin_parsing.c
 
+TEST_SRCS	=	test.c
 
 OBJS	=	${SRCS:.c=.o}
 
-
+TEST_OBJS	=	$(OBJS) ${TEST_SRCS:.c=.o}
 
 LFT_NAME = ../libft/libft.a
 
@@ -42,16 +43,23 @@ RM		=	rm -f
 
 AR		=	ar rc
 
-CFLAGS	=	-Wall -Werror -Wextra -D BUFFER_SIZE=1 -g -fPIE#-fsanitize=address -g
+CFLAGS	=	-Wall -Werror -Wextra -D BUFFER_SIZE=1 -g -fsanitize=address -g
 
-INC		=	 -L../libft -Lget_next_line -I . -I .. -lft
+LIBFLAGS =  -fPIE
+
+INC		=	 -I ../libft -L../libft -lft -Lget_next_line -I . -I .. 
+
+ifeq ($($@), test)
+	OBJ_COMPILE = @$(CC) $(CFLAGS) -fPIC -c $< -o $@
+else
+	OBJ_COMPILE = @$(CC) $(CFLAGS) $(LIBFLAGS) -c $< -o $@
+endif
 
 %.o: %.c
-	@$(CC) $(CFLAGS) -c $< -o $@
+	$(OBJ_COMPILE)
 
 $(NAME):	$(OBJS)
 			@$(AR) $(NAME) $(OBJS)
-
 
 $(LFT_NAME):
 			@make -C ../libft
@@ -67,6 +75,9 @@ clean:
 fclean:		clean
 			@${RM} ${NAME}
 			@make -C ../libft fclean
+
+test:		fclean $(LFT_NAME) $(TEST_OBJS) 
+			$(CC) $(CFLAGS) $(INC) $(TEST_OBJS) -o pipex
 
 re:			fclean	all
 

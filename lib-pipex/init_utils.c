@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:08:53 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/10 19:06:16 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/11 08:22:51 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@ int	check_hd_get_cmds(t_vars *data, int argc, char **argv)
 		data->lines_in = 0;
 		data->cmds = get_commands(argc, argv);
 		data->in_fd = ft_atoi(argv[1]);
-		if (data->in_fd < 0 && printf("ERROR:\tIncorrect input file path\n"))
-			return (0);
 		data->out_fd = ft_atoi(argv[argc - 1]);
 		if (data->out_fd < 0 && printf("ERROR:\tOutput file error\n"))
 			return (0);
@@ -42,7 +40,7 @@ int	check_hd_get_cmds(t_vars *data, int argc, char **argv)
 int	init_struct(t_vars *data, int argc, char **argv)
 {
 	data->cmds = 0;
-	if (argc < 5 && printf("ERROR:\tMissing arguments\n"))
+	if (argc < 4 && printf("ERROR:\tMissing arguments\n"))
 		return (0);
 	data->arg_count = argc;
 	if (!ft_strcmp(argv[1], argv[argc - 1])

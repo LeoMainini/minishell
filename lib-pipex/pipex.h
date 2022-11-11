@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 16:08:37 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/10 18:27:08 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/11 08:26:00 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ char	*absolute_to_relative_pwd(t_vars *data, int i, char *pwd);
 char	***get_hd_commands(int argc, char **argv);
 char	**parse_stdin_tolimit(char *limiter);
 int		pipex(int argc, char **argv, char **envp);
-
+int		exec_one(t_vars *data, int i, char **envp);
+char	*get_next_line(int fd);
 
 #endif

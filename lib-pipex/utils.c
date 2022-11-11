@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:12:40 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/10 19:15:55 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/11 08:31:58 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,12 @@ char	*find_shell_path(char **envp)
 	return (clean_path(&output, "ls"));
 }
 
+void	free_zeroout(void *p)
+{
+	free(p);
+	p = 0;
+}
+
 void	free_and_exit(t_vars *data, int status)
 {
 	int	i;
@@ -51,19 +57,19 @@ void	free_and_exit(t_vars *data, int status)
 	{
 		k = -1;
 		while (data->cmds[i][++k])
-			free(data->cmds[i][k]);
-		free(data->cmds[i]);
+			free_zeroout(data->cmds[i][k]);
+		free_zeroout(data->cmds[i]);
 	}
-	free(data->cmds);
+	free_zeroout(data->cmds);
 	close(data->fds[0]);
 	close(data->out_fd);
 	i = -1;
 	while (data->lines_in && data->lines_in[++i])
-		free(data->lines_in[i]);
+		free_zeroout(data->lines_in[i]);
 	if (data->lines_in)
-		free(data->lines_in);
+		free_zeroout(data->lines_in);
 	if (data->path)
-		free(data->path);
+		free_zeroout(data->path);
 	if (data)
-		free (data);
+		free_zeroout (data);
 }
