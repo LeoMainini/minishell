@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:09:09 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/14 16:34:33 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/14 16:54:54 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	exec_child(t_vars *data, char **cmd_argv, int i, char **envp)
 		printf("Failed executing\n");
 	ft_putstr_fd("Command not found: ", STDERR_FILENO);
 	ft_putendl_fd(data->cmds[i][0], STDERR_FILENO);
-	exit(5);
+	free_and_exit(data, 127);
 }
 
 void	exec_parent(t_vars *data, int i, int pid)
@@ -126,7 +126,7 @@ int	exec_one(t_vars *data, int i, char **envp)
 			printf("Failed executing\n");
 		ft_putstr_fd("Command not found: ", STDERR_FILENO);
 		ft_putendl_fd(data->cmds[i][0], STDERR_FILENO);
-		exit(5);
+		free_and_exit(data, 127);
 	}
 	else
 	{

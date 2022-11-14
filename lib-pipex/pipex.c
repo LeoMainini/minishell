@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 15:54:22 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/14 16:33:46 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/14 16:57:28 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,6 @@ int	pipex(int argc, char **argv, char **envp)
 	}
 	while (--i > 0)
 		wait(NULL);
-	free_and_exit(data, 0);
+	//free_and_exit(data, 0);
 	return (data->status);
 }
