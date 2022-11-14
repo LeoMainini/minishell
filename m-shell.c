@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/14 17:36:23 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/14 17:39:08 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,7 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data)
 		data->system_outfd = open("./.temp_sysout", O_RDWR | O_CREAT | O_TRUNC, 0666);
 	if (sim_args->argc == 4)
 		dup2(STDOUT_FILENO, data->system_outfd);
-	sim_args->argv[k] = ft_itoa(data->system_out9bc7b401f1beb07f1befa7fccb95dfd21594811ad);
+	sim_args->argv[k] = ft_itoa(data->system_outfd);
 	//printf("infd in pipex = %d out fd = %d\n", data->builtins_outfd, data->system_outfd);
 	//k = -1;
 	//while (sim_args->argv[++k])
