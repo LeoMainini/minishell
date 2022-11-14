@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 15:54:22 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/14 16:57:28 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/14 17:16:23 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int	pipex(int argc, char **argv, char **envp)
 	char	*path;
 	int		i;
 	t_vars	*data;
+	int		result;
 
 	data = (t_vars *) malloc(sizeof(t_vars));
 	if ((!data || !init_struct(data, argc, argv)) && printf("INIT ERROR \n"))
@@ -26,7 +27,7 @@ int	pipex(int argc, char **argv, char **envp)
 	path = 0;
 	path = find_shell_path(envp);
 	if (!path && printf("Error finding shell path\n"))
-		free_and_exit(data, 0);
+		free_and_exit(data, 0, 0);
 	while (data->cmds[++i])
 	{
 		if (!get_path(data, i, path, envp))
@@ -41,6 +42,7 @@ int	pipex(int argc, char **argv, char **envp)
 	}
 	while (--i > 0)
 		wait(NULL);
-	//free_and_exit(data, 0);
-	return (data->status);
+	result = data->status;
+	free_and_exit(data, 0, 0);
+	return (result);
 }

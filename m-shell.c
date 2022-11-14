@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/14 16:58:51 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/14 17:31:11 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data)
 		close(data->system_outfd);
 	data->system_outfd = -1;
 	data->builtins_outfd = open("./.temp_binout", O_RDWR | O_CREAT | O_TRUNC, 0666);
-	printf("outfd in builtin = %d\n", data->builtins_outfd);
+	//printf("outfd in builtin = %d\n", data->builtins_outfd);
 	if (cmd_argvs[k + 1] != 0)
 		cmds.out_fd = data->builtins_outfd;
 	else
@@ -152,35 +152,35 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data)
 	j = *i;
 	while (cmd_argv[j] && cmd_argv[j][0] && !check_builtin(cmd_argv[j][0]) )
 	{
-		printf("cmd_argv[j][0] = %s\n", cmd_argv[j][0]);
+		//printf("cmd_argv[j][0] = %s\n", cmd_argv[j][0]);
 		j++;
 	}
-	printf("i = %d, j = %d\n", *i, j);
+	//printf("i = %d, j = %d\n", *i, j);
 	sim_args->argc = (j - *i) + 3;
 	sim_args->argv = ft_calloc(sim_args->argc + 1, sizeof(char *));
-	printf("value = %p, argv value = %p, argc = %d\n", sim_args, sim_args->argv, sim_args->argc);
+	//printf("value = %p, argv value = %p, argc = %d\n", sim_args, sim_args->argv, sim_args->argc);
 	if (!sim_args->argv)
 		return ;
 	k = 0;
 	sim_args->argv[k++] = ft_strdup("");
 	sim_args->argv[k++] = ft_itoa(data->builtins_outfd);
-	printf("i right before joining chuckero = %d\n", *i);
+	//printf("i right before joining chuckero = %d\n", *i);
 	while (cmd_argv[*i] && *i < j)
 	{
-		printf("first arg of argv %d = %s\n", k, cmd_argv[*i][0]);		
+		//printf("first arg of argv %d = %s\n", k, cmd_argv[*i][0]);		
 		sim_args->argv[k++] = join_chunks(cmd_argv[(*i)++], " ", -1);
-		printf("argv %d = %s\n", k - 1, sim_args->argv[k - 1]);
+		//printf("argv %d = %s\n", k - 1, sim_args->argv[k - 1]);
 	}
 	if (data->system_outfd == -1)
 		data->system_outfd = open("./.temp_sysout", O_RDWR | O_CREAT | O_TRUNC, 0666);
 	if (sim_args->argc == 4)
 		dup2(STDOUT_FILENO, data->system_outfd);
 	sim_args->argv[k] = ft_itoa(data->system_outfd);
-	printf("infd in pipex = %d out fd = %d\n", data->builtins_outfd, data->system_outfd);
-	k = -1;
-	while (sim_args->argv[++k])
-		printf("argc %d = %s\n", k, sim_args->argv[k]);
-	pipex(sim_args->argc, sim_args->argv, g_envs);
+	//printf("infd in pipex = %d out fd = %d\n", data->builtins_outfd, data->system_outfd);
+	//k = -1;
+	//while (sim_args->argv[++k])
+		//printf("argc %d = %s\n", k, sim_args->argv[k]);
+	data->ret = pipex(sim_args->argc, sim_args->argv, g_envs);
 	close(data->system_outfd);
 	data->system_outfd = -1;
 	free(sim_args->argv);
@@ -216,7 +216,7 @@ int	main(int argc, char **argv, char **envp)
 			i = -1;
 			while (temp[++i] && *temp[i])
 			{
-				printf("%i = %p = %s\n", i, temp[i], (char *)temp[i]);
+				//printf("%i = %p = %s\n", i, temp[i], (char *)temp[i]);
 				if (!execute_builtin(temp, i, &data))
 					execute_system_funcs(temp, &i, &data);
 

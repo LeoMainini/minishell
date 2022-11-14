@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 16:08:37 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/14 16:33:37 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/14 17:14:45 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int		get_path(t_vars *data, int i, char *path, char **envp);
 char	*get_p_pwd(char **envp);
 char	**append_item(char **src, char *entry);
 char	*ft_strfree_join(char **s1, char *s2);
-void	free_and_exit(t_vars *data, int status);
+void	free_and_exit(t_vars *data, int status, int _exit);
 int		fork_lpipes_execute(t_vars *data, int i, char **envp);
 int		check_cmd_error(char ***cmds, int i, int argc);
 char	***get_commands(int argc, char **argv);

@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/14 16:29:42 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/14 17:28:24 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ int	ft_argspercmd(t_spl *spl, char *s)
 			break ;
 		}
 	}
-	printf("args per cmd %d\n", argc);
+	// printf("args per cmd %d\n", argc);
 	return (argc);
 }
 

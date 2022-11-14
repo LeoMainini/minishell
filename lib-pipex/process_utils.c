@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:09:09 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/14 16:54:54 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/14 17:21:56 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	exec_child(t_vars *data, char **cmd_argv, int i, char **envp)
 		printf("Failed executing\n");
 	ft_putstr_fd("Command not found: ", STDERR_FILENO);
 	ft_putendl_fd(data->cmds[i][0], STDERR_FILENO);
-	free_and_exit(data, 127);
+	free_and_exit(data, 127, 1);
 }
 
 void	exec_parent(t_vars *data, int i, int pid)
@@ -85,7 +85,10 @@ void	exec_parent(t_vars *data, int i, int pid)
 		close(data->in_fd);
 	if ((i == data->arg_count - 4 && !data->here_doc)
 		|| (i == data->arg_count - 5 && data->here_doc))
-		waitpid(pid, &data->status, 0);
+		{
+			waitpid(pid, &data->status, 0);
+			wait(NULL);
+		}
 }
 
 int	fork_lpipes_execute(t_vars *data, int i, char **envp)
@@ -96,7 +99,7 @@ int	fork_lpipes_execute(t_vars *data, int i, char **envp)
 	{
 		data->xfds[0] = data->fds[0];
 		if (pipe(data->fds) == -1)
-			free_and_exit(data, 3);
+			free_and_exit(data, 3, 0);
 		data->xfds[1] = data->fds[1];
 	}
 	pid = fork();
@@ -126,11 +129,12 @@ int	exec_one(t_vars *data, int i, char **envp)
 			printf("Failed executing\n");
 		ft_putstr_fd("Command not found: ", STDERR_FILENO);
 		ft_putendl_fd(data->cmds[i][0], STDERR_FILENO);
-		free_and_exit(data, 127);
+		free_and_exit(data, 127, 1);
 	}
 	else
 	{
 		waitpid(pid, &data->status, 0);
+		wait(NULL);
 		return (data->status);
 	}
 	return (0);
