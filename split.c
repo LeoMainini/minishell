@@ -6,7 +6,7 @@
 /*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/14 16:55:02 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/14 17:33:24 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ int	ft_argspercmd(t_spl *spl, char *s)
 			break ;
 		}
 	}
-	printf("args per cmd %d\n", argc);
+	// printf("args per cmd %d\n", argc);
 	return (argc);
 }
 

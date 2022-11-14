@@ -6,7 +6,7 @@
 #    By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/10 18:30:02 by leferrei          #+#    #+#              #
-#    Updated: 2022/11/14 17:20:18 by bcarreir         ###   ########.fr        #
+#    Updated: 2022/11/14 17:32:58 by bcarreir         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,7 +43,7 @@ RM		=	rm -f
 
 AR		=	ar rc
 
-CFLAGS	=	-Wall -Werror -Wextra -D BUFFER_SIZE=1 -g -fsanitize=address -g
+CFLAGS	=	-Wall -Werror -Wextra -D BUFFER_SIZE=1 -g# -fsanitize=address -g
 
 LIBFLAGS =  -fPIE
 
