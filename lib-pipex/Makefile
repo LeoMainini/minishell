@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
+#    By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/10 18:30:02 by leferrei          #+#    #+#              #
-#    Updated: 2022/11/11 07:57:00 by leferrei         ###   ########.fr        #
+#    Updated: 2022/11/14 17:20:18 by bcarreir         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,7 +68,6 @@ all:		${NAME}
 
 clean:	
 			
-			@$(ECHO) "\033[31mCleaning files in fancy colors"
 			@${RM} ${OBJS}
 			@make -C ../libft clean
 
