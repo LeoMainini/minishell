@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:12:40 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/11 08:31:58 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/14 16:32:46 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,5 @@ void	free_and_exit(t_vars *data, int status)
 		free_zeroout(data->path);
 	if (data)
 		free_zeroout (data);
+	exit(status);
 }

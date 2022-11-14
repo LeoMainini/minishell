@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m-shell.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/14 16:07:40 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/14 16:27:43 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,16 +214,16 @@ int	main(int argc, char **argv, char **envp)
 		if (temp && *temp && **temp)
 		{
 			i = -1;
-			while (temp[++i])
+			while (temp[++i] && *temp[i])
 			{
+				printf("%i = %p = %s\n", i, temp[i], (char *)temp[i]);
 				if (!execute_builtin(temp, i, &data))
 					execute_system_funcs(temp, &i, &data);
-				if (!temp[i])
-					break ;
+
 			}
 		}
 		i = -1;
-		while (temp[++i])
+		while (temp[++i] && *temp[i])
 		{
 			int j = -1;
 			while (temp[i][++j])

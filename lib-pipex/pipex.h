@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 16:08:37 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/11 08:26:00 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/14 16:33:37 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ typedef struct s_vars {
 	int		hd_fds[2];
 	char	*path;
 	char	**lines_in;
+	int		status;
 }			t_vars;
 
 int		get_path(t_vars *data, int i, char *path, char **envp);

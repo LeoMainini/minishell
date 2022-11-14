@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/14 15:57:47 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/14 16:29:42 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ char	***cmd_split(char *s)
 	if (!spl.ss)
 		return (NULL);
 	l = 0;
-	while (l <= spl.cmd_count)
+	while (l < spl.cmd_count)
 	{
 		spl.ss[l] = ft_calloc(sizeof(char*), (ft_argspercmd(&spl, s) + 10));
 		if (!spl.ss[l])
