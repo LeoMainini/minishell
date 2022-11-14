@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m-shell.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/11 10:17:47 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/14 16:07:40 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,9 +150,9 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data)
 	if (!sim_args)
 		return ;
 	j = *i;
-	while (cmd_argv[j] && !check_builtin(cmd_argv[j][0]) )
+	while (cmd_argv[j] && cmd_argv[j][0] && !check_builtin(cmd_argv[j][0]) )
 	{
-		printf("cmd_argv[j][0] = %s oy\n", cmd_argv[j][0]);
+		printf("cmd_argv[j][0] = %s\n", cmd_argv[j][0]);
 		j++;
 	}
 	printf("i = %d, j = %d\n", *i, j);
@@ -209,8 +209,6 @@ int	main(int argc, char **argv, char **envp)
 		add_history(read_line);
 		data.rl_addr = &read_line;
 		temp = cmd_split(read_line);
-		(void)temp;
-		(void)i;
 		(void)data;
 
 		if (temp && *temp && **temp)
@@ -224,6 +222,16 @@ int	main(int argc, char **argv, char **envp)
 					break ;
 			}
 		}
+		i = -1;
+		while (temp[++i])
+		{
+			int j = -1;
+			while (temp[i][++j])
+				free(temp[i][j]);
+			free(temp[i]);
+		}
+		free(temp);
+		temp = NULL;
 		data.system_outfd = open(".temp_sysout", O_RDONLY);
 		sys_output = get_next_line(data.system_outfd);
 		if (sys_output)
@@ -231,7 +239,7 @@ int	main(int argc, char **argv, char **envp)
 		printf("here\n");
 		while(sys_output)
 		{
-			printf(sys_output);
+			printf("%s",sys_output);
 			free(sys_output);
 			sys_output = get_next_line(data.system_outfd);
 		}

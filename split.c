@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/10 19:21:26 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/14 15:57:47 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ int	ft_argspercmd(t_spl *spl, char *s)
 			break ;
 		}
 	}
-	// printf("args per cmd %d\n", argc);
+	printf("args per cmd %d\n", argc);
 	return (argc);
 }
 
@@ -169,13 +169,13 @@ char	***cmd_split(char *s)
 	init_spl(&spl);
 	if (isvalidcmd(s, &spl))
 		return (NULL);
-	spl.ss = (char ***)malloc(sizeof(char **) * (spl.cmd_count + 1));
+	spl.ss = (char ***)ft_calloc(sizeof(char **), (spl.cmd_count + 10));
 	if (!spl.ss)
 		return (NULL);
 	l = 0;
 	while (l <= spl.cmd_count)
 	{
-		spl.ss[l] = malloc(sizeof(char*) * (ft_argspercmd(&spl, s) + 1));
+		spl.ss[l] = ft_calloc(sizeof(char*), (ft_argspercmd(&spl, s) + 10));
 		if (!spl.ss[l])
 			return (NULL);
 		l++;
@@ -191,8 +191,6 @@ char	***cmd_split(char *s)
 			break;
 		if (s[i] && s[i] == '|')
 		{
-			// printf("NEW PIPE l%d j%d\n", l, j);
-			spl.ss[l][j] = NULL;
 			l++;
 			j = 0;
 			i++;
@@ -201,7 +199,7 @@ char	***cmd_split(char *s)
 		}
 		if (s[i] && s[i] != '|')
 		{
-			spl.ss[l][j] = malloc(sizeof(char) * (ft_argsize(s, i) + 1));
+			spl.ss[l][j] = ft_calloc(sizeof(char), (ft_argsize(s, i) + 10));
 			if (!spl.ss[l][j])
 				return (NULL);
 		}
@@ -232,8 +230,6 @@ char	***cmd_split(char *s)
 		spl.ss[l][j][k] = '\0';
 		j++;
 	}
-	spl.ss[l][j] = NULL;
-	spl.ss[++l] = NULL;
 	
 	// printing
 	// l = 0;

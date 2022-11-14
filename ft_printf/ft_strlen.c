@@ -1,25 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp.c                                        :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/10 11:15:33 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/14 16:05:12 by bcarreir         ###   ########.fr       */
+/*   Created: 2022/02/06 18:58:59 by leferrei          #+#    #+#             */
+/*   Updated: 2022/03/15 17:16:04 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string.h>
 #include <stdio.h>
 
-int	ft_strcmp(const char *s1, const char *s2)
+size_t	ft_strlen(const char *s)
 {
-	int	i;
+	int	size;
 
-	i = 0;
-	printf("strcmp %s %s\n", (char *)s1, (char *)s2);
-	while (s1 && s2 && s1[i] && s2[i] && s1[i] == s2[i])
-		i++;
-	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+	size = 0;
+	while (s[size] != '\0')
+		size++;
+	return (size);
 }
