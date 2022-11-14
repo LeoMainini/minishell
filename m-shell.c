@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/14 17:39:08 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/14 17:45:19 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,6 +164,7 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data)
 	k = 0;
 	sim_args->argv[k++] = ft_strdup("");
 	sim_args->argv[k++] = ft_itoa(data->builtins_outfd);
+	
 	//printf("i right before joining chuckero = %d\n", *i);
 	while (cmd_argv[*i] && *i < j)
 	{
@@ -176,7 +177,7 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data)
 	if (sim_args->argc == 4)
 		dup2(STDOUT_FILENO, data->system_outfd);
 	sim_args->argv[k] = ft_itoa(data->system_outfd);
-	//printf("infd in pipex = %d out fd = %d\n", data->builtins_outfd, data->system_outfd);
+	printf("infd in pipex = %d out fd = %d\n", data->builtins_outfd, data->system_outfd);
 	//k = -1;
 	//while (sim_args->argv[++k])
 		//printf("argc %d = %s\n", k, sim_args->argv[k]);

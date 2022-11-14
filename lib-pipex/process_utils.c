@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:09:09 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/14 17:21:56 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/14 17:43:40 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,7 @@ void	exec_parent(t_vars *data, int i, int pid)
 		close(data->in_fd);
 	if ((i == data->arg_count - 4 && !data->here_doc)
 		|| (i == data->arg_count - 5 && data->here_doc))
-		{
 			waitpid(pid, &data->status, 0);
-			wait(NULL);
-		}
 }
 
 int	fork_lpipes_execute(t_vars *data, int i, char **envp)
