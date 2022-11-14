@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/14 17:31:11 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/14 17:33:21 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,9 +234,6 @@ int	main(int argc, char **argv, char **envp)
 		temp = NULL;
 		data.system_outfd = open(".temp_sysout", O_RDONLY);
 		sys_output = get_next_line(data.system_outfd);
-		if (sys_output)
-			printf("here\n");
-		printf("here\n");
 		while(sys_output)
 		{
 			printf("%s",sys_output);
