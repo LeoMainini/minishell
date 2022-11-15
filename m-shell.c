@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/14 17:45:19 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/15 15:20:41 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data)
 		close(data->system_outfd);
 	data->system_outfd = -1;
 	data->builtins_outfd = open("./.temp_binout", O_RDWR | O_CREAT | O_TRUNC, 0666);
-	//printf("outfd in builtin = %d\n", data->builtins_outfd);
+	printf("outfd in builtin = %d\n", data->builtins_outfd);
 	if (cmd_argvs[k + 1] != 0)
 		cmds.out_fd = data->builtins_outfd;
 	else
@@ -174,7 +174,7 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data)
 	}
 	if (data->system_outfd == -1)
 		data->system_outfd = open("./.temp_sysout", O_RDWR | O_CREAT | O_TRUNC, 0666);
-	if (sim_args->argc == 4)
+	if (cmd_argv[*i - 1][0] == NULL)
 		dup2(STDOUT_FILENO, data->system_outfd);
 	sim_args->argv[k] = ft_itoa(data->system_outfd);
 	printf("infd in pipex = %d out fd = %d\n", data->builtins_outfd, data->system_outfd);
@@ -191,16 +191,16 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data)
 int	main(int argc, char **argv, char **envp)
 {
 	char		*read_line;
-	t_ms		data;
+	t_ms		*data;
 	char		***temp;
-	char		*sys_output;
 	int			i;
 
 	(void)argc;
 	(void)argv;
-	data.ret = 0;
-	data.builtins_outfd = -1;
-	data.system_outfd = -1;
+	data = (t_ms *)ft_calloc(1, sizeof(t_ms));
+	data->ret = 0;
+	data->builtins_outfd = -1;
+	data->system_outfd = -1;
 	signal(SIGINT, sighandler);
 	signal(SIGQUIT, sighandler);
 	g_envs = duplicate_envp(envp, 0);
@@ -208,7 +208,7 @@ int	main(int argc, char **argv, char **envp)
 	while (read_line)
 	{
 		add_history(read_line);
-		data.rl_addr = &read_line;
+		data->rl_addr = &read_line;
 		temp = cmd_split(read_line);
 		if (temp && *temp && **temp)
 		{
@@ -216,9 +216,9 @@ int	main(int argc, char **argv, char **envp)
 			while (temp[++i] && *temp[i])
 			{
 				//printf("%i = %p = %s\n", i, temp[i], (char *)temp[i]);
-				if (!execute_builtin(temp, i, &data))
-					execute_system_funcs(temp, &i, &data);
-
+				if (!execute_builtin(temp, i, data))
+					execute_system_funcs(temp, &i, data);
+				
 			}
 		}
 		i = -1;
@@ -231,16 +231,6 @@ int	main(int argc, char **argv, char **envp)
 		}
 		free(temp);
 		temp = NULL;
-		data.system_outfd = open(".temp_sysout", O_RDONLY);
-		sys_output = get_next_line(data.system_outfd);
-		while(sys_output)
-		{
-			printf("%s",sys_output);
-			free(sys_output);
-			sys_output = get_next_line(data.system_outfd);
-		}
-		close(data.system_outfd);
-		data.system_outfd = -1;
 		free(read_line);
 		read_line = readline("shell:> ");
 	}

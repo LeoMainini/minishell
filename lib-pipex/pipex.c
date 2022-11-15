@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 15:54:22 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/14 17:16:23 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/15 14:51:15 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	pipex(int argc, char **argv, char **envp)
 
 	data = (t_vars *) malloc(sizeof(t_vars));
 	if ((!data || !init_struct(data, argc, argv)) && printf("INIT ERROR \n"))
-		exit(1);
+		return (1);
 	i = -1;
 	path = 0;
 	path = find_shell_path(envp);

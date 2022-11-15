@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:12:40 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/14 17:14:00 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/15 15:13:06 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ void	free_and_exit(t_vars *data, int status, int _exit)
 	}
 	free_zeroout(data->cmds);
 	close(data->fds[0]);
-	close(data->out_fd);
 	i = -1;
 	while (data->lines_in && data->lines_in[++i])
 		free_zeroout(data->lines_in[i]);
