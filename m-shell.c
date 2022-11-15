@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/15 15:20:41 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/15 16:57:16 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <signal.h>
 #include <fcntl.h>
 #include "lib-pipex/pipex.h"
+#include <sys/wait.h>
 
 char **g_envs;
 
@@ -114,7 +115,10 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data)
 	if (data->system_outfd > -1)
 		close(data->system_outfd);
 	data->system_outfd = -1;
-	data->builtins_outfd = open("./.temp_binout", O_RDWR | O_CREAT | O_TRUNC, 0666);
+	if (cmd_argvs[k + 1] == NULL)
+		data->system_outfd = STDOUT_FILENO;
+	else
+		data->builtins_outfd = open("./.temp_binout", O_RDWR | O_CREAT | O_TRUNC, 0666);
 	printf("outfd in builtin = %d\n", data->builtins_outfd);
 	if (cmd_argvs[k + 1] != 0)
 		cmds.out_fd = data->builtins_outfd;
@@ -172,17 +176,21 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data)
 		sim_args->argv[k++] = join_chunks(cmd_argv[(*i)++], " ", -1);
 		//printf("argv %d = %s\n", k - 1, sim_args->argv[k - 1]);
 	}
-	if (data->system_outfd == -1)
+	if (cmd_argv[*i] == NULL)
+	{
+		printf("last cmd\n");
+		data->system_outfd = STDOUT_FILENO;
+	}
+	else if (data->system_outfd == -1)
 		data->system_outfd = open("./.temp_sysout", O_RDWR | O_CREAT | O_TRUNC, 0666);
-	if (cmd_argv[*i - 1][0] == NULL)
-		dup2(STDOUT_FILENO, data->system_outfd);
 	sim_args->argv[k] = ft_itoa(data->system_outfd);
 	printf("infd in pipex = %d out fd = %d\n", data->builtins_outfd, data->system_outfd);
 	//k = -1;
 	//while (sim_args->argv[++k])
 		//printf("argc %d = %s\n", k, sim_args->argv[k]);
 	data->ret = pipex(sim_args->argc, sim_args->argv, g_envs);
-	close(data->system_outfd);
+	if (data->system_outfd != STDOUT_FILENO)
+		close(data->system_outfd);
 	data->system_outfd = -1;
 	free(sim_args->argv);
 	free(sim_args);
@@ -218,7 +226,8 @@ int	main(int argc, char **argv, char **envp)
 				//printf("%i = %p = %s\n", i, temp[i], (char *)temp[i]);
 				if (!execute_builtin(temp, i, data))
 					execute_system_funcs(temp, &i, data);
-				
+				if (!temp[i] || !*temp[i])
+					break ;
 			}
 		}
 		i = -1;

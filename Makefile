@@ -6,7 +6,7 @@
 #    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/11/14 17:25:59 by leferrei         ###   ########.fr        #
+#    Updated: 2022/11/15 16:54:46 by leferrei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ SOURCES = 	m-shell.c\
 			$(BUILTINS_DIR)/env.c\
 			$(BUILTINS_DIR)/exit.c\
 			$(BUILTINS_DIR)/echo.c\
+			libft/ft_calloc.c
 
 
 OBJS =	$(SOURCES:.c=.o)
@@ -33,14 +34,14 @@ CC = gcc
 
 CFLAGS = -Wall -Werror -Wextra
 
-DEBUG = #-fsanitize=address -g
+DEBUG = -fsanitize=address -g
 
 INC = -I. -I libft -I lib-pipex 
 
 LINK = -L . -L ./libft  -L ./lib-pipex -lpipex -lft -lreadline 
 
 .c.o: 
-	$(CC) $(CFLAGS) $(INC) -c $< -o $(<:.c=.o)
+	$(CC) $(CFLAGS) $(DEBUG) $(INC) -c $< -o $(<:.c=.o)
 
 
 $(NAME): $(OBJS)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/14 17:33:24 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/15 16:56:51 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,13 +169,13 @@ char	***cmd_split(char *s)
 	init_spl(&spl);
 	if (isvalidcmd(s, &spl))
 		return (NULL);
-	spl.ss = (char ***)ft_calloc(sizeof(char **), (spl.cmd_count + 10));
+	spl.ss = (char ***)ft_calloc(sizeof(char **), (spl.cmd_count + 1));
 	if (!spl.ss)
 		return (NULL);
 	l = 0;
 	while (l < spl.cmd_count)
 	{
-		spl.ss[l] = ft_calloc(sizeof(char*), (ft_argspercmd(&spl, s) + 10));
+		spl.ss[l] = ft_calloc(sizeof(char*), (ft_argspercmd(&spl, s) + 1));
 		if (!spl.ss[l])
 			return (NULL);
 		l++;
@@ -199,7 +199,7 @@ char	***cmd_split(char *s)
 		}
 		if (s[i] && s[i] != '|')
 		{
-			spl.ss[l][j] = ft_calloc(sizeof(char), (ft_argsize(s, i) + 10));
+			spl.ss[l][j] = ft_calloc(sizeof(char), (ft_argsize(s, i) + 1));
 			if (!spl.ss[l][j])
 				return (NULL);
 		}
@@ -231,18 +231,18 @@ char	***cmd_split(char *s)
 		j++;
 	}
 	
-	// printing
-	// l = 0;
-	// j = 0;
-	// while (spl.ss[l])
-	// {
-	// 	j = 0;
-	// 	while (spl.ss[l][j])
-	// 	{
-	// 		printf("%d %d %s\n",l,j, spl.ss[l][j]);
-	// 		j++;
-	// 	}
-	// 	l++;
-	// }
+	//printing
+	l = 0;
+	j = 0;
+	while (spl.ss[l])
+	{
+		j = 0;
+		while (spl.ss[l] && spl.ss[l][j])
+		{
+			printf("%d %d %s\n",l,j, spl.ss[l][j]);
+			j++;
+		}
+		l++;
+	}
 	return (spl.ss);
 }
