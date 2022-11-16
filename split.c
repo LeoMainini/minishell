@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/15 16:56:51 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/16 18:34:41 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,24 +94,45 @@ int	checkemptycmds(char **s)
 	return (0);
 }
 
-int	ft_argspercmd(t_spl *spl, char *s)
+int	ft_argspercmd(t_spl *spl, char *s, int l)
 {
 	static int	i;
+	char		q;
 	int			argc;
+	spl->quotebool = 0;
 
 	argc = 0;
+	(void)spl;
+	if (!l)
+	{
+		i = 0;
+	}
 	while (s[i])
 	{
 		while (s[i] && ft_isspace(s[i]))
+		{
+			if (spl->cmd_count)	
+				spl->quotebool = 0;
 			i++;
+		}	
 		if (s[i] && s[i] != '|')
 		{
-			argc++;
-			if (s[i] == 34 || s[i] == 39)
+			if (!spl->quotebool)
+				argc++;
+			if (s[i] && (s[i] == 34 || s[i] == 39))
 			{
-				ffquotedtext(spl, s, &i, s[i]);
-				continue ;
+				q = s[i];
+				i++;
+				while (s[i] && s[i] != q)
+					i++;
+				if (s[i] && s[i] == q)
+				{
+					i++;
+					spl->quotebool = 1;
+					continue ;
+				}
 			}
+			spl->quotebool = 0;
 			while (s[i] && s[i] != '|' && !ft_isspace(s[i]))
 				i++;
 
@@ -122,7 +143,7 @@ int	ft_argspercmd(t_spl *spl, char *s)
 			break ;
 		}
 	}
-	// printf("args per cmd %d\n", argc);
+	printf("args per cmd %d\n", argc);
 	return (argc);
 }
 
@@ -151,7 +172,7 @@ int	ft_argsize(char *s, int i)
 		else if (s[i] && (ft_isspace(s[i]) || s[i] == '|'))
 			break ;
 	}
-	// printf("argsize %d\n", i - j);
+	printf("argsize %d\n", i - j);
 	return (i - j);
 }
 
@@ -166,16 +187,18 @@ char	***cmd_split(char *s)
 
 	if (!s)
 		return (NULL);
+	spl.ss = NULL;
 	init_spl(&spl);
 	if (isvalidcmd(s, &spl))
 		return (NULL);
 	spl.ss = (char ***)ft_calloc(sizeof(char **), (spl.cmd_count + 1));
+	printf("cmd count = %d\n", spl.cmd_count);
 	if (!spl.ss)
 		return (NULL);
 	l = 0;
 	while (l < spl.cmd_count)
 	{
-		spl.ss[l] = ft_calloc(sizeof(char*), (ft_argspercmd(&spl, s) + 1));
+		spl.ss[l] = ft_calloc(sizeof(char*), (ft_argspercmd(&spl, s, l) + 1));
 		if (!spl.ss[l])
 			return (NULL);
 		l++;
@@ -183,6 +206,7 @@ char	***cmd_split(char *s)
 	i= 0;
 	j = 0;
 	l = 0;
+	k = 0;
 	while (s[i])
 	{
 		while (s[i] && ft_isspace(s[i]))
@@ -199,11 +223,12 @@ char	***cmd_split(char *s)
 		}
 		if (s[i] && s[i] != '|')
 		{
-			spl.ss[l][j] = ft_calloc(sizeof(char), (ft_argsize(s, i) + 1));
+			k = ft_argsize(s, i);
+			// printf("split l = %d j = %d k = %d i = %d\n", l, j, k, i);
+			spl.ss[l][j] = ft_calloc(sizeof(char), (k + 1));
 			if (!spl.ss[l][j])
 				return (NULL);
 		}
-		// printf("l%d j%d\n", l, j);
 		k = 0;
 		while (s[i])
 		{
@@ -223,7 +248,7 @@ char	***cmd_split(char *s)
 				}
 				spl.ss[l][j][k++] = s[i++];
 			}
-		// printf("K is %d\n", k);
+		// printf("K is %d i is %d\n", k, i);
 			if (s[i] && (ft_isspace(s[i]) || s[i] == '|'))
 				break ;
 		}

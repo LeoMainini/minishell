@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:09:09 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/14 17:43:40 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/16 18:38:13 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,8 @@ void	exec_child(t_vars *data, char **cmd_argv, int i, char **envp)
 	close(data->xfds[0]);
 	close(data->xfds[1]);
 	if (execve(data->path, cmd_argv, envp) == -1)
-		printf("Failed executing\n");
-	ft_putstr_fd("Command not found: ", STDERR_FILENO);
-	ft_putendl_fd(data->cmds[i][0], STDERR_FILENO);
-	free_and_exit(data, 127, 1);
+		ft_putstr_fd("Failed executing\n", STDERR_FILENO);
+		
 }
 
 void	exec_parent(t_vars *data, int i, int pid)
@@ -103,7 +101,12 @@ int	fork_lpipes_execute(t_vars *data, int i, char **envp)
 	if (pid == -1 && printf("Fork Error\n"))
 		return (1);
 	else if (pid == 0)
+	{
 		exec_child(data, data->cmds[i], i, envp);
+		ft_putstr_fd("Command not found: ", STDERR_FILENO);
+		ft_putendl_fd(data->cmds[i][0], STDERR_FILENO);
+		free_and_exit(data, 127, 1);
+	}
 	else
 		exec_parent(data, i, pid);
 	return (0);

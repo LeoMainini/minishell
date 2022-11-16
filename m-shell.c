@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m-shell.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/15 16:57:16 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/16 18:17:55 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,6 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data)
 	if (cmd_argvs[k + 1] != 0)
 		cmds.out_fd = data->builtins_outfd;
 	else
-	
 		cmds.out_fd = STDOUT_FILENO;
 	if (!interpret_strings(&cmds, data))
 		printf("String missing quotes\n");
@@ -225,7 +224,9 @@ int	main(int argc, char **argv, char **envp)
 			{
 				//printf("%i = %p = %s\n", i, temp[i], (char *)temp[i]);
 				if (!execute_builtin(temp, i, data))
+				{
 					execute_system_funcs(temp, &i, data);
+				}
 				if (!temp[i] || !*temp[i])
 					break ;
 			}
