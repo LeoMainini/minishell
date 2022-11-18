@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/16 18:34:41 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/18 15:19:39 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ int	ft_argspercmd(t_spl *spl, char *s, int l)
 			break ;
 		}
 	}
-	printf("args per cmd %d\n", argc);
+	// printf("args per cmd %d\n", argc);
 	return (argc);
 }
 
@@ -172,7 +172,7 @@ int	ft_argsize(char *s, int i)
 		else if (s[i] && (ft_isspace(s[i]) || s[i] == '|'))
 			break ;
 	}
-	printf("argsize %d\n", i - j);
+	// printf("argsize %d\n", i - j);
 	return (i - j);
 }
 
@@ -192,7 +192,7 @@ char	***cmd_split(char *s)
 	if (isvalidcmd(s, &spl))
 		return (NULL);
 	spl.ss = (char ***)ft_calloc(sizeof(char **), (spl.cmd_count + 1));
-	printf("cmd count = %d\n", spl.cmd_count);
+	// printf("cmd count = %d\n", spl.cmd_count);
 	if (!spl.ss)
 		return (NULL);
 	l = 0;
@@ -257,17 +257,17 @@ char	***cmd_split(char *s)
 	}
 	
 	//printing
-	l = 0;
-	j = 0;
-	while (spl.ss[l])
-	{
-		j = 0;
-		while (spl.ss[l] && spl.ss[l][j])
-		{
-			printf("%d %d %s\n",l,j, spl.ss[l][j]);
-			j++;
-		}
-		l++;
-	}
+	// l = 0;
+	// j = 0;
+	// while (spl.ss[l])
+	// {
+	// 	j = 0;
+	// 	while (spl.ss[l] && spl.ss[l][j])
+	// 	{
+	// 		printf("%d %d %s\n",l,j, spl.ss[l][j]);
+	// 		j++;
+	// 	}
+	// 	l++;
+	// }
 	return (spl.ss);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:09:09 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/16 18:38:13 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/18 17:15:06 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,15 @@ int	dupe_pipes(t_vars *data, int i)
 	int	result;
 
 	result = 0;
-	if ((i == data->arg_count - 4 && !data->here_doc)
-		|| (i == data->arg_count - 5 && data->here_doc))
-		result = dup2(data->out_fd, STDOUT_FILENO);
-	else if ((i && i < data->arg_count - 4 && !data->here_doc)
-		|| (i && i < data->arg_count - 5 && data->here_doc))
+
+	if (((i == data->arg_count - 4 && !data->here_doc)
+		|| (i == data->arg_count - 5 && data->here_doc)) && data->out_fd != STDOUT_FILENO)
+		{
+			result = dup2(data->out_fd, STDOUT_FILENO);
+			close(data->out_fd);
+		}
+	else if (((i && i < data->arg_count - 4 && !data->here_doc)
+		|| (i && i < data->arg_count - 5 && data->here_doc)))
 		result = dup2(data->xfds[1], STDOUT_FILENO);
 	if (i && result != -1)
 		result = dup2(data->xfds[0], STDIN_FILENO);
@@ -49,16 +53,22 @@ int	dupe_pipes(t_vars *data, int i)
 				result = dup2(data->in_fd, STDIN_FILENO);
 			close(data->in_fd);
 		}
-		else
+		else if (data->in_fd > -1)
 			result = write_array_to_fd(data->lines_in, data->hd_fds, &result);
 	}
+
 	return (result);
 }
 
-void	exec_child(t_vars *data, char **cmd_argv, int i, char **envp)
+void	exec_child(t_vars *data, char **cmd_argv, int i, char **envp, t_ms *data2)
 {
-	if (dupe_pipes(data, i) == -1)
-		return ;
+	if (dupe_pipes(data, i) == -1 && printf("PIPI FIA\n"))
+	{
+		ft_putstr_fd("PIPI FIA\n", STDERR_FILENO);
+		free_and_exit(data, 5, 1);
+	}
+	ft_putstr_fd("PIA\n", STDERR_FILENO);
+	(void)data2;
 	close(data->hd_fds[0]);
 	close(data->hd_fds[1]);
 	close(data->fds[0]);
@@ -66,15 +76,19 @@ void	exec_child(t_vars *data, char **cmd_argv, int i, char **envp)
 	close(data->xfds[0]);
 	close(data->xfds[1]);
 	if (execve(data->path, cmd_argv, envp) == -1)
-		ft_putstr_fd("Failed executing\n", STDERR_FILENO);
-		
+		perror("Failed executing");
+	ft_putstr_fd("Command not found: ", STDERR_FILENO);
+	ft_putendl_fd(data->cmds[i][0], STDERR_FILENO);
+	free_and_exit(data, 127, 1);
 }
 
 void	exec_parent(t_vars *data, int i, int pid)
 {
+	int		status;
+
 	if (!i)
 		close(data->fds[1]);
-	data->status = 0;
+	status = 0;
 	close(data->hd_fds[0]);
 	close(data->hd_fds[1]);
 	close(data->xfds[0]);
@@ -83,17 +97,18 @@ void	exec_parent(t_vars *data, int i, int pid)
 		close(data->in_fd);
 	if ((i == data->arg_count - 4 && !data->here_doc)
 		|| (i == data->arg_count - 5 && data->here_doc))
-			waitpid(pid, &data->status, 0);
+		waitpid(pid, &status, 0);
 }
 
-int	fork_lpipes_execute(t_vars *data, int i, char **envp)
+int	fork_lpipes_execute(t_vars *data, int i, char **envp, t_ms *data2)
 {
 	pid_t	pid;
+
 
 	if (i)
 	{
 		data->xfds[0] = data->fds[0];
-		if (pipe(data->fds) == -1)
+		if (pipe(data->fds) == -1 && printf("PIPING FAILED\n"))
 			free_and_exit(data, 3, 0);
 		data->xfds[1] = data->fds[1];
 	}
@@ -101,12 +116,7 @@ int	fork_lpipes_execute(t_vars *data, int i, char **envp)
 	if (pid == -1 && printf("Fork Error\n"))
 		return (1);
 	else if (pid == 0)
-	{
-		exec_child(data, data->cmds[i], i, envp);
-		ft_putstr_fd("Command not found: ", STDERR_FILENO);
-		ft_putendl_fd(data->cmds[i][0], STDERR_FILENO);
-		free_and_exit(data, 127, 1);
-	}
+		exec_child(data, data->cmds[i], i, envp, data2);
 	else
 		exec_parent(data, i, pid);
 	return (0);
@@ -127,8 +137,8 @@ int	exec_one(t_vars *data, int i, char **envp)
 		dup2(data->out_fd, STDOUT_FILENO);
 		if (execve(data->path, data->cmds[i], envp) == -1)
 			printf("Failed executing\n");
-		ft_putstr_fd("Command not found: ", STDERR_FILENO);
-		ft_putendl_fd(data->cmds[i][0], STDERR_FILENO);
+		ft_putstr_fd("Command not found: ", data->out_fd);
+		ft_putendl_fd(data->cmds[i][0], data->out_fd);
 		free_and_exit(data, 127, 1);
 	}
 	else

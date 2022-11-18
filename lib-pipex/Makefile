@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+         #
+#    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/10 18:30:02 by leferrei          #+#    #+#              #
-#    Updated: 2022/11/14 17:32:58 by bcarreir         ###   ########.fr        #
+#    Updated: 2022/11/18 16:36:39 by leferrei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,7 @@ CFLAGS	=	-Wall -Werror -Wextra -D BUFFER_SIZE=1 -g# -fsanitize=address -g
 
 LIBFLAGS =  -fPIE
 
-INC		=	 -I ../libft -L../libft -lft -Lget_next_line -I . -I .. 
+INC		=	 -Lget_next_line -I . -I ..
 
 ifeq ($($@), test)
 	OBJ_COMPILE = @$(CC) $(CFLAGS) -fPIC -c $< -o $@

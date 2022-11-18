@@ -6,14 +6,14 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 15:54:22 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/15 14:51:15 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/18 16:34:59 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 #include <sys/wait.h>
 
-int	pipex(int argc, char **argv, char **envp)
+int	pipex(int argc, char **argv, char **envp, t_ms *data2)
 {
 	char	*path;
 	int		i;
@@ -35,7 +35,7 @@ int	pipex(int argc, char **argv, char **envp)
 		if (!data->cmds[1])
 			exec_one(data, i, envp);
 		else
-			fork_lpipes_execute(data, i, envp);
+			fork_lpipes_execute(data, i, envp, data2);
 		if (data->path)
 			free(data->path);
 		data->path = 0;

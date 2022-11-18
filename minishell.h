@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/10 18:45:43 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/18 16:36:02 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,6 @@
 # include "lib-pipex/pipex.h"
 # include <stdio.h>
 # include <unistd.h>
-
-typedef struct	s_ms
-{
-    int		ret;
-	char	**rl_addr;
-	int		builtins_outfd;
-	int		system_outfd;
-}   t_ms;
 
 typedef struct	s_spl
 {
@@ -39,12 +31,6 @@ typedef struct	s_cmdd
     int		out_fd;
     char	**args;
 }	t_cmdd;
-
-typedef struct	s_sim_args
-{
-    int		argc;
-    char	**argv;
-}	t_simargs;
 
 
 char	**alloc_envmem(char **envs, int	offset);

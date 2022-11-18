@@ -6,7 +6,7 @@
 #    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/11/15 16:54:46 by leferrei         ###   ########.fr        #
+#    Updated: 2022/11/18 17:09:57 by leferrei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,10 @@ OBJS =	$(SOURCES:.c=.o)
 
 CC = gcc
 
+PP = lib-pipex/libpipex.a
+
+LFT = libft/libft.a
+
 CFLAGS = -Wall -Werror -Wextra
 
 DEBUG = -fsanitize=address -g
@@ -43,12 +47,17 @@ LINK = -L . -L ./libft  -L ./lib-pipex -lpipex -lft -lreadline
 .c.o: 
 	$(CC) $(CFLAGS) $(DEBUG) $(INC) -c $< -o $(<:.c=.o)
 
-
-$(NAME): $(OBJS)
-			@make -C libft -s
-			@make -C lib-pipex -s
+$(NAME):	$(LFT)	$(PP)	$(OBJS)
 			$(CC) $(CFLAGS) $(INC) $(DEBUG) $(OBJS) -o $(NAME) $(LINK)
-all: $(NAME)
+
+$(PP):
+			@make -C lib-pipex -s
+
+$(LFT):
+			@make -C libft -s
+
+all:		$(NAME)
+			
 
 re: fclean all
 

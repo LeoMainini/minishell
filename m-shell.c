@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m-shell.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/16 18:17:55 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/18 17:20:54 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <fcntl.h>
 #include "lib-pipex/pipex.h"
 #include <sys/wait.h>
+#include <unistd.h>
 
 char **g_envs;
 
@@ -97,7 +98,7 @@ int	check_builtin(char *cmd)
 	return (0);
 }
 
-int execute_builtin(char ***cmd_argvs, int k, t_ms *data)
+int execute_builtin(char ***cmd_argvs, int k, t_ms *data, int b_fds[2])
 {
 	int	i;
 	t_cmdd		cmds;
@@ -108,11 +109,11 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data)
 		return (0);
 	cmds.args = cmd_argvs[k];
 	cmds.in_fd = 0;
-	
-	if (data->builtins_outfd > -1)
+	/*
+	if (data->builtins_outfd > 1)
 		close(data->builtins_outfd);
 	data->builtins_outfd = -1;
-	if (data->system_outfd > -1)
+	if (data->system_outfd > 1)
 		close(data->system_outfd);
 	data->system_outfd = -1;
 	if (cmd_argvs[k + 1] == NULL)
@@ -120,10 +121,18 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data)
 	else
 		data->builtins_outfd = open("./.temp_binout", O_RDWR | O_CREAT | O_TRUNC, 0666);
 	printf("outfd in builtin = %d\n", data->builtins_outfd);
+	*/
+	printf("a\n");
+	if (pipe(b_fds) == -1)
+		return (-1);
+	printf("b\n");
+	data->builtins_outfd = b_fds[0];
+	printf("outfd in b = %d\n", cmds.out_fd);
 	if (cmd_argvs[k + 1] != 0)
-		cmds.out_fd = data->builtins_outfd;
+		cmds.out_fd = b_fds[1];
 	else
 		cmds.out_fd = STDOUT_FILENO;
+	ft_putendl_fd(ft_itoa(cmds.out_fd), STDERR_FILENO);
 	if (!interpret_strings(&cmds, data))
 		printf("String missing quotes\n");
 	if (i == 1)
@@ -140,10 +149,13 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data)
 		exit_shell(&cmds, data, cmd_argvs[k + 1] != 0);
 	if (i == 7)
 		echo(&cmds, data);
+	close(b_fds[1]);
+	if (cmds.out_fd == STDOUT_FILENO)
+		close(b_fds[0]);
 	return (1);
 }
 
-void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data)
+void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data, int s_fds[2])
 {
 	int	j;
 	int	k;
@@ -151,6 +163,8 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data)
 
 	sim_args = malloc(sizeof(t_simargs));
 	if (!sim_args)
+		return ;
+	if (pipe(s_fds) == -1)
 		return ;
 	j = *i;
 	while (cmd_argv[j] && cmd_argv[j][0] && !check_builtin(cmd_argv[j][0]) )
@@ -176,21 +190,20 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data)
 		//printf("argv %d = %s\n", k - 1, sim_args->argv[k - 1]);
 	}
 	if (cmd_argv[*i] == NULL)
-	{
-		printf("last cmd\n");
 		data->system_outfd = STDOUT_FILENO;
-	}
 	else if (data->system_outfd == -1)
-		data->system_outfd = open("./.temp_sysout", O_RDWR | O_CREAT | O_TRUNC, 0666);
+		data->system_outfd = s_fds[1];
+	close(s_fds[0]);
 	sim_args->argv[k] = ft_itoa(data->system_outfd);
 	printf("infd in pipex = %d out fd = %d\n", data->builtins_outfd, data->system_outfd);
-	//k = -1;
-	//while (sim_args->argv[++k])
-		//printf("argc %d = %s\n", k, sim_args->argv[k]);
-	data->ret = pipex(sim_args->argc, sim_args->argv, g_envs);
-	if (data->system_outfd != STDOUT_FILENO)
+
+
+	data->ret = pipex(sim_args->argc, sim_args->argv, g_envs, data);
+	close(s_fds[1]);
+	if (data->system_outfd > 1)
 		close(data->system_outfd);
 	data->system_outfd = -1;
+	close(data->builtins_outfd);
 	free(sim_args->argv);
 	free(sim_args);
 }
@@ -201,9 +214,13 @@ int	main(int argc, char **argv, char **envp)
 	t_ms		*data;
 	char		***temp;
 	int			i;
+	int			b_fds[2];
+	int			s_fds[2];
 
 	(void)argc;
 	(void)argv;
+	ft_bzero((void *)b_fds, 8);
+	ft_bzero((void *)s_fds, 8);
 	data = (t_ms *)ft_calloc(1, sizeof(t_ms));
 	data->ret = 0;
 	data->builtins_outfd = -1;
@@ -223,12 +240,16 @@ int	main(int argc, char **argv, char **envp)
 			while (temp[++i] && *temp[i])
 			{
 				//printf("%i = %p = %s\n", i, temp[i], (char *)temp[i]);
-				if (!execute_builtin(temp, i, data))
+				if (!execute_builtin(temp, i, data, b_fds))
 				{
-					execute_system_funcs(temp, &i, data);
+					execute_system_funcs(temp, &i, data, s_fds);
 				}
 				if (!temp[i] || !*temp[i])
 					break ;
+
+
+
+					
 			}
 		}
 		i = -1;
