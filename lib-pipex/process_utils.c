@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:09:09 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/18 17:15:06 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/21 16:52:48 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,7 @@ int	dupe_pipes(t_vars *data, int i)
 
 	if (((i == data->arg_count - 4 && !data->here_doc)
 		|| (i == data->arg_count - 5 && data->here_doc)) && data->out_fd != STDOUT_FILENO)
-		{
 			result = dup2(data->out_fd, STDOUT_FILENO);
-			close(data->out_fd);
-		}
 	else if (((i && i < data->arg_count - 4 && !data->here_doc)
 		|| (i && i < data->arg_count - 5 && data->here_doc)))
 		result = dup2(data->xfds[1], STDOUT_FILENO);
@@ -69,6 +66,8 @@ void	exec_child(t_vars *data, char **cmd_argv, int i, char **envp, t_ms *data2)
 	}
 	ft_putstr_fd("PIA\n", STDERR_FILENO);
 	(void)data2;
+	if (data->out_fd != STDOUT_FILENO)
+		close(data->out_fd);
 	close(data->hd_fds[0]);
 	close(data->hd_fds[1]);
 	close(data->fds[0]);
@@ -130,7 +129,7 @@ int	exec_one(t_vars *data, int i, char **envp)
 	pid = fork();
 	if (pid == -1 && printf("Fork Error\n"))
 		return (1);
-	if (pid==0)
+	if (pid == 0)
 	{
 		if (data->in_fd > -1)
 			dup2(data->in_fd, STDIN_FILENO);
