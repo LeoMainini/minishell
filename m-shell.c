@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/18 17:20:54 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/21 17:24:39 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,34 +104,27 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data, int b_fds[2])
 	t_cmdd		cmds;
 
 
+	ft_putendl_fd(ft_itoa(k), STDERR_FILENO);
 	i = check_builtin(cmd_argvs[k][0]);
 	if (!i)
+	{
+		ft_putstr_fd("not a builtin -> index | cmd = ", STDERR_FILENO);
+		ft_putstr_fd(ft_itoa(k), STDERR_FILENO);
+		ft_putendl_fd(cmd_argvs[k][0], STDERR_FILENO);
 		return (0);
+	}
 	cmds.args = cmd_argvs[k];
 	cmds.in_fd = 0;
-	/*
-	if (data->builtins_outfd > 1)
-		close(data->builtins_outfd);
-	data->builtins_outfd = -1;
-	if (data->system_outfd > 1)
-		close(data->system_outfd);
-	data->system_outfd = -1;
-	if (cmd_argvs[k + 1] == NULL)
-		data->system_outfd = STDOUT_FILENO;
-	else
-		data->builtins_outfd = open("./.temp_binout", O_RDWR | O_CREAT | O_TRUNC, 0666);
-	printf("outfd in builtin = %d\n", data->builtins_outfd);
-	*/
 	printf("a\n");
 	if (pipe(b_fds) == -1)
 		return (-1);
 	printf("b\n");
 	data->builtins_outfd = b_fds[0];
-	printf("outfd in b = %d\n", cmds.out_fd);
 	if (cmd_argvs[k + 1] != 0)
 		cmds.out_fd = b_fds[1];
 	else
 		cmds.out_fd = STDOUT_FILENO;
+	ft_putstr_fd("outfd in b = \n", STDERR_FILENO);
 	ft_putendl_fd(ft_itoa(cmds.out_fd), STDERR_FILENO);
 	if (!interpret_strings(&cmds, data))
 		printf("String missing quotes\n");
@@ -195,7 +188,7 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data, int s_fds[2])
 		data->system_outfd = s_fds[1];
 	close(s_fds[0]);
 	sim_args->argv[k] = ft_itoa(data->system_outfd);
-	printf("infd in pipex = %d out fd = %d\n", data->builtins_outfd, data->system_outfd);
+	printf(" infd in pipex = %d out fd = %d\n" ,data->builtins_outfd, data->system_outfd);
 
 
 	data->ret = pipex(sim_args->argc, sim_args->argv, g_envs, data);
@@ -208,6 +201,13 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data, int s_fds[2])
 	free(sim_args);
 }
 
+/*
+#TODO: REWRITE SYS FUNCS TO EXEC ONE AT A TIME:
+	- BUILTINS DONT NEED SEPERATE PIPE JUST DUP STDOUT AND DUP2 STDOUT TO WHATEVER DATA IS OUTPUT THEN DUP2 THE COPY TO STDOUT
+	- EVERY SYSTEM FUNC RE PIPES BUT SAVES IN FD IN THE FORM OF READ END OF PIPE BEFORE RE-PIPING 
+	- SYSTEM FUNCS OUTPUT DATA TO THE WRITE END OF THE NEW PIPE, THE FDS SYSTEM FUNCS USE ARE SAVED IN A NON PIPED INT[2] ARRAY TO KEEP THE VALUES AFTER PIPING
+	- ONLY WAIT FOR LAST ONE IN CREATION LOGIC THEN WAIT FOR ALL AFTER LOOP - NEED TO SAVE PIDS TO GET RETURNS
+*/
 int	main(int argc, char **argv, char **envp)
 {
 	char		*read_line;
@@ -234,22 +234,17 @@ int	main(int argc, char **argv, char **envp)
 		add_history(read_line);
 		data->rl_addr = &read_line;
 		temp = cmd_split(read_line);
-		if (temp && *temp && **temp)
+		if (temp)
 		{
-			i = -1;
-			while (temp[++i] && *temp[i])
+			i = 0;
+			while (temp[i] && *temp[i])
 			{
 				//printf("%i = %p = %s\n", i, temp[i], (char *)temp[i]);
 				if (!execute_builtin(temp, i, data, b_fds))
-				{
 					execute_system_funcs(temp, &i, data, s_fds);
-				}
-				if (!temp[i] || !*temp[i])
-					break ;
-
-
-
-					
+				else
+					i++;
+				printf("exited condition at index %d\n", i);
 			}
 		}
 		i = -1;
