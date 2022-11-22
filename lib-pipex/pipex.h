@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 16:08:37 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/18 16:40:02 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/22 16:42:05 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ typedef struct	s_ms
 	char	**rl_addr;
 	int		builtins_outfd;
 	int		system_outfd;
+	char	*path;
 }   t_ms;
 
 int		get_path(t_vars *data, int i, char *path, char **envp);
