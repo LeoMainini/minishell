@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 16:52:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/07 16:28:19 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/22 22:31:11 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ int	interpret_strings(t_cmdd *argd, t_ms *data)
 	while (argd->args[++k])
 	{
 		i = 0;
-		while (argd->args[k][i])
+		while (argd->args[k] && argd->args[k][i])
 		{
 			inc = 0;
 			if (!handle_quotes(&(argd->args[k]), i, &in_doubles, &in_singles))

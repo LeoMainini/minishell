@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/21 17:28:03 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/22 22:33:59 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,7 @@ char	*separate_redirs(char *s)
 		}
 		i++;			
 	}
-	printf("j is %d\n", (redir_count * 2) + i + 1);
+	//printf("j is %d\n", (redir_count * 2) + i + 1);
 	aux = ft_calloc(sizeof(char), ((redir_count * 2) + i + 1));
 	if (!aux)
 		return (NULL);
@@ -235,11 +235,11 @@ char	*separate_redirs(char *s)
 			aux[j++] = ' ';
 			continue ;
 		}
-		printf("j is %d and i is %d\n", j, i);
+		//printf("j is %d and i is %d\n", j, i);
 		aux[j++] = s[i++];
 	}
 	aux[j] = '\0';
-	printf("aux is %s\n", aux);
+	//printf("aux is %s\n", aux);
 	return (aux);
 }
 
@@ -327,17 +327,17 @@ char	***cmd_split(char *s)
 	}
 	free (s);
 	//printing
-	l = 0;
-	j = 0;
-	while (spl.ss[l])
-	{
-		j = 0;
-		while (spl.ss[l] && spl.ss[l][j])
-		{
-			printf("%d %d %s\n",l,j, spl.ss[l][j]);
-			j++;
-		}
-		l++;
-	}
+	// l = 0;
+	// j = 0;
+	// while (spl.ss[l])
+	// {
+	// 	j = 0;
+	// 	while (spl.ss[l] && spl.ss[l][j])
+	// 	{
+	// 		printf("%d %d %s\n",l,j, spl.ss[l][j]);
+	// 		j++;
+	// 	}
+	// 	l++;
+	// }
 	return (spl.ss);
 }
