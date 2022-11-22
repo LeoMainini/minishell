@@ -3,14 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/18 15:19:39 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/21 17:28:03 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+// > OPEN IN REWRITE MODE
+// >> OPEN IN APPEND MODE (NO DELETE)
+// < SEND FILE TO STDIN
+// << <lim> SEND STDIN TO STDIN OF COMMAND UNTIL <lim> IS FOUND
+// ONLY LAST IN CHAIN MATTERS
+// ALL IN CHAIN ARE OPEN IN CORRECT MODE
+// HEREDOC ALLWAYS EXECUTED FIRST OUTPUT IN POOPOO IF NOT LAST
 
 int	ffquotedtext(t_spl *spl, char *s, int *j, char qt)
 {
@@ -176,9 +184,69 @@ int	ft_argsize(char *s, int i)
 	return (i - j);
 }
 
+char	*separate_redirs(char *s)
+{
+	char	*aux;
+	char	temp;
+	int		redir_count;
+	int		i;
+	int		j;
+
+	redir_count = 0;
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == 34 || s[i] == 39)
+		{
+			temp = s[i++];
+			while (s[i] && s[i - 1] != temp)
+				i++;
+			continue ;
+		}
+		if (s[i] && (s[i] == '<' || s[i] == '>'))
+		{
+			while (s[i] && (s[i] == '<' || s[i] == '>'))
+				i++;
+			redir_count++;
+		}
+		i++;			
+	}
+	printf("j is %d\n", (redir_count * 2) + i + 1);
+	aux = ft_calloc(sizeof(char), ((redir_count * 2) + i + 1));
+	if (!aux)
+		return (NULL);
+	j = 0;
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == 34 || s[i] == 39)
+		{
+			temp = s[i];
+			aux[j++] = s[i++];
+			while (s[i] && s[i - 1] != temp)
+				aux[j++] = s[i++];
+			continue ;
+		}
+		if (s[i] && (s[i] == '<' || s[i] == '>'))
+		{
+			aux[j++] = ' ';	
+			while (s[i] && (s[i] == '<' || s[i] == '>'))
+				aux[j++] = s[i++];
+			aux[j++] = ' ';
+			continue ;
+		}
+		printf("j is %d and i is %d\n", j, i);
+		aux[j++] = s[i++];
+	}
+	aux[j] = '\0';
+	printf("aux is %s\n", aux);
+	return (aux);
+}
+
 char	***cmd_split(char *s)
 {
 	t_spl	spl;
+	char	*aux;
 	char	q;
 	int		i;
 	int		j;
@@ -191,6 +259,8 @@ char	***cmd_split(char *s)
 	init_spl(&spl);
 	if (isvalidcmd(s, &spl))
 		return (NULL);
+	aux = s;
+	s = separate_redirs(aux);
 	spl.ss = (char ***)ft_calloc(sizeof(char **), (spl.cmd_count + 1));
 	// printf("cmd count = %d\n", spl.cmd_count);
 	if (!spl.ss)
@@ -255,19 +325,19 @@ char	***cmd_split(char *s)
 		spl.ss[l][j][k] = '\0';
 		j++;
 	}
-	
+	free (s);
 	//printing
-	// l = 0;
-	// j = 0;
-	// while (spl.ss[l])
-	// {
-	// 	j = 0;
-	// 	while (spl.ss[l] && spl.ss[l][j])
-	// 	{
-	// 		printf("%d %d %s\n",l,j, spl.ss[l][j]);
-	// 		j++;
-	// 	}
-	// 	l++;
-	// }
+	l = 0;
+	j = 0;
+	while (spl.ss[l])
+	{
+		j = 0;
+		while (spl.ss[l] && spl.ss[l][j])
+		{
+			printf("%d %d %s\n",l,j, spl.ss[l][j]);
+			j++;
+		}
+		l++;
+	}
 	return (spl.ss);
 }
