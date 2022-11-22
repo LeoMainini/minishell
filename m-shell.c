@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/22 17:28:01 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/22 17:30:48 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -252,6 +252,7 @@ int	execute_system_func(char*** cmd_argv, int *i, t_ms *data, int pip[2])
 		if (in_fd > -1)
 			dup2(in_fd, STDIN_FILENO);
 		close(in_fd);
+		//CONDICIONAL STDOUT DUPING TO SAME FD - MISSING IMPLEMENT
 		dup2(out_fd, STDOUT_FILENO);
 		close(out_fd);
 		exec_path = (get_executable_path(data, cmd_argv[*i][0], pip));
