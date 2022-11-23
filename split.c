@@ -6,7 +6,7 @@
 /*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/23 16:01:57 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/23 17:54:38 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,14 @@ int	isvalidcmd(char *s,  t_spl *spl)
 
 void	init_spl(t_spl *spl)
 {
-	spl->cmd_count = 0;
 	spl->ss = NULL;
+	spl->cmd_count = 0;
 	spl->quotebool = 1;
+	spl->redir_bool = 0;
+	spl->input_files = NULL;
+	spl->input_types = NULL;
+	spl->output_types = NULL;
+	spl->output_types = NULL;
 }
 
 int	checkemptycmds(char **s)
@@ -110,7 +115,7 @@ int	ft_argspercmd(t_spl *spl, char *s, int l)
 	spl->quotebool = 0;
 
 	argc = 0;
-	(void)spl;
+	
 	if (!l)
 	{
 		i = 0;
@@ -141,7 +146,7 @@ int	ft_argspercmd(t_spl *spl, char *s, int l)
 				}
 			}
 			spl->quotebool = 0;
-			while (s[i] && s[i] != '|' && !ft_isspace(s[i]))
+			if (s[i] && s[i] != '|' && !ft_isspace(s[i]))
 				i++;
 
 		}
@@ -151,7 +156,7 @@ int	ft_argspercmd(t_spl *spl, char *s, int l)
 			break ;
 		}
 	}
-	// printf("args per cmd %d\n", argc);
+	printf("args per cmd %d\n", argc);
 	return (argc);
 }
 
@@ -163,7 +168,7 @@ int	ft_argsize(char *s, int i)
 	j = i;
 	while (s[i])
 	{
-		if (s[i] && (s[i] == 34 || s[i] == 39))
+		if (s[i] == 34 || s[i] == 39)
 		{
 			q = s[i];
 			i++;
@@ -180,7 +185,7 @@ int	ft_argsize(char *s, int i)
 		else if (s[i] && (ft_isspace(s[i]) || s[i] == '|'))
 			break ;
 	}
-	// printf("argsize %d\n", i - j);
+	// printf("argsize %d, s is %s \n", i - j, s + i);
 	return (i - j);
 }
 
@@ -212,7 +217,6 @@ char	*separate_redirs(char *s)
 		}
 		i++;			
 	}
-	printf("j is %d\n", (redir_count * 2) + i + 1);
 	aux = ft_calloc(sizeof(char), ((redir_count * 2) + i + 1));
 	if (!aux)
 		return (NULL);
@@ -237,7 +241,6 @@ char	*separate_redirs(char *s)
 			aux[j++] = ' ';
 			continue ;
 		}
-		printf("j is %d and i is %d\n", j, i);
 		aux[j++] = s[i++];
 	}
 	aux[j] = '\0';
@@ -245,11 +248,13 @@ char	*separate_redirs(char *s)
 	return (aux);
 }
 
-int	validate_redirs(char ***s)
+int	validate_redirs(t_spl *spl)
 {
-	int	l;
-	int	j;
+	char	***s;
+	int		l;
+	int		j;
 
+	s = spl->ss;
 	l = -1;
 	while (s[++l])
 	{
@@ -257,14 +262,26 @@ int	validate_redirs(char ***s)
 		while (s[l][++j])
 		{
 			if (*s[l][j] == '<' || *s[l][j] == '>')
-				if (ft_strcmp(s[l][j], "<") && ft_strcmp(s[l][j], ">") && ft_strcmp(s[l][j], ">>") && ft_strcmp(s[l][j], "<<"))
+			{	
+				if ((ft_strcmp(s[l][j], "<") && ft_strcmp(s[l][j], ">") && ft_strcmp(s[l][j], ">>") && ft_strcmp(s[l][j], "<<"))
+					|| ((!ft_strcmp(s[l][j], "<") || !ft_strcmp(s[l][j], ">") || !ft_strcmp(s[l][j], ">>") || !ft_strcmp(s[l][j], "<<"))
+						&& ((!s[l][j + 1]) 
+							|| (!ft_strcmp(s[l][j + 1], "<") || !ft_strcmp(s[l][j + 1], ">") || !ft_strcmp(s[l][j + 1], ">>") || !ft_strcmp(s[l][j + 1], "<<")))))
 				{
-					printf("parse error near < or >\n");
+					printf("parse error near '%s'\n", s[l][j]);
+					spl->redir_bool = 0;
 					return (1);
 				}
+				spl->redir_bool = 1;
+			}
 		}
 	}
 	return (0);
+}
+
+void	init_redir_arrays(t_spl *spl)
+{
+	(void)spl;
 }
 
 char	***cmd_split(char *s)
@@ -286,7 +303,7 @@ char	***cmd_split(char *s)
 	aux = s;
 	s = separate_redirs(aux);
 	spl.ss = (char ***)ft_calloc(sizeof(char **), (spl.cmd_count + 1));
-	// printf("cmd count = %d\n", spl.cmd_count);
+	printf("cmd count = %d\n", spl.cmd_count);
 	if (!spl.ss)
 		return (NULL);
 	l = 0;
@@ -350,8 +367,12 @@ char	***cmd_split(char *s)
 		j++;
 	}
 	free (s);
-	if (validate_redirs(spl.ss))
+	if (validate_redirs(&spl))
 		return (NULL);
+	if (spl.redir_bool)
+		init_redir_arrays(&spl);
+
+		
 	//printing
 	l = 0;
 	j = 0;

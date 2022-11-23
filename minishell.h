@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/18 16:36:02 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/23 17:07:16 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,11 @@ typedef struct	s_spl
     char    ***ss;
     int     cmd_count;
     int     quotebool;
+    int     redir_bool;
+    char    *input_files;
+    char    *output_files;
+    int     *input_types;
+    int     *output_types;
 }   t_spl;
 
 typedef struct	s_cmdd
