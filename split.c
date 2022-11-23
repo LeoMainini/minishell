@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/22 22:33:59 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/23 16:01:57 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,8 +199,9 @@ char	*separate_redirs(char *s)
 		if (s[i] == 34 || s[i] == 39)
 		{
 			temp = s[i++];
-			while (s[i] && s[i - 1] != temp)
+			while (s[i] && s[i] != temp)
 				i++;
+			i++;
 			continue ;
 		}
 		if (s[i] && (s[i] == '<' || s[i] == '>'))
@@ -211,7 +212,7 @@ char	*separate_redirs(char *s)
 		}
 		i++;			
 	}
-	//printf("j is %d\n", (redir_count * 2) + i + 1);
+	printf("j is %d\n", (redir_count * 2) + i + 1);
 	aux = ft_calloc(sizeof(char), ((redir_count * 2) + i + 1));
 	if (!aux)
 		return (NULL);
@@ -223,8 +224,9 @@ char	*separate_redirs(char *s)
 		{
 			temp = s[i];
 			aux[j++] = s[i++];
-			while (s[i] && s[i - 1] != temp)
+			while (s[i] && s[i] != temp)
 				aux[j++] = s[i++];
+			aux[j++] = s[i++];
 			continue ;
 		}
 		if (s[i] && (s[i] == '<' || s[i] == '>'))
@@ -235,12 +237,34 @@ char	*separate_redirs(char *s)
 			aux[j++] = ' ';
 			continue ;
 		}
-		//printf("j is %d and i is %d\n", j, i);
+		printf("j is %d and i is %d\n", j, i);
 		aux[j++] = s[i++];
 	}
 	aux[j] = '\0';
-	//printf("aux is %s\n", aux);
+	printf("aux is %s\n", aux);
 	return (aux);
+}
+
+int	validate_redirs(char ***s)
+{
+	int	l;
+	int	j;
+
+	l = -1;
+	while (s[++l])
+	{
+		j = -1;
+		while (s[l][++j])
+		{
+			if (*s[l][j] == '<' || *s[l][j] == '>')
+				if (ft_strcmp(s[l][j], "<") && ft_strcmp(s[l][j], ">") && ft_strcmp(s[l][j], ">>") && ft_strcmp(s[l][j], "<<"))
+				{
+					printf("parse error near < or >\n");
+					return (1);
+				}
+		}
+	}
+	return (0);
 }
 
 char	***cmd_split(char *s)
@@ -326,18 +350,20 @@ char	***cmd_split(char *s)
 		j++;
 	}
 	free (s);
+	if (validate_redirs(spl.ss))
+		return (NULL);
 	//printing
-	// l = 0;
-	// j = 0;
-	// while (spl.ss[l])
-	// {
-	// 	j = 0;
-	// 	while (spl.ss[l] && spl.ss[l][j])
-	// 	{
-	// 		printf("%d %d %s\n",l,j, spl.ss[l][j]);
-	// 		j++;
-	// 	}
-	// 	l++;
-	// }
+	l = 0;
+	j = 0;
+	while (spl.ss[l])
+	{
+		j = 0;
+		while (spl.ss[l] && spl.ss[l][j])
+		{
+			printf("%d %d %s\n",l,j, spl.ss[l][j]);
+			j++;
+		}
+		l++;
+	}
 	return (spl.ss);
 }
