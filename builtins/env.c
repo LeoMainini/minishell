@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:29:45 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/11 09:25:35 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/23 15:20:03 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	env(t_cmdd *argd, t_ms *data)
 	i = -1;
 	while (g_envs[++i])
 		if (ft_strchr(g_envs[i], '='))
-			printf("%s\n", g_envs[i]);
+			ft_putendl_fd(g_envs[i], argd->out_fd);
 	return (set_ret_return(data, 1));
 }
 

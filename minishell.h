@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/18 16:36:02 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/23 16:20:14 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,6 @@ int		set_ret_return(t_ms *data, int code);
 void	sighandler(int signum);
 int     set_pwd(t_ms *data);
 int	    unset(t_cmdd *argd, t_ms *data, int before_pipe);
+t_ms	*get_struct(t_ms **data);
 
 #endif

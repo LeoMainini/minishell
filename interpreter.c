@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 16:52:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/22 22:31:11 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/23 17:33:36 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,14 +76,17 @@ char	*get_env_value(char *env_name, t_ms *data)
 	return (env_name);
 }
 
-void	convert_to_value(char **str, int i, t_ms *data)
+int	convert_to_value(char **str, int i, t_ms *data)
 {
 	int		j;
 	char	*substr;
+	int		not_empty;
 
 	j = 0;
+	not_empty = 1;
 	while ((*str)[(i + 1) + j] && !ft_isspace((*str)[(i + 1) + j])
-		&& (*str)[(i + 1) + j] != '"' && (*str)[(i + 1) + j] != 39)
+		&& (*str)[(i + 1) + j] != '"' && (*str)[(i + 1) + j] != 39 
+		&& (*str)[(i + 1) + j] != '$')
 		j++;
 	substr = ft_substr(*str, i + 1, j);
 	if (!ft_strcmp(substr, "?"))
@@ -98,8 +101,11 @@ void	convert_to_value(char **str, int i, t_ms *data)
 		substr = get_env_value(substr, data);
 		*str = remove_char(*str, i);
 		*str = replace_name(*str, substr, i, j);
+		if (!ft_strcmp(substr, ""))
+			not_empty = 0;
 	}
 	free(substr);
+	return (not_empty);
 }
 
 int	handle_quotes(char **str, int i, int *in_doubles, int *in_singles)
@@ -144,7 +150,7 @@ int	interpret_strings(t_cmdd *argd, t_ms *data)
 	while (argd->args[++k])
 	{
 		i = 0;
-		while (argd->args[k] && argd->args[k][i])
+		while (argd->args[k][i])
 		{
 			inc = 0;
 			if (!handle_quotes(&(argd->args[k]), i, &in_doubles, &in_singles))
@@ -152,10 +158,12 @@ int	interpret_strings(t_cmdd *argd, t_ms *data)
 			else
 				argd->args[k] = remove_char(argd->args[k], i);
 			if (((in_doubles || !in_doubles) && !in_singles)
-				&& argd->args[k][i] == '$')
-				convert_to_value(&argd->args[k], i, data);
-			if (inc)
+				&& argd->args[k][i] == '$' && argd->args[k][i + 1])
+					inc = convert_to_value(&argd->args[k], i, data);
+			if (inc && argd->args[k][i])
 				i++;
+			else if (!argd->args[k][i])
+				break;
 		}
 	}
 	return (!in_doubles && !in_singles);
