@@ -6,7 +6,7 @@
 /*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/21 17:28:03 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/23 15:08:18 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,8 +199,9 @@ char	*separate_redirs(char *s)
 		if (s[i] == 34 || s[i] == 39)
 		{
 			temp = s[i++];
-			while (s[i] && s[i - 1] != temp)
+			while (s[i] && s[i] != temp)
 				i++;
+			i++;
 			continue ;
 		}
 		if (s[i] && (s[i] == '<' || s[i] == '>'))
@@ -223,8 +224,9 @@ char	*separate_redirs(char *s)
 		{
 			temp = s[i];
 			aux[j++] = s[i++];
-			while (s[i] && s[i - 1] != temp)
+			while (s[i] && s[i] != temp)
 				aux[j++] = s[i++];
+			aux[j++] = s[i++];
 			continue ;
 		}
 		if (s[i] && (s[i] == '<' || s[i] == '>'))
