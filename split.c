@@ -6,7 +6,7 @@
 /*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/23 15:11:37 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/23 16:01:57 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,6 +245,28 @@ char	*separate_redirs(char *s)
 	return (aux);
 }
 
+int	validate_redirs(char ***s)
+{
+	int	l;
+	int	j;
+
+	l = -1;
+	while (s[++l])
+	{
+		j = -1;
+		while (s[l][++j])
+		{
+			if (*s[l][j] == '<' || *s[l][j] == '>')
+				if (ft_strcmp(s[l][j], "<") && ft_strcmp(s[l][j], ">") && ft_strcmp(s[l][j], ">>") && ft_strcmp(s[l][j], "<<"))
+				{
+					printf("parse error near < or >\n");
+					return (1);
+				}
+		}
+	}
+	return (0);
+}
+
 char	***cmd_split(char *s)
 {
 	t_spl	spl;
@@ -328,6 +350,8 @@ char	***cmd_split(char *s)
 		j++;
 	}
 	free (s);
+	if (validate_redirs(spl.ss))
+		return (NULL);
 	//printing
 	l = 0;
 	j = 0;
