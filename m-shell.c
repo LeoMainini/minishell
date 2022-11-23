@@ -6,7 +6,7 @@
 /*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/23 17:21:58 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/23 17:56:01 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -300,6 +300,15 @@ void	free_cmdsplit(char ****temp)
 	(*temp) = NULL;
 }
 
+t_ms *get_struct(t_ms **data)
+{
+	static t_ms *result;
+
+	if (data)
+		result = *data;
+	return (result);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	char		*read_line;
@@ -313,6 +322,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	data = (t_ms *)ft_calloc(1, sizeof(t_ms));
+	get_struct(&data);
 	data->ret = 0;
 	data->builtins_outfd = -1;
 	data->system_outfd = -1;
@@ -332,13 +342,27 @@ int	main(int argc, char **argv, char **envp)
 		save_pid(0, 0, 1);
 		pids = (int *)ft_calloc(1, sizeof(int));
 		while (temp && temp[++i])
+		{
+			//TODO: MISSING STRING INTERPRETATION FOR $CMD TO DEREFERENCE EXPORTED CMDS
 			if (!execute_builtin(temp, i, data, pip))
 				pids = save_pid(&pids, exec_sys_func(temp, &i, data, pip), 0);
+		}
 		j = -1;
 		while(pids[++j])
 			waitpid(pids[j], &data->ret, 0);
 		free(pids);
-		data->ret = WEXITSTATUS(data->ret);
+		printf("last exit status int before wexit %d \n", data->ret);
+		
+		if (WIFSIGNALED(data->ret) && printf("here\n"))
+		{
+			if (WTERMSIG(data->ret) == 2)
+				data->ret = 130;
+		}
+		else if (WIFSTOPPED(data->ret) && printf("here2\n"))
+			data->ret = WSTOPSIG(data->ret);
+		else
+			data->ret = WEXITSTATUS(data->ret);
+		printf("last exit status int %d\n", data->ret);
 		close(pip[0]);
 		free_cmdsplit(&temp);
 		free(read_line);
