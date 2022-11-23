@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   argument_processing.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com>   +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:12:30 by leferrei          #+#    #+#             */
-/*   Updated: 2022/07/27 15:12:32 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/22 17:15:08 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

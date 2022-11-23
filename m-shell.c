@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/21 17:24:39 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/22 23:34:27 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,34 +98,30 @@ int	check_builtin(char *cmd)
 	return (0);
 }
 
-int execute_builtin(char ***cmd_argvs, int k, t_ms *data, int b_fds[2])
+int execute_builtin(char ***cmd_argvs, int k, t_ms *data, int pip[2])
 {
 	int	i;
 	t_cmdd		cmds;
 
 
-	ft_putendl_fd(ft_itoa(k), STDERR_FILENO);
+	//ft_putendl_fd(ft_itoa(k), STDERR_FILENO);
 	i = check_builtin(cmd_argvs[k][0]);
 	if (!i)
-	{
-		ft_putstr_fd("not a builtin -> index | cmd = ", STDERR_FILENO);
-		ft_putstr_fd(ft_itoa(k), STDERR_FILENO);
-		ft_putendl_fd(cmd_argvs[k][0], STDERR_FILENO);
 		return (0);
-	}
 	cmds.args = cmd_argvs[k];
-	cmds.in_fd = 0;
-	printf("a\n");
-	if (pipe(b_fds) == -1)
+	cmds.in_fd = -1;
+	//printf("a\n");
+	close(pip[0]);
+	if (pipe(pip) == -1)
 		return (-1);
-	printf("b\n");
-	data->builtins_outfd = b_fds[0];
+	//printf("b\n");
+	data->builtins_outfd = pip[0];
 	if (cmd_argvs[k + 1] != 0)
-		cmds.out_fd = b_fds[1];
+		cmds.out_fd = pip[1];
 	else
 		cmds.out_fd = STDOUT_FILENO;
-	ft_putstr_fd("outfd in b = \n", STDERR_FILENO);
-	ft_putendl_fd(ft_itoa(cmds.out_fd), STDERR_FILENO);
+	//ft_putstr_fd("outfd in b = \n", STDERR_FILENO);
+	//ft_putendl_fd(ft_itoa(cmds.out_fd), STDERR_FILENO);
 	if (!interpret_strings(&cmds, data))
 		printf("String missing quotes\n");
 	if (i == 1)
@@ -142,13 +138,13 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data, int b_fds[2])
 		exit_shell(&cmds, data, cmd_argvs[k + 1] != 0);
 	if (i == 7)
 		echo(&cmds, data);
-	close(b_fds[1]);
+	close(pip[1]);
 	if (cmds.out_fd == STDOUT_FILENO)
-		close(b_fds[0]);
+		close(pip[0]);
 	return (1);
 }
 
-void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data, int s_fds[2])
+/* void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data, int s_fds[2])
 {
 	int	j;
 	int	k;
@@ -161,10 +157,7 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data, int s_fds[2])
 		return ;
 	j = *i;
 	while (cmd_argv[j] && cmd_argv[j][0] && !check_builtin(cmd_argv[j][0]) )
-	{
-		//printf("cmd_argv[j][0] = %s\n", cmd_argv[j][0]);
 		j++;
-	}
 	//printf("i = %d, j = %d\n", *i, j);
 	sim_args->argc = (j - *i) + 3;
 	sim_args->argv = ft_calloc(sim_args->argc + 1, sizeof(char *));
@@ -200,7 +193,7 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data, int s_fds[2])
 	free(sim_args->argv);
 	free(sim_args);
 }
-
+ */
 /*
 #TODO: REWRITE SYS FUNCS TO EXEC ONE AT A TIME:
 	- BUILTINS DONT NEED SEPERATE PIPE JUST DUP STDOUT AND DUP2 STDOUT TO WHATEVER DATA IS OUTPUT THEN DUP2 THE COPY TO STDOUT
@@ -208,19 +201,117 @@ void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data, int s_fds[2])
 	- SYSTEM FUNCS OUTPUT DATA TO THE WRITE END OF THE NEW PIPE, THE FDS SYSTEM FUNCS USE ARE SAVED IN A NON PIPED INT[2] ARRAY TO KEEP THE VALUES AFTER PIPING
 	- ONLY WAIT FOR LAST ONE IN CREATION LOGIC THEN WAIT FOR ALL AFTER LOOP - NEED TO SAVE PIDS TO GET RETURNS
 */
+
+int	check_cmd_executable(char *cmd)
+{
+	char *temp;
+
+	if (!strchr(cmd, '/'))
+		return (0);
+	if (access(cmd, F_OK) && printf("File not found\n"))
+		return (0);
+	temp = ft_strjoin(cmd, "/.");
+	if ((access(cmd, X_OK) || access(temp, F_OK)) && printf("File not executable\n"))
+	{
+		free(temp);
+		return (0);
+	}
+	free(temp);
+	if (!ft_strncmp(cmd, "..", 2)
+		|| !ft_strncmp(cmd, "./", 2))
+		return (2);
+	return (1);
+}
+
+char *get_executable_path(t_ms *data, char *cmd, char **envp)
+{
+	(void)envp;
+	if (check_cmd_executable(cmd))
+		return (ft_strdup(cmd));
+	return (ft_strjoin(data->path, cmd));
+}
+
+int	exec_sys_func(char*** cmd_argv, int *i, t_ms *data, int pip[2])
+{
+	int		pid;
+	int		in_fd;
+	int		out_fd;
+	char	*exec_path;
+
+	in_fd = pip[0];
+	if (pipe(pip) == -1)
+		return -2;
+	out_fd = pip[1];
+	pid = fork();
+	if (!pid)
+	{
+		if (in_fd > -1)
+			dup2(in_fd, STDIN_FILENO);
+		close(in_fd);
+		if(cmd_argv[*i + 1])
+			dup2(out_fd, STDOUT_FILENO);
+		close(out_fd);
+		exec_path = (get_executable_path(data, cmd_argv[*i][0], g_envs));
+		execve(exec_path, cmd_argv[*i], g_envs);
+		free(exec_path);
+		ft_putstr_fd("Error executing: ", STDERR_FILENO);
+		ft_putendl_fd(cmd_argv[*i][0], STDERR_FILENO);
+		exit(127);
+	}
+	else
+		close(pip[1]);
+	return (pid);
+}
+
+int	*save_pid(int **pids, int new_pid, int reset)
+{
+	static int	k;
+	int			i;
+	int			*temp_pids;
+
+	if (reset)
+	{
+		k = 0;
+		return (0);
+	}
+	(*pids)[k] = new_pid;
+	temp_pids = (int *)ft_calloc(k + 2, sizeof(int));
+	i = -1;
+	while (++i <= k)
+		temp_pids[i] = (*pids)[i];
+	free(*pids);
+	return (temp_pids);
+}
+
+void	free_cmdsplit(char ****temp)
+{
+	int	i;
+	int	j;
+
+	i = -1;
+	while ((*temp) && (*temp)[++i])
+	{
+		j = -1;
+		while ((*temp)[i][++j])
+			free((*temp)[i][j]);
+		free((*temp)[i]);
+	}
+	free((*temp));
+	(*temp) = NULL;
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	char		*read_line;
 	t_ms		*data;
 	char		***temp;
 	int			i;
-	int			b_fds[2];
-	int			s_fds[2];
+	int			pip[2];
+	int			*pids;
+	int			j;
 
 	(void)argc;
 	(void)argv;
-	ft_bzero((void *)b_fds, 8);
-	ft_bzero((void *)s_fds, 8);
 	data = (t_ms *)ft_calloc(1, sizeof(t_ms));
 	data->ret = 0;
 	data->builtins_outfd = -1;
@@ -228,37 +319,31 @@ int	main(int argc, char **argv, char **envp)
 	signal(SIGINT, sighandler);
 	signal(SIGQUIT, sighandler);
 	g_envs = duplicate_envp(envp, 0);
+	data->path = find_shell_path(g_envs);
 	read_line = readline("shell:> ");
 	while (read_line)
 	{
 		add_history(read_line);
 		data->rl_addr = &read_line;
 		temp = cmd_split(read_line);
-		if (temp)
-		{
-			i = 0;
-			while (temp[i] && *temp[i])
-			{
-				//printf("%i = %p = %s\n", i, temp[i], (char *)temp[i]);
-				if (!execute_builtin(temp, i, data, b_fds))
-					execute_system_funcs(temp, &i, data, s_fds);
-				else
-					i++;
-				printf("exited condition at index %d\n", i);
-			}
-		}
+		pip[0] = -1;
+		pip[1] = -1;
 		i = -1;
-		while (temp && temp[++i] && *temp[i])
-		{
-			int j = -1;
-			while (temp[i][++j])
-				free(temp[i][j]);
-			free(temp[i]);
-		}
-		free(temp);
-		temp = NULL;
+		save_pid(0, 0, 1);
+		pids = (int *)ft_calloc(1, sizeof(int));
+		while (temp && temp[++i])
+			if (!execute_builtin(temp, i, data, pip))
+				pids = save_pid(&pids, exec_sys_func(temp, &i, data, pip), 0);
+		j = -1;
+		while(pids[++j])
+			waitpid(pids[j], &data->ret, 0);
+		free(pids);
+		data->ret = WEXITSTATUS(data->ret);
+		close(pip[0]);
+		free_cmdsplit(&temp);
 		free(read_line);
 		read_line = readline("shell:> ");
 	}
-	exit_status(1, &read_line);
+	ft_putendl_fd("exit", STDERR_FILENO);
+	exit_status(0, &read_line);
 }
