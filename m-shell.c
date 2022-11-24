@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/24 16:13:44 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/24 16:17:50 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,6 +245,17 @@ t_ms *get_struct(t_ms **data)
 	return (result);
 }
 
+t_spl *get_cmdsplit(char *read_line)
+{
+	t_spl *temp;
+	temp = (t_spl *)ft_calloc(1, sizeof(t_spl));
+	
+	if (!temp)
+		return (0);
+	*temp = cmd_split(read_line);
+	return (temp);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	char		*read_line;
@@ -258,7 +269,6 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	data = (t_ms *)ft_calloc(1, sizeof(t_ms));
-	spl = (t_spl *)ft_calloc(1, sizeof(t_spl));
 	get_struct(&data);
 	data->ret = 0;
 	data->builtins_outfd = -1;
@@ -272,7 +282,9 @@ int	main(int argc, char **argv, char **envp)
 	{
 		add_history(read_line);
 		data->rl_addr = &read_line;
-		*spl = cmd_split(read_line);
+		spl = get_cmdsplit(read_line);
+		if (!spl)
+			break ;
 		pip[0] = -1;
 		pip[1] = -1;
 		i = -1;

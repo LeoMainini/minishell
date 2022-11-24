@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/24 16:13:20 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/24 16:15:28 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -434,5 +434,5 @@ t_spl	cmd_split(char *s)
 	// 	}
 	// 	l++;
 	// }
-	return (spl.ss);
+	return (spl);
 }
