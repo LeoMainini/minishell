@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/24 16:17:50 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/24 16:20:15 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -292,9 +292,9 @@ int	main(int argc, char **argv, char **envp)
 		pids = (int *)ft_calloc(1, sizeof(int));
 		while (spl->ss && spl->ss[++i])
 		{
-			interpret_strings(temp[i], data);
-			if (!execute_builtin(temp, i, data, pip))
-				pids = save_pid(&pids, exec_sys_func(temp, &i, data, pip), 0);
+			interpret_strings(spl->ss[i], data);
+			if (!execute_builtin(spl->ss, i, data, pip))
+				pids = save_pid(&pids, exec_sys_func(spl->ss, &i, data, pip), 0);
 		}
 		j = -1;
 		while(pids[++j])
@@ -311,7 +311,7 @@ int	main(int argc, char **argv, char **envp)
 			data->ret = WEXITSTATUS(data->ret);
 		printf("last exit status int %d\n", data->ret);
 		close(pip[0]);
-		free_cmdsplit(&(spl->ss));
+		free_cmdsplit(spl);
 		free(read_line);
 		read_line = readline("shell:> ");
 	}

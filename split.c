@@ -6,7 +6,7 @@
 /*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/24 16:23:14 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/24 16:24:07 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -353,7 +353,6 @@ t_spl	cmd_split(char *s)
 	spl.ss = (char ***)ft_calloc(sizeof(char **), (spl.cmd_count + 1));
 	if (!spl.ss)
 		return (spl);
-	printf("cmd count = %d\n", spl.cmd_count);
 	l = 0;
 	while (l < spl.cmd_count)
 	{
