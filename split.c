@@ -6,7 +6,7 @@
 /*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/24 16:06:49 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/24 16:11:58 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,7 +272,7 @@ int	validate_redirs(t_spl *spl)
 					return (1);
 				}
 				if ((!ft_strcmp(s[l][j], "<") || !ft_strcmp(s[l][j], ">") || !ft_strcmp(s[l][j], ">>") || !ft_strcmp(s[l][j], "<<"))
-						&& ((!s[l][j + 1])
+						&& ((!s[l][j + 1]) || *s[l][j + 1] == '|' 
 							|| (!ft_strcmp(s[l][j + 1], "<") || !ft_strcmp(s[l][j + 1], ">")
 								|| !ft_strcmp(s[l][j + 1], ">>") || !ft_strcmp(s[l][j + 1], "<<"))))
 				{
@@ -351,9 +351,9 @@ t_spl	cmd_split(char *s)
 	aux = s;
 	s = separate_redirs(aux);
 	spl.ss = (char ***)ft_calloc(sizeof(char **), (spl.cmd_count + 1));
-	printf("cmd count = %d\n", spl.cmd_count);
 	if (!spl.ss)
 		return (spl);
+	printf("cmd count = %d\n", spl.cmd_count);
 	l = 0;
 	while (l < spl.cmd_count)
 	{
