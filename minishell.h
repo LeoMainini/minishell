@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/24 12:14:01 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/24 16:02:27 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,12 @@ typedef struct	s_spl
     int     cmd_count;
     int     quotebool;
     int     redir_bool;
-    char    *input_files;
-    char    *output_files;
-    int     *input_types;
-    int     *output_types;
+    char    **input_files;
+    char    **output_files;
+    int    *input_types;
+    int    *output_types;
+    int     redir_in;
+    int     redir_out;
 }   t_spl;
 
 typedef struct	s_cmdd
@@ -39,7 +41,7 @@ typedef struct	s_cmdd
 
 
 char	**alloc_envmem(char **envs, int	offset);
-char	***cmd_split(char *s);
+t_spl   cmd_split(char *s);
 int     change_dir(t_cmdd *argd, t_ms *data, int before_pipe);
 int		echo(t_cmdd *argd, t_ms *data);
 int		env(t_cmdd *argd, t_ms *data);
