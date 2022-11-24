@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/24 12:13:40 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/24 13:29:42 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,10 +142,12 @@ int	check_cmd_executable(char *cmd)
 
 	if (!strchr(cmd, '/'))
 		return (0);
-	if (access(cmd, F_OK) && printf("File not found\n"))
+	if (access(cmd, F_OK) && ft_putstr_fd("File not found\n", STDERR_FILENO))
+		return (0);
+	if ((access(cmd, X_OK)) && ft_putstr_fd("File not executable\n", STDERR_FILENO))
 		return (0);
 	temp = ft_strjoin(cmd, "/.");
-	if ((access(cmd, X_OK) || access(temp, F_OK)) && printf("File not executable\n"))
+	if (!access(temp, F_OK) && ft_putstr_fd("File is a folder\n", STDERR_FILENO))
 	{
 		free(temp);
 		return (0);
