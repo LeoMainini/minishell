@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:37:49 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/10 16:57:15 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/24 13:10:00 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,12 @@ int	check_folder(t_cmdd *argd, int i)
 	char *temp;
 	if (!ft_strcmp(argd->args[1], "-"))
 		return (3);
-	if (access(argd->args[i], F_OK) && printf("File not found\n"))
+	if (access(argd->args[i], F_OK)
+		&& ft_putstr_fd("File not found\n", STDERR_FILENO))
 		return (0);
 	temp = ft_strjoin(argd->args[i], "/.");
 	if ((access(argd->args[i], X_OK) || access(temp, F_OK) )
-		&& printf("File is not a folder\n"))
+		&& ft_putstr_fd("File is not a folder\n", STDERR_FILENO))
 	{
 		free(temp);
 		return (0);
@@ -127,7 +128,7 @@ int change_dir(t_cmdd *argd, t_ms *data, int before_pipe)
 	}
 	if (i == 3 && argd->args[1])
 		if (!change_back(data, pwd, argd->out_fd,before_pipe)
-			&& printf("Failed to change directory\n"))
+			&& ft_putstr_fd("Failed to change directory\n", STDERR_FILENO))
 			return (set_ret_return(data, 1));
 	free(pwd);
 	if (!set_pwd(data))

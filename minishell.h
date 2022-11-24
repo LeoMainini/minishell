@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/23 17:56:12 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/24 12:14:01 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void    ft_parsing(char *str);
 char	**get_env(char *env, t_ms *data);
 char	*get_pwd();
 char	**get_sep_env_values(char *str);
-int     interpret_strings(t_cmdd *argd, t_ms *data);
+int     interpret_strings(char **strs, t_ms *data);
 int     pwd(t_cmdd *argd, t_ms *data);
 int		set_ret_return(t_ms *data, int code);
 void	sighandler(int signum);

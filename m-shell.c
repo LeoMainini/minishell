@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/24 12:08:15 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/24 12:13:40 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,8 +116,6 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data, int pip[2])
 		cmds.out_fd = pip[1];
 	else
 		cmds.out_fd = STDOUT_FILENO;
-	if (!interpret_strings(&cmds, data))
-		printf("String missing quotes\n");
 	if (i == 1)
 		change_dir(&cmds, data, cmd_argvs[k + 1] != 0);
 	if (i == 2)
@@ -279,6 +277,7 @@ int	main(int argc, char **argv, char **envp)
 		pids = (int *)ft_calloc(1, sizeof(int));
 		while (temp && temp[++i])
 		{
+			interpret_strings(temp[i], data);
 			//TODO: MISSING STRING INTERPRETATION FOR $CMD TO DEREFERENCE EXPORTED CMDS
 			if (!execute_builtin(temp, i, data, pip))
 				pids = save_pid(&pids, exec_sys_func(temp, &i, data, pip), 0);
@@ -286,9 +285,7 @@ int	main(int argc, char **argv, char **envp)
 		j = -1;
 		while(pids[++j])
 			waitpid(pids[j], &data->ret, 0);
-		free(pids);
-		printf("last exit status int before wexit %d \n", data->ret);
-		
+		free(pids);		
 		if (WIFSIGNALED(data->ret) && printf("here\n"))
 		{
 			if (WTERMSIG(data->ret) == 2)

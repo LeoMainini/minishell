@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 16:52:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/23 17:33:36 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/24 12:12:24 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ int	handle_quotes(char **str, int i, int *in_doubles, int *in_singles)
 	return (remove);
 } 
 
-int	interpret_strings(t_cmdd *argd, t_ms *data)
+int	interpret_strings(char **strs, t_ms *data)
 {
 	int		i;
 	int		k;
@@ -147,22 +147,22 @@ int	interpret_strings(t_cmdd *argd, t_ms *data)
 	k = -1;
 	in_doubles = 0;
 	in_singles = 0;
-	while (argd->args[++k])
+	while (strs[++k])
 	{
 		i = 0;
-		while (argd->args[k][i])
+		while (strs[k][i])
 		{
 			inc = 0;
-			if (!handle_quotes(&(argd->args[k]), i, &in_doubles, &in_singles))
+			if (!handle_quotes(&(strs[k]), i, &in_doubles, &in_singles))
 				inc = 1;
 			else
-				argd->args[k] = remove_char(argd->args[k], i);
+				strs[k] = remove_char(strs[k], i);
 			if (((in_doubles || !in_doubles) && !in_singles)
-				&& argd->args[k][i] == '$' && argd->args[k][i + 1])
-					inc = convert_to_value(&argd->args[k], i, data);
-			if (inc && argd->args[k][i])
+				&& strs[k][i] == '$' && strs[k][i + 1])
+					inc = convert_to_value(&strs[k], i, data);
+			if (inc && strs[k][i])
 				i++;
-			else if (!argd->args[k][i])
+			else if (!strs[k][i])
 				break;
 		}
 	}

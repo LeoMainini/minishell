@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:29:45 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/23 15:20:03 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/24 13:10:40 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	env(t_cmdd *argd, t_ms *data)
 {
 	int	i;
 	
-	if (argd->args[1] && printf("Too many arguments.\n"))
+	if (argd->args[1] && ft_putstr_fd("Too many arguments.\n", STDERR_FILENO))
 		return (set_ret_return(data, 1));
 	i = -1;
 	while (g_envs[++i])
@@ -107,11 +107,11 @@ void	print_free_3darray(char ****str_array, int fd)
 	i = -1;
 	while (strs[++i])
 	{
-		if (strs[i][1])
+		if (strs[i][1] && ft_strcmp(strs[i][1], ""))
 		{
 			ft_putstr_fd("declare -x ", fd);
 			ft_putstr_fd(strs[i][0], fd);
-			ft_putchar_fd('"', fd);
+			ft_putstr_fd("=\"", fd);
 			ft_putstr_fd(strs[i][1], fd);
 			ft_putstr_fd("\"\n", fd);
 			free(strs[i][0]);
@@ -153,24 +153,48 @@ int	print_sorted_envs(int fd)
 	return (0);
 }
 
+int	is_alphastr(char *str)
+{
+	int	i;
+
+	i = -1;
+	while (str[++i])
+		if ((str[i] < 'a' || str[i] > 'z') && (str[i] < 'A' || str[i] > 'Z'))
+			return (0);
+	return (1);
+}
+
 int	export(t_cmdd *argd, t_ms *data, int before_pipe)
 {
 	char	**envi;
 	int		last_i;
 	char	*name;
 	int		i;
+	int		result;
 
 	envi = 0;
+	result = 0;
 	if (!argd->args[1])
 		return (print_sorted_envs(argd->out_fd));
 	i = 0;
-	while (!before_pipe && argd->args[++i])
+	while (argd->args[++i])
 	{
 		if (ft_strchr(argd->args[i], '='))
 			name = ft_substr(argd->args[i], 0,
 				(ft_strchr(argd->args[i], '=') - argd->args[i]));
 		else 
 			name = ft_strdup(argd->args[i]);
+
+		if (!is_alphastr(name))
+		{
+			result = 1;
+			ft_putstr_fd("export: '", STDERR_FILENO);
+			ft_putstr_fd(name, STDERR_FILENO);
+			ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
+			continue ;
+		}
+		if (before_pipe)
+			continue ;
 		envi = get_env(name, data);
 		if (envi)
 		{
@@ -191,7 +215,7 @@ int	export(t_cmdd *argd, t_ms *data, int before_pipe)
 			last_i++;
 		g_envs[last_i] = ft_strdup(argd->args[i]);
 	}
-	return (set_ret_return(data, 0));
+	return (set_ret_return(data, result));
 }
 
 int	unset(t_cmdd *argd, t_ms *data, int before_pipe)
