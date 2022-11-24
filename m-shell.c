@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m-shell.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/24 13:29:42 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/24 16:06:07 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,8 +248,8 @@ t_ms *get_struct(t_ms **data)
 int	main(int argc, char **argv, char **envp)
 {
 	char		*read_line;
+	t_spl		*spl;
 	t_ms		*data;
-	char		***temp;
 	int			i;
 	int			pip[2];
 	int			*pids;
@@ -258,6 +258,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	data = (t_ms *)ft_calloc(1, sizeof(t_ms));
+	spl = (t_spl *)ft_calloc(1, sizeof(t_spl));
 	get_struct(&data);
 	data->ret = 0;
 	data->builtins_outfd = -1;
@@ -271,18 +272,18 @@ int	main(int argc, char **argv, char **envp)
 	{
 		add_history(read_line);
 		data->rl_addr = &read_line;
-		temp = cmd_split(read_line);
+		*spl = cmd_split(read_line);
 		pip[0] = -1;
 		pip[1] = -1;
 		i = -1;
 		save_pid(0, 0, 1);
 		pids = (int *)ft_calloc(1, sizeof(int));
-		while (temp && temp[++i])
+		while (spl->ss && spl->ss[++i])
 		{
-			interpret_strings(temp[i], data);
+			interpret_strings(spl->ss[i], data);
 			//TODO: MISSING STRING INTERPRETATION FOR $CMD TO DEREFERENCE EXPORTED CMDS
-			if (!execute_builtin(temp, i, data, pip))
-				pids = save_pid(&pids, exec_sys_func(temp, &i, data, pip), 0);
+			if (!execute_builtin(spl->ss, i, data, pip))
+				pids = save_pid(&pids, exec_sys_func(spl->ss, &i, data, pip), 0);
 		}
 		j = -1;
 		while(pids[++j])
@@ -299,7 +300,7 @@ int	main(int argc, char **argv, char **envp)
 			data->ret = WEXITSTATUS(data->ret);
 		printf("last exit status int %d\n", data->ret);
 		close(pip[0]);
-		free_cmdsplit(&temp);
+		free_cmdsplit(&(spl->ss));
 		free(read_line);
 		read_line = readline("shell:> ");
 	}

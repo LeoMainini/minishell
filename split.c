@@ -6,7 +6,7 @@
 /*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/23 17:54:38 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/24 16:06:49 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,8 @@ void	init_spl(t_spl *spl)
 	spl->input_types = NULL;
 	spl->output_types = NULL;
 	spl->output_types = NULL;
+	spl->redir_in = 0;
+	spl->redir_out = 0;
 }
 
 int	checkemptycmds(char **s)
@@ -263,15 +265,25 @@ int	validate_redirs(t_spl *spl)
 		{
 			if (*s[l][j] == '<' || *s[l][j] == '>')
 			{	
-				if ((ft_strcmp(s[l][j], "<") && ft_strcmp(s[l][j], ">") && ft_strcmp(s[l][j], ">>") && ft_strcmp(s[l][j], "<<"))
-					|| ((!ft_strcmp(s[l][j], "<") || !ft_strcmp(s[l][j], ">") || !ft_strcmp(s[l][j], ">>") || !ft_strcmp(s[l][j], "<<"))
-						&& ((!s[l][j + 1]) 
-							|| (!ft_strcmp(s[l][j + 1], "<") || !ft_strcmp(s[l][j + 1], ">") || !ft_strcmp(s[l][j + 1], ">>") || !ft_strcmp(s[l][j + 1], "<<")))))
+				if (ft_strcmp(s[l][j], "<") && ft_strcmp(s[l][j], ">") && ft_strcmp(s[l][j], ">>") && ft_strcmp(s[l][j], "<<"))
 				{
 					printf("parse error near '%s'\n", s[l][j]);
 					spl->redir_bool = 0;
 					return (1);
 				}
+				if ((!ft_strcmp(s[l][j], "<") || !ft_strcmp(s[l][j], ">") || !ft_strcmp(s[l][j], ">>") || !ft_strcmp(s[l][j], "<<"))
+						&& ((!s[l][j + 1])
+							|| (!ft_strcmp(s[l][j + 1], "<") || !ft_strcmp(s[l][j + 1], ">")
+								|| !ft_strcmp(s[l][j + 1], ">>") || !ft_strcmp(s[l][j + 1], "<<"))))
+				{
+					printf("parse error near '%s'\n", s[l][j]);
+					spl->redir_bool = 0;
+					return (1);
+				}
+				else if (!ft_strcmp(s[l][j], "<") || !ft_strcmp(s[l][j], "<<"))
+					spl->redir_in++;
+				else if (!ft_strcmp(s[l][j], ">") || !ft_strcmp(s[l][j], ">>"))
+					spl->redir_out++;
 				spl->redir_bool = 1;
 			}
 		}
@@ -281,10 +293,46 @@ int	validate_redirs(t_spl *spl)
 
 void	init_redir_arrays(t_spl *spl)
 {
-	(void)spl;
+	int	l;
+	int	j;
+	int	i;
+	int	o;
+
+	spl->output_files = ft_calloc(sizeof(char*), (spl->redir_out + 1));
+	if (!spl->output_files)
+		return ;
+	spl->input_files = ft_calloc(sizeof(char*), (spl->redir_in + 1));
+	if (!spl->input_files)
+		return ;
+	spl->output_types = ft_calloc(sizeof(int), (spl->redir_out + 1));
+	if (!spl->output_types)
+		return ;
+	spl->input_types = ft_calloc(sizeof(int), (spl->redir_out + 1));
+	if (!spl->input_types)
+		return ;
+	l = -1;
+	j = -1;
+	i = -1;
+	o = -1;
+	while (spl->ss[++l])
+	{
+		while (spl->ss[l][++j])
+		{
+			if (!ft_strcmp(spl->ss[l][j], "<") || !ft_strcmp(spl->ss[l][j], "<<"))
+			{
+				spl->input_files[++i] = ft_strdup(spl->ss[l][j + 1]);
+				spl->input_types[i] = (ft_strcmp(spl->ss[l][j], "<<")!= 0);
+			}
+			else if (!ft_strcmp(spl->ss[l][j], ">") || !ft_strcmp(spl->ss[l][j], ">>"))
+			{
+				spl->output_files[++o] = ft_strdup(spl->ss[l][j + 1]);
+				spl->output_types[o] = (ft_strcmp(spl->ss[l][j], ">>") != 0);
+			}
+		}
+	}
 }
 
-char	***cmd_split(char *s)
+t_spl	cmd_split(char *s)
 {
 	t_spl	spl;
 	char	*aux;
@@ -294,24 +342,24 @@ char	***cmd_split(char *s)
 	int		l;
 	int		k;
 
-	if (!s)
-		return (NULL);
 	spl.ss = NULL;
+	if (!s)
+		return (spl);
 	init_spl(&spl);
 	if (isvalidcmd(s, &spl))
-		return (NULL);
+		return (spl);
 	aux = s;
 	s = separate_redirs(aux);
 	spl.ss = (char ***)ft_calloc(sizeof(char **), (spl.cmd_count + 1));
 	printf("cmd count = %d\n", spl.cmd_count);
 	if (!spl.ss)
-		return (NULL);
+		return (spl);
 	l = 0;
 	while (l < spl.cmd_count)
 	{
 		spl.ss[l] = ft_calloc(sizeof(char*), (ft_argspercmd(&spl, s, l) + 1));
 		if (!spl.ss[l])
-			return (NULL);
+			return (spl);
 		l++;
 	}
 	i= 0;
@@ -338,7 +386,7 @@ char	***cmd_split(char *s)
 			// printf("split l = %d j = %d k = %d i = %d\n", l, j, k, i);
 			spl.ss[l][j] = ft_calloc(sizeof(char), (k + 1));
 			if (!spl.ss[l][j])
-				return (NULL);
+				return (spl);
 		}
 		k = 0;
 		while (s[i])
@@ -368,7 +416,7 @@ char	***cmd_split(char *s)
 	}
 	free (s);
 	if (validate_redirs(&spl))
-		return (NULL);
+		return (spl);
 	if (spl.redir_bool)
 		init_redir_arrays(&spl);
 
@@ -386,5 +434,5 @@ char	***cmd_split(char *s)
 		}
 		l++;
 	}
-	return (spl.ss);
+	return (spl);
 }
