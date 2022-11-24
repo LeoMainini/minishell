@@ -6,7 +6,15 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/11/24 16:15:28 by leferrei         ###   ########.fr       */
+=======
+<<<<<<< HEAD
+/*   Updated: 2022/11/24 16:11:58 by bcarreir         ###   ########.fr       */
+=======
+/*   Updated: 2022/11/24 16:13:20 by leferrei         ###   ########.fr       */
+>>>>>>> 30372d0026c487ef787e8425a03210649d9a43f9
+>>>>>>> 1ca605f608deecef645a670b9465dbeb1216f208
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,7 +280,7 @@ int	validate_redirs(t_spl *spl)
 					return (1);
 				}
 				if ((!ft_strcmp(s[l][j], "<") || !ft_strcmp(s[l][j], ">") || !ft_strcmp(s[l][j], ">>") || !ft_strcmp(s[l][j], "<<"))
-						&& ((!s[l][j + 1])
+						&& ((!s[l][j + 1]) || *s[l][j + 1] == '|' 
 							|| (!ft_strcmp(s[l][j + 1], "<") || !ft_strcmp(s[l][j + 1], ">")
 								|| !ft_strcmp(s[l][j + 1], ">>") || !ft_strcmp(s[l][j + 1], "<<"))))
 				{
@@ -351,9 +359,9 @@ t_spl	cmd_split(char *s)
 	aux = s;
 	s = separate_redirs(aux);
 	spl.ss = (char ***)ft_calloc(sizeof(char **), (spl.cmd_count + 1));
-	printf("cmd count = %d\n", spl.cmd_count);
 	if (!spl.ss)
 		return (spl);
+	printf("cmd count = %d\n", spl.cmd_count);
 	l = 0;
 	while (l < spl.cmd_count)
 	{
