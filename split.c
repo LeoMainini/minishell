@@ -6,7 +6,7 @@
 /*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/24 17:17:48 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:19:34 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,9 @@ void	init_spl(t_spl *spl)
 	spl->quotebool = 1;
 	spl->redir_bool = 0;
 	spl->input_files = NULL;
-	spl->input_types = NULL;
+	spl->input_types = 0;
 	spl->output_files = NULL;
-	spl->output_types = NULL;
+	spl->output_types = 0;
 	spl->redir_in = 0;
 	spl->redir_out = 0;
 }

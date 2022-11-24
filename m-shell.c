@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/24 16:20:15 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:17:18 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,6 +219,22 @@ int	*save_pid(int **pids, int new_pid, int reset)
 	return (temp_pids);
 }
 
+// static void free_spl_redirs(t_spl *cspl)
+// {
+// 	int	i;
+
+// 	i = -1;
+// 	while (cspl->input_files && cspl->input_files[++i])
+// 		free(cspl->input_files[i]);
+// 	free(cspl->input_files);
+// 	free(cspl->input_types);
+// 	i = -1;
+// 	while (cspl->output_files && cspl->output_files[++i])
+// 		free(cspl->output_files[i]);
+// 	free(cspl->output_files);
+// 	free(cspl->output_types);
+// }
+
 void	free_cmdsplit(t_spl *cspl)
 {
 	int	i;
@@ -234,6 +250,8 @@ void	free_cmdsplit(t_spl *cspl)
 	}
 	free(cspl->ss);
 	cspl->ss = NULL;
+	//free_spl_redirs(cspl);
+	free(cspl);
 }
 
 t_ms *get_struct(t_ms **data)
