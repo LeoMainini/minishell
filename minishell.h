@@ -6,7 +6,7 @@
 /*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/24 16:02:27 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:17:07 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@ typedef struct	s_spl
     int     cmd_count;
     int     quotebool;
     int     redir_bool;
-    char    **input_files;
-    char    **output_files;
-    int    *input_types;
-    int    *output_types;
+    char    ***input_files;
+    char    ***output_files;
+    int    **input_types;
+    int    **output_types;
     int     redir_in;
     int     redir_out;
 }   t_spl;

@@ -6,7 +6,7 @@
 /*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/24 16:24:07 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:17:48 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,7 @@
 // >> OPEN IN APPEND MODE (NO DELETE)
 // < SEND FILE TO STDIN
 // << <lim> SEND STDIN TO STDIN OF COMMAND UNTIL <lim> IS FOUND
-// ONLY LAST IN CHAIN MATTERS
-// ALL IN CHAIN ARE OPEN IN CORRECT MODE
-// HEREDOC ALLWAYS EXECUTED FIRST OUTPUT IN POOPOO IF NOT LAST
+// manipulate ***char to move redirs+I/Ofiles to I/O arrays in order/types
 
 int	ffquotedtext(t_spl *spl, char *s, int *j, char qt)
 {
@@ -80,7 +78,7 @@ void	init_spl(t_spl *spl)
 	spl->redir_bool = 0;
 	spl->input_files = NULL;
 	spl->input_types = NULL;
-	spl->output_types = NULL;
+	spl->output_files = NULL;
 	spl->output_types = NULL;
 	spl->redir_in = 0;
 	spl->redir_out = 0;
@@ -158,7 +156,7 @@ int	ft_argspercmd(t_spl *spl, char *s, int l)
 			break ;
 		}
 	}
-	printf("args per cmd %d\n", argc);
+	// printf("args per cmd %d\n", argc);
 	return (argc);
 }
 
@@ -293,21 +291,22 @@ int	validate_redirs(t_spl *spl)
 
 void	init_redir_arrays(t_spl *spl)
 {
+	//ALLOCATION OF **CHAR MISSING AFTER REDIR COUNT
 	int	l;
 	int	j;
 	int	i;
 	int	o;
 
-	spl->output_files = ft_calloc(sizeof(char*), (spl->redir_out + 1));
+	spl->output_files = ft_calloc(sizeof(char*), (spl->cmd_count + 1));
 	if (!spl->output_files)
 		return ;
-	spl->input_files = ft_calloc(sizeof(char*), (spl->redir_in + 1));
+	spl->input_files = ft_calloc(sizeof(char*), (spl->cmd_count + 1));
 	if (!spl->input_files)
 		return ;
-	spl->output_types = ft_calloc(sizeof(int), (spl->redir_out + 1));
+	spl->output_types = ft_calloc(sizeof(int), (spl->cmd_count + 1));
 	if (!spl->output_types)
 		return ;
-	spl->input_types = ft_calloc(sizeof(int), (spl->redir_out + 1));
+	spl->input_types = ft_calloc(sizeof(int), (spl->cmd_count + 1));
 	if (!spl->input_types)
 		return ;
 	l = -1;
