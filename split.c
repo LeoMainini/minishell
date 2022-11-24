@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/11/24 16:11:58 by bcarreir         ###   ########.fr       */
+=======
+/*   Updated: 2022/11/24 16:13:20 by leferrei         ###   ########.fr       */
+>>>>>>> 30372d0026c487ef787e8425a03210649d9a43f9
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -422,17 +426,17 @@ t_spl	cmd_split(char *s)
 
 		
 	//printing
-	l = 0;
-	j = 0;
-	while (spl.ss[l])
-	{
-		j = 0;
-		while (spl.ss[l] && spl.ss[l][j])
-		{
-			printf("%d %d %s\n",l,j, spl.ss[l][j]);
-			j++;
-		}
-		l++;
-	}
-	return (spl);
+	// l = 0;
+	// j = 0;
+	// while (spl.ss[l])
+	// {
+	// 	j = 0;
+	// 	while (spl.ss[l] && spl.ss[l][j])
+	// 	{
+	// 		printf("%d %d %s\n",l,j, spl.ss[l][j]);
+	// 		j++;
+	// 	}
+	// 	l++;
+	// }
+	return (spl.ss);
 }
