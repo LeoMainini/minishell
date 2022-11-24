@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/24 13:29:42 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/24 16:12:37 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,21 +219,21 @@ int	*save_pid(int **pids, int new_pid, int reset)
 	return (temp_pids);
 }
 
-void	free_cmdsplit(char ****temp)
+void	free_cmdsplit(t_spl *cspl)
 {
 	int	i;
 	int	j;
 
 	i = -1;
-	while ((*temp) && (*temp)[++i])
+	while (cspl->ss && cspl->ss[++i])
 	{
 		j = -1;
-		while ((*temp)[i][++j])
-			free((*temp)[i][j]);
-		free((*temp)[i]);
+		while (cspl->ss[i][++j])
+			free(cspl->ss[i][j]);
+		free(cspl->ss[i]);
 	}
-	free((*temp));
-	(*temp) = NULL;
+	free(cspl->ss);
+	cspl->ss = NULL;
 }
 
 t_ms *get_struct(t_ms **data)
@@ -280,7 +280,6 @@ int	main(int argc, char **argv, char **envp)
 		while (temp && temp[++i])
 		{
 			interpret_strings(temp[i], data);
-			//TODO: MISSING STRING INTERPRETATION FOR $CMD TO DEREFERENCE EXPORTED CMDS
 			if (!execute_builtin(temp, i, data, pip))
 				pids = save_pid(&pids, exec_sys_func(temp, &i, data, pip), 0);
 		}
@@ -288,12 +287,12 @@ int	main(int argc, char **argv, char **envp)
 		while(pids[++j])
 			waitpid(pids[j], &data->ret, 0);
 		free(pids);		
-		if (WIFSIGNALED(data->ret) && printf("here\n"))
+		if (WIFSIGNALED(data->ret))
 		{
 			if (WTERMSIG(data->ret) == 2)
 				data->ret = 130;
 		}
-		else if (WIFSTOPPED(data->ret) && printf("here2\n"))
+		else if (WIFSTOPPED(data->ret))
 			data->ret = WSTOPSIG(data->ret);
 		else
 			data->ret = WEXITSTATUS(data->ret);

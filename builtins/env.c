@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:29:45 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/24 13:10:40 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/24 15:57:26 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,12 @@ int	env(t_cmdd *argd, t_ms *data)
 	int	i;
 	
 	if (argd->args[1] && ft_putstr_fd("Too many arguments.\n", STDERR_FILENO))
-		return (set_ret_return(data, 1));
+		return (set_ret_return(data, 127));
 	i = -1;
 	while (g_envs[++i])
 		if (ft_strchr(g_envs[i], '='))
 			ft_putendl_fd(g_envs[i], argd->out_fd);
-	return (set_ret_return(data, 1));
+	return (set_ret_return(data, 0));
 }
 
 char	**get_sep_env_values(char *str)
@@ -107,7 +107,7 @@ void	print_free_3darray(char ****str_array, int fd)
 	i = -1;
 	while (strs[++i])
 	{
-		if (strs[i][1] && ft_strcmp(strs[i][1], ""))
+		if (strs[i][1])
 		{
 			ft_putstr_fd("declare -x ", fd);
 			ft_putstr_fd(strs[i][0], fd);
