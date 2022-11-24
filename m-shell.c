@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/23 17:17:06 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/24 12:06:23 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,25 +103,19 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data, int pip[2])
 	int	i;
 	t_cmdd		cmds;
 
-
-	//ft_putendl_fd(ft_itoa(k), STDERR_FILENO);
 	i = check_builtin(cmd_argvs[k][0]);
 	if (!i)
 		return (0);
 	cmds.args = cmd_argvs[k];
 	cmds.in_fd = -1;
-	//printf("a\n");
 	close(pip[0]);
 	if (pipe(pip) == -1)
 		return (-1);
-	//printf("b\n");
 	data->builtins_outfd = pip[0];
 	if (cmd_argvs[k + 1] != 0)
 		cmds.out_fd = pip[1];
 	else
 		cmds.out_fd = STDOUT_FILENO;
-	//ft_putstr_fd("outfd in b = \n", STDERR_FILENO);
-	//ft_putendl_fd(ft_itoa(cmds.out_fd), STDERR_FILENO);
 	if (!interpret_strings(&cmds, data))
 		printf("String missing quotes\n");
 	if (i == 1)
@@ -143,64 +137,6 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data, int pip[2])
 		close(pip[0]);
 	return (1);
 }
-
-/* void	execute_system_funcs(char ***cmd_argv, int *i, t_ms *data, int s_fds[2])
-{
-	int	j;
-	int	k;
-	t_simargs *sim_args;
-
-	sim_args = malloc(sizeof(t_simargs));
-	if (!sim_args)
-		return ;
-	if (pipe(s_fds) == -1)
-		return ;
-	j = *i;
-	while (cmd_argv[j] && cmd_argv[j][0] && !check_builtin(cmd_argv[j][0]) )
-		j++;
-	//printf("i = %d, j = %d\n", *i, j);
-	sim_args->argc = (j - *i) + 3;
-	sim_args->argv = ft_calloc(sim_args->argc + 1, sizeof(char *));
-	//printf("value = %p, argv value = %p, argc = %d\n", sim_args, sim_args->argv, sim_args->argc);
-	if (!sim_args->argv)
-		return ;
-	k = 0;
-	sim_args->argv[k++] = ft_strdup("");
-	sim_args->argv[k++] = ft_itoa(data->builtins_outfd);
-	
-	//printf("i right before joining chuckero = %d\n", *i);
-	while (cmd_argv[*i] && *i < j)
-	{
-		//printf("first arg of argv %d = %s\n", k, cmd_argv[*i][0]);		
-		sim_args->argv[k++] = join_chunks(cmd_argv[(*i)++], " ", -1);
-		//printf("argv %d = %s\n", k - 1, sim_args->argv[k - 1]);
-	}
-	if (cmd_argv[*i] == NULL)
-		data->system_outfd = STDOUT_FILENO;
-	else if (data->system_outfd == -1)
-		data->system_outfd = s_fds[1];
-	close(s_fds[0]);
-	sim_args->argv[k] = ft_itoa(data->system_outfd);
-	printf(" infd in pipex = %d out fd = %d\n" ,data->builtins_outfd, data->system_outfd);
-
-
-	data->ret = pipex(sim_args->argc, sim_args->argv, g_envs, data);
-	close(s_fds[1]);
-	if (data->system_outfd > 1)
-		close(data->system_outfd);
-	data->system_outfd = -1;
-	close(data->builtins_outfd);
-	free(sim_args->argv);
-	free(sim_args);
-}
- */
-/*
-#TODO: REWRITE SYS FUNCS TO EXEC ONE AT A TIME:
-	- BUILTINS DONT NEED SEPERATE PIPE JUST DUP STDOUT AND DUP2 STDOUT TO WHATEVER DATA IS OUTPUT THEN DUP2 THE COPY TO STDOUT
-	- EVERY SYSTEM FUNC RE PIPES BUT SAVES IN FD IN THE FORM OF READ END OF PIPE BEFORE RE-PIPING 
-	- SYSTEM FUNCS OUTPUT DATA TO THE WRITE END OF THE NEW PIPE, THE FDS SYSTEM FUNCS USE ARE SAVED IN A NON PIPED INT[2] ARRAY TO KEEP THE VALUES AFTER PIPING
-	- ONLY WAIT FOR LAST ONE IN CREATION LOGIC THEN WAIT FOR ALL AFTER LOOP - NEED TO SAVE PIDS TO GET RETURNS
-*/
 
 int	check_cmd_executable(char *cmd)
 {
