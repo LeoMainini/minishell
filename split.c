@@ -361,7 +361,6 @@ t_spl	cmd_split(char *s)
 	spl.ss = (char ***)ft_calloc(sizeof(char **), (spl.cmd_count + 1));
 	if (!spl.ss)
 		return (spl);
-	printf("cmd count = %d\n", spl.cmd_count);
 	l = 0;
 	while (l < spl.cmd_count)
 	{
