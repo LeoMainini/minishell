@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/25 13:23:59 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/25 16:29:22 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,10 @@ t_spl   cmd_split(char *s);
 int     change_dir(t_cmdd *argd, t_ms *data, int before_pipe);
 int		echo(t_cmdd *argd, t_ms *data);
 int		env(t_cmdd *argd, t_ms *data);
-void	exit_status(int status, char **line);
+void	exit_status(int status, t_ms *data);
 int		exit_shell(t_cmdd *argd, t_ms *data, int before_pipe);
 int		export(t_cmdd *argd, t_ms *data, int before_pipe);
-char	**duplicate_envp(char **envs, int offset);
+char	**duplicate_envp(char **envs, int offset, int freeable);
 void    ft_parsing(char *str);
 char	**get_env(char *env, t_ms *data);
 char	*get_pwd();
@@ -61,5 +61,6 @@ int     set_pwd(t_ms *data);
 int	    unset(t_cmdd *argd, t_ms *data, int before_pipe);
 t_ms	*get_struct(t_ms **data);
 t_spl	*fetch_cmdsplit(t_spl *cmdsplit);
+int		handle_redirections(int	i);
 
 #endif

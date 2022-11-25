@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:29:45 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/24 15:57:26 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/25 16:28:53 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,7 +208,7 @@ int	export(t_cmdd *argd, t_ms *data, int before_pipe)
 		}
 		free(name);
 		envi = g_envs;
-		g_envs = duplicate_envp(g_envs, 1);
+		g_envs = duplicate_envp(g_envs, 1, 1);
 		free(envi);
 		last_i = 0;
 		while (g_envs[last_i])

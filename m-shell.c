@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/25 13:29:31 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/25 16:29:08 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,11 @@
 
 char **g_envs;
 
-void exit_status(int status, char **line)
+void exit_status(int status, t_ms *data)
 {
 	int	i;
 
-	free(*line);
+	free(*(data->rl_addr));
 	i = -1;
 	while (g_envs[++i])
 		free(g_envs[i]);
@@ -50,7 +50,7 @@ char	**alloc_envmem(char **envs, int	offset)
 	return (temp);
 }
 
-char	**duplicate_envp(char **envs, int offset)
+char	**duplicate_envp(char **envs, int offset, int freeable)
 {
 	int		i;
 	char	**temp;
@@ -64,7 +64,11 @@ char	**duplicate_envp(char **envs, int offset)
 	if (!temp)
 		return (0);
 	while (i--)
+	{
 		temp[i] = ft_strdup(envs[i]);
+		if (freeable)
+			free(envs[i]);
+	}
 	return (temp);
 }
 
@@ -97,10 +101,52 @@ int	check_builtin(char *cmd)
 		return (7);
 	return (0);
 }
+int	handle_b_redirections(int	i)
+{
+	int		success;
+	int		fd;
+	t_spl	*spl;
+	int		j;
+
+	printf("i = %d\n", i);
+	spl = fetch_cmdsplit(0);
+	success = 0;
+	j = -1;
+	if (spl->input_files && spl->input_files[i][0])
+		while (spl->input_files[i][++j])
+		{
+			printf("input file = %s\n", spl->input_files[i][j]);
+			fd = open(spl->input_files[i][j], R_OK);	
+			if (fd == -1)
+				success = -1;
+			close(fd);
+		}
+	j = -1;
+	if (spl->output_files && spl->output_files[i][0])
+	{
+		while (spl->output_files[i][++j])
+		{
+			printf("output file = %s in mode %d\n", spl->output_files[i][j], spl->output_types[i][j]);
+			//test file opening for directory before opening if trying this fails
+			if (!spl->output_types[i][j])
+				fd = open(spl->output_files[i][j], O_RDWR | O_TRUNC | O_CREAT);
+			else if (spl->output_types[i][j] == 1)
+				fd = open(spl->output_files[i][j], O_APPEND | O_RDWR | O_CREAT);
+			if (fd == -1)
+				success = -1;
+			if (spl->input_files[i][j + 1] && fd != -1)
+				close(fd);
+		}
+		if (success != -1)
+			success = fd;
+	}
+	return (success);
+}
 
 int execute_builtin(char ***cmd_argvs, int k, t_ms *data, int pip[2])
 {
 	int	i;
+	int	redirs_status;
 	t_cmdd		cmds;
 
 	i = check_builtin(cmd_argvs[k][0]);
@@ -111,11 +157,22 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data, int pip[2])
 	close(pip[0]);
 	if (pipe(pip) == -1)
 		return (-1);
-	data->builtins_outfd = pip[0];
-	if (cmd_argvs[k + 1] != 0)
+	redirs_status = handle_b_redirections(k);
+	if (cmd_argvs[k + 1] != 0 && redirs_status <= 0)
 		cmds.out_fd = pip[1];
-	else
+	else if (redirs_status <= 0)
 		cmds.out_fd = STDOUT_FILENO;
+	else
+	{
+		close(pip[1]);
+		cmds.out_fd = redirs_status;
+	}
+	if (redirs_status == -1 && !close(pip[1])
+		&& ft_putstr_fd("No such file or directory\n", STDERR_FILENO))
+		return(set_ret_return(data, 126));
+		//change all sub process exits to free_exit
+	if (cmds.out_fd == STDOUT_FILENO)
+		close(pip[0]);
 	if (i == 1)
 		change_dir(&cmds, data, cmd_argvs[k + 1] != 0);
 	if (i == 2)
@@ -130,9 +187,8 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data, int pip[2])
 		exit_shell(&cmds, data, cmd_argvs[k + 1] != 0);
 	if (i == 7)
 		echo(&cmds, data);
-	close(pip[1]);
-	if (cmds.out_fd == STDOUT_FILENO)
-		close(pip[0]);
+	if (redirs_status <= 0)
+		close(pip[1]);
 	return (1);
 }
 
@@ -170,19 +226,50 @@ char *get_executable_path(t_ms *data, char *cmd, char **envp)
 int	handle_redirections(int	i)
 {
 	int		success;
+	int		fd;
 	t_spl	*spl;
 	int		j;
 
 	spl = fetch_cmdsplit(0);
-	success = 1;
+	success = 0;
 	j = -1;
 	if (spl->input_files && spl->input_files[i][0])
+	{
 		while (spl->input_files[i][++j])
-			printf("%s in mode %d\n", spl->input_files[i][j], spl->input_types[i][j]);
+		{
+			printf("input file = %s\n", spl->input_files[i][j]);
+			fd = open(spl->input_files[i][j], R_OK);	
+			if (fd == -1)
+				success = -1;
+			if (!spl->input_files[i][j + 1] && fd != -1)
+				dup2(fd, STDIN_FILENO);
+			close(fd);
+		}
+		if (success != -1)
+			success = 1;
+	}
+	j = -1;
 	if (spl->output_files && spl->output_files[i][0])
+	{
 		while (spl->output_files[i][++j])
-			printf("%s in mode %d\n", spl->output_files[i][j], spl->output_types[i][j]);
-	//1 ON REDIRS 0 ON NO REDIRS -1 ON ERROR
+		{
+			printf("output file = %s in mode %d\n", spl->output_files[i][j], spl->output_types[i][j]);
+			if (!spl->output_types[i][j])
+				fd = open(spl->output_files[i][j], O_RDWR | O_TRUNC | O_CREAT);
+			else if (spl->output_types[i][j] == 1)
+				fd = open(spl->output_files[i][j], O_APPEND | O_RDWR | O_CREAT);
+			if (fd == -1)
+				success = -1;
+			if (!spl->input_files[i][j + 1] && fd != -1)
+				dup2(fd, STDOUT_FILENO);
+			close(fd);
+		}
+		if (success == 1)
+			success = 3;
+		else if (!success)
+			success = 2;
+	}
+	//1 ON REDIRS STDIN 2 REDIRS STDOUT 3 REDIRS BOTH 0 ON NO REDIRS -1 ON ERROR
 	return (success);
 }
 
@@ -192,6 +279,7 @@ int	exec_sys_func(char*** cmd_argv, int *i, t_ms *data, int pip[2])
 	int		in_fd;
 	int		out_fd;
 	char	*exec_path;
+	int		redirs_status;
 
 	in_fd = pip[0];
 	if (pipe(pip) == -1)
@@ -200,19 +288,23 @@ int	exec_sys_func(char*** cmd_argv, int *i, t_ms *data, int pip[2])
 	pid = fork();
 	if (!pid)
 	{
-
-		if (in_fd > -1)
+		redirs_status = handle_redirections(*i);
+		printf("redirs status = %d \n", redirs_status);
+		if (in_fd > -1 && redirs_status != 1 && redirs_status != 3)
 			dup2(in_fd, STDIN_FILENO);
-		close(in_fd);
-		if(cmd_argv[*i + 1])
+		if(cmd_argv[*i + 1] && redirs_status != 2 && redirs_status != 3 )
 			dup2(out_fd, STDOUT_FILENO);
+		close(in_fd);
 		close(out_fd);
+		if (redirs_status == -1
+			&& ft_putstr_fd("No such file or directory\n", STDERR_FILENO))
+			exit(126);
 		exec_path = (get_executable_path(data, cmd_argv[*i][0], g_envs));
 		execve(exec_path, cmd_argv[*i], g_envs);
 		free(exec_path);
 		ft_putstr_fd("Error executing: ", STDERR_FILENO);
 		ft_putendl_fd(cmd_argv[*i][0], STDERR_FILENO);
-		exit(127);
+		exit_status(127, data);	
 	}
 	else
 		close(pip[1]);
@@ -337,7 +429,7 @@ int	main(int argc, char **argv, char **envp)
 	data->system_outfd = -1;
 	signal(SIGINT, sighandler);
 	signal(SIGQUIT, sighandler);
-	g_envs = duplicate_envp(envp, 0);
+	g_envs = duplicate_envp(envp, 0, 0);
 	data->path = find_shell_path(g_envs);
 	read_line = readline("shell:> ");
 	while (read_line)
@@ -379,5 +471,5 @@ int	main(int argc, char **argv, char **envp)
 		read_line = readline("shell:> ");
 	}
 	ft_putendl_fd("exit", STDERR_FILENO);
-	exit_status(0, &read_line);
+	exit_status(0, data);
 }

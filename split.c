@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ben <ben@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/25 04:21:49 by ben              ###   ########.fr       */
+/*   Updated: 2022/11/25 15:24:04 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -323,8 +323,8 @@ void	init_redir_arrays(t_spl *spl)
 		}
 		spl->input_files[l] = ft_calloc(spl->redir_in + 1, sizeof(char*));
 		spl->output_files[l] = ft_calloc(spl->redir_out + 1, sizeof(char*));
-		spl->input_types[l] = ft_calloc(spl->redir_in + 1, sizeof(int*));
-		spl->output_types[l] = ft_calloc(spl->redir_out + 1, sizeof(int*));
+		spl->input_types[l] = ft_calloc(spl->redir_in + 1, sizeof(int));
+		spl->output_types[l] = ft_calloc(spl->redir_out + 1, sizeof(int));
 		if (!spl->input_files[l] || !spl->output_files[l]
 			|| !spl->input_types[l] || !spl->output_types[l])
 			return ;
@@ -399,7 +399,7 @@ void	strmove(t_spl *spl)
 			j++;
 		}
 	}
-	//printing
+	// printing
 	// l = -1;
 	// while (spl->ss[++l])
 	// {
