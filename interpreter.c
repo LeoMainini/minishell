@@ -6,7 +6,7 @@
 /*   By: ben <ben@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 16:52:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/25 02:53:33 by ben              ###   ########.fr       */
+/*   Updated: 2022/11/25 04:00:56 by ben              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,6 @@ int	interpret_strings(char **strs, t_ms *data)
 		i = 0;
 		while (strs[k][i])
 		{
-			printf("interpret i is %d %s\n", i, strs[k]);
 			inc = 0;
 			if (!handle_quotes(&(strs[k]), i, &in_doubles, &in_singles))
 				inc = 1;

@@ -6,7 +6,7 @@
 /*   By: ben <ben@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/25 03:39:13 by ben              ###   ########.fr       */
+/*   Updated: 2022/11/25 04:21:49 by ben              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,6 +214,8 @@ char	*separate_redirs(char *s)
 			while (s[i] && (s[i] == '<' || s[i] == '>'))
 				i++;
 			redir_count++;
+			if (!s[i])
+				break ;
 		}
 		i++;			
 	}
@@ -244,7 +246,6 @@ char	*separate_redirs(char *s)
 		aux[j++] = s[i++];
 	}
 	aux[j] = '\0';
-	printf("aux is %s\n", aux);
 	return (aux);
 }
 
@@ -331,29 +332,29 @@ void	init_redir_arrays(t_spl *spl)
 	l = -1;
 	while (spl->ss[++l])
 	{
+		o = -1;
+		i =-1;
 		j = -1;
 		while (spl->ss[l][++j])
 		{
-			o = -1;
-			i =-1;
 			if (!ft_strcmp(spl->ss[l][j], "<") || !ft_strcmp(spl->ss[l][j], "<<"))
 			{
 						
+				spl->input_files[l][++i] = ft_strdup(spl->ss[l][j + 1]);
 				if (!ft_strcmp(spl->ss[l][j], "<"))
-					spl->input_types[l][++i] = 0;
+					spl->input_types[l][i] = 0;
 				else if (!ft_strcmp(spl->ss[l][j], "<<"))
-					spl->input_types[l][++i] = 1;	
-				spl->input_files[l][i] = ft_strdup(spl->ss[l][j + 1]);
+					spl->input_types[l][i] = 1;	
 				if (!spl->input_files[l][i])
 					return;
 			}
 			else if (!ft_strcmp(spl->ss[l][j], ">")|| !ft_strcmp(spl->ss[l][j], ">>"))
 			{
+				spl->output_files[l][++o] = ft_strdup(spl->ss[l][j + 1]);
 				if (!ft_strcmp(spl->ss[l][j], ">"))
-					spl->output_types[l][++o] = 0;
+					spl->output_types[l][o] = 0;
 				else if (!ft_strcmp(spl->ss[l][j], ">>"))
-					spl->output_types[l][++o] = 1;
-				spl->output_files[l][o] = ft_strdup(spl->ss[l][j + 1]);
+					spl->output_types[l][o] = 1;
 				if (spl->output_files[l][o])
 					return ;
 			}
@@ -378,15 +379,22 @@ void	strmove(t_spl *spl)
 				{
 					free(spl->ss[l][j]);
 					free(spl->ss[l][j + 1]);
+					if (spl->ss[l][j + 2])
+					{
+						
+						while (spl->ss[l][j + 2] )
+						{
+							spl->ss[l][j] = ft_strdup(spl->ss[l][j + 2]);
+							free (spl->ss[l][j + 2]);
+							spl->ss[l][j+2] = NULL;
+							j++;
+						}
+						j = 0;
+						continue;
+					}
+					else 
 					spl->ss[l][j] = NULL;
 					spl->ss[l][j + 1] = NULL;
-					while (spl->ss[l][j + 2] )
-					{
-						spl->ss[l][j] = spl->ss[l][j + 2];
-						j++;
-					}
-					j = 0;
-					continue;
 				}
 			j++;
 		}
@@ -399,6 +407,16 @@ void	strmove(t_spl *spl)
 	// 	while (spl->ss[l][++j])
 	// 	{
 	// 		printf("post move %d %d %s\n",l,j, spl->ss[l][j]);
+	// 	}
+	// }
+	
+	//  l = -1;
+	// while (spl->input_files[++l])
+	// {
+	// 	j = -1;
+	// 	while (spl->input_files[l][++j])
+	// 	{
+	// 		printf("post move %d %d %s\n",l,j, spl->input_files[l][j]);
 	// 	}
 	// }
 			
