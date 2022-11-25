@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/25 15:24:04 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/25 16:32:36 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -393,8 +393,10 @@ void	strmove(t_spl *spl)
 						continue;
 					}
 					else 
-					spl->ss[l][j] = NULL;
-					spl->ss[l][j + 1] = NULL;
+					{
+						spl->ss[l][j] = NULL;
+						spl->ss[l][j + 1] = NULL;
+					}
 				}
 			j++;
 		}
