@@ -6,7 +6,7 @@
 /*   By: ben <ben@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/25 04:21:49 by ben              ###   ########.fr       */
+/*   Updated: 2022/11/25 16:23:58 by ben              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -393,8 +393,10 @@ void	strmove(t_spl *spl)
 						continue;
 					}
 					else 
-					spl->ss[l][j] = NULL;
-					spl->ss[l][j + 1] = NULL;
+					{
+						spl->ss[l][j] = NULL;
+						spl->ss[l][j + 1] = NULL;
+					}
 				}
 			j++;
 		}
