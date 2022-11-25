@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ben <ben@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/24 17:19:34 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/25 03:39:13 by ben              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,10 +278,6 @@ int	validate_redirs(t_spl *spl)
 					spl->redir_bool = 0;
 					return (1);
 				}
-				else if (!ft_strcmp(s[l][j], "<") || !ft_strcmp(s[l][j], "<<"))
-					spl->redir_in++;
-				else if (!ft_strcmp(s[l][j], ">") || !ft_strcmp(s[l][j], ">>"))
-					spl->redir_out++;
 				spl->redir_bool = 1;
 			}
 		}
@@ -289,46 +285,123 @@ int	validate_redirs(t_spl *spl)
 	return (0);
 }
 
-void	init_redir_arrays(t_spl *spl)
+void	alloc_redir_arrays(t_spl *spl)
 {
 	//ALLOCATION OF **CHAR MISSING AFTER REDIR COUNT
-	int	l;
-	int	j;
-	int	i;
-	int	o;
-
-	spl->output_files = ft_calloc(sizeof(char*), (spl->cmd_count + 1));
+	spl->output_files = ft_calloc(sizeof(char**), (spl->cmd_count + 1));
 	if (!spl->output_files)
 		return ;
-	spl->input_files = ft_calloc(sizeof(char*), (spl->cmd_count + 1));
+	spl->input_files = ft_calloc(sizeof(char**), (spl->cmd_count + 1));
 	if (!spl->input_files)
 		return ;
-	spl->output_types = ft_calloc(sizeof(int), (spl->cmd_count + 1));
+	spl->output_types = ft_calloc(sizeof(int*), (spl->cmd_count + 1));
 	if (!spl->output_types)
 		return ;
-	spl->input_types = ft_calloc(sizeof(int), (spl->cmd_count + 1));
+	spl->input_types = ft_calloc(sizeof(int*), (spl->cmd_count + 1));
 	if (!spl->input_types)
 		return ;
+}
+
+void	init_redir_arrays(t_spl *spl)
+{
+	int	i;
+	int	o;
+	int	j;
+	int	l;
+
 	l = -1;
-	j = -1;
-	i = -1;
-	o = -1;
 	while (spl->ss[++l])
 	{
+			j =-1;
 		while (spl->ss[l][++j])
 		{
 			if (!ft_strcmp(spl->ss[l][j], "<") || !ft_strcmp(spl->ss[l][j], "<<"))
-			{
-				spl->input_files[++i] = ft_strdup(spl->ss[l][j + 1]);
-				spl->input_types[i] = (ft_strcmp(spl->ss[l][j], "<<")!= 0);
-			}
+				spl->redir_in++;
 			else if (!ft_strcmp(spl->ss[l][j], ">") || !ft_strcmp(spl->ss[l][j], ">>"))
+				spl->redir_out++;
+		}
+		spl->input_files[l] = ft_calloc(spl->redir_in + 1, sizeof(char*));
+		spl->output_files[l] = ft_calloc(spl->redir_out + 1, sizeof(char*));
+		spl->input_types[l] = ft_calloc(spl->redir_in + 1, sizeof(int*));
+		spl->output_types[l] = ft_calloc(spl->redir_out + 1, sizeof(int*));
+		if (!spl->input_files[l] || !spl->output_files[l]
+			|| !spl->input_types[l] || !spl->output_types[l])
+			return ;
+	}
+	l = -1;
+	while (spl->ss[++l])
+	{
+		j = -1;
+		while (spl->ss[l][++j])
+		{
+			o = -1;
+			i =-1;
+			if (!ft_strcmp(spl->ss[l][j], "<") || !ft_strcmp(spl->ss[l][j], "<<"))
 			{
-				spl->output_files[++o] = ft_strdup(spl->ss[l][j + 1]);
-				spl->output_types[o] = (ft_strcmp(spl->ss[l][j], ">>") != 0);
+						
+				if (!ft_strcmp(spl->ss[l][j], "<"))
+					spl->input_types[l][++i] = 0;
+				else if (!ft_strcmp(spl->ss[l][j], "<<"))
+					spl->input_types[l][++i] = 1;	
+				spl->input_files[l][i] = ft_strdup(spl->ss[l][j + 1]);
+				if (!spl->input_files[l][i])
+					return;
+			}
+			else if (!ft_strcmp(spl->ss[l][j], ">")|| !ft_strcmp(spl->ss[l][j], ">>"))
+			{
+				if (!ft_strcmp(spl->ss[l][j], ">"))
+					spl->output_types[l][++o] = 0;
+				else if (!ft_strcmp(spl->ss[l][j], ">>"))
+					spl->output_types[l][++o] = 1;
+				spl->output_files[l][o] = ft_strdup(spl->ss[l][j + 1]);
+				if (spl->output_files[l][o])
+					return ;
 			}
 		}
 	}
+}
+
+void	strmove(t_spl *spl)
+{
+	int	l;
+	int	j;
+
+	l = -1;
+	while (spl->ss[++l])
+	{
+		j = 0;
+		while (spl->ss[l][j])
+		{
+				
+			if (!ft_strcmp(spl->ss[l][j], "<") || !ft_strcmp(spl->ss[l][j], ">")
+				|| !ft_strcmp(spl->ss[l][j], ">>") || !ft_strcmp(spl->ss[l][j], "<<"))
+				{
+					free(spl->ss[l][j]);
+					free(spl->ss[l][j + 1]);
+					spl->ss[l][j] = NULL;
+					spl->ss[l][j + 1] = NULL;
+					while (spl->ss[l][j + 2] )
+					{
+						spl->ss[l][j] = spl->ss[l][j + 2];
+						j++;
+					}
+					j = 0;
+					continue;
+				}
+			j++;
+		}
+	}
+	//printing
+	// l = -1;
+	// while (spl->ss[++l])
+	// {
+	// 	j = -1;
+	// 	while (spl->ss[l][++j])
+	// 	{
+	// 		printf("post move %d %d %s\n",l,j, spl->ss[l][j]);
+	// 	}
+	// }
+			
 }
 
 t_spl	cmd_split(char *s)
@@ -416,7 +489,11 @@ t_spl	cmd_split(char *s)
 	if (validate_redirs(&spl))
 		return (spl);
 	if (spl.redir_bool)
+	{
+		alloc_redir_arrays(&spl);
 		init_redir_arrays(&spl);
+		strmove(&spl);	
+	}
 
 		
 	//printing
