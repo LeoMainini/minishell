@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/24 17:17:07 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/25 13:23:59 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,6 @@ void	sighandler(int signum);
 int     set_pwd(t_ms *data);
 int	    unset(t_cmdd *argd, t_ms *data, int before_pipe);
 t_ms	*get_struct(t_ms **data);
+t_spl	*fetch_cmdsplit(t_spl *cmdsplit);
 
 #endif

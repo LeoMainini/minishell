@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/24 17:17:18 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/25 13:29:31 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,25 @@ char *get_executable_path(t_ms *data, char *cmd, char **envp)
 	return (ft_strjoin(data->path, cmd));
 }
 
+int	handle_redirections(int	i)
+{
+	int		success;
+	t_spl	*spl;
+	int		j;
+
+	spl = fetch_cmdsplit(0);
+	success = 1;
+	j = -1;
+	if (spl->input_files && spl->input_files[i][0])
+		while (spl->input_files[i][++j])
+			printf("%s in mode %d\n", spl->input_files[i][j], spl->input_types[i][j]);
+	if (spl->output_files && spl->output_files[i][0])
+		while (spl->output_files[i][++j])
+			printf("%s in mode %d\n", spl->output_files[i][j], spl->output_types[i][j]);
+	//1 ON REDIRS 0 ON NO REDIRS -1 ON ERROR
+	return (success);
+}
+
 int	exec_sys_func(char*** cmd_argv, int *i, t_ms *data, int pip[2])
 {
 	int		pid;
@@ -181,6 +200,7 @@ int	exec_sys_func(char*** cmd_argv, int *i, t_ms *data, int pip[2])
 	pid = fork();
 	if (!pid)
 	{
+
 		if (in_fd > -1)
 			dup2(in_fd, STDIN_FILENO);
 		close(in_fd);
@@ -219,21 +239,36 @@ int	*save_pid(int **pids, int new_pid, int reset)
 	return (temp_pids);
 }
 
-// static void free_spl_redirs(t_spl *cspl)
-// {
-// 	int	i;
+static void free_spl_redirs(t_spl *cspl)
+{
+	int	i;
+	int	j;
 
-// 	i = -1;
-// 	while (cspl->input_files && cspl->input_files[++i])
-// 		free(cspl->input_files[i]);
-// 	free(cspl->input_files);
-// 	free(cspl->input_types);
-// 	i = -1;
-// 	while (cspl->output_files && cspl->output_files[++i])
-// 		free(cspl->output_files[i]);
-// 	free(cspl->output_files);
-// 	free(cspl->output_types);
-// }
+	i = -1;
+	while (cspl->input_files && cspl->input_files[++i])
+	{
+		j = -1;
+		while (cspl->input_files[i][++j])
+			free(cspl->input_files[i][j]);
+		free(cspl->input_files[i]);
+		free(cspl->input_types[i]);
+	}
+	free(cspl->input_files);
+	cspl->input_files = 0;
+	free(cspl->input_types);
+	i = -1;
+	while (cspl->output_files && cspl->output_files[++i])
+	{
+		j = -1;
+		while (cspl->output_files[i][++j])
+			free(cspl->output_files[i][j]);
+		free(cspl->output_files[i]);
+		free(cspl->output_types[i]);
+	}
+	free(cspl->output_files);
+	cspl->output_files = 0;
+	free(cspl->output_types);
+}
 
 void	free_cmdsplit(t_spl *cspl)
 {
@@ -250,7 +285,7 @@ void	free_cmdsplit(t_spl *cspl)
 	}
 	free(cspl->ss);
 	cspl->ss = NULL;
-	//free_spl_redirs(cspl);
+	free_spl_redirs(cspl);
 	free(cspl);
 }
 
@@ -271,6 +306,15 @@ t_spl *get_cmdsplit(char *read_line)
 	if (!temp)
 		return (0);
 	*temp = cmd_split(read_line);
+	return (temp);
+}
+
+t_spl	*fetch_cmdsplit(t_spl *cmdsplit)
+{
+	static t_spl	*temp;
+	
+	if (cmdsplit)
+		temp = cmdsplit;
 	return (temp);
 }
 
@@ -301,6 +345,7 @@ int	main(int argc, char **argv, char **envp)
 		add_history(read_line);
 		data->rl_addr = &read_line;
 		spl = get_cmdsplit(read_line);
+		fetch_cmdsplit(spl);
 		if (!spl)
 			break ;
 		pip[0] = -1;
