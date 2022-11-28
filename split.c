@@ -6,7 +6,7 @@
 /*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/28 16:58:23 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/28 17:07:35 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,6 +219,8 @@ char	*separate_redirs(char *s)
 		}
 		i++;			
 	}
+	if (!redir_count)
+		return (s);
 	aux = ft_calloc(sizeof(char), ((redir_count * 2) + i + 1));
 	if (!aux)
 		return (NULL);
@@ -532,7 +534,8 @@ t_spl	cmd_split(char *s)
 		spl.ss[l][j][k] = '\0';
 		j++;
 	}
-	free (s);
+	if (s != aux)
+		free (s);
 	if (validate_redirs(&spl))
 		return (spl);
 	if (spl.redir_bool)
