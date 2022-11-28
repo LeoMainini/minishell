@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 17:15:06 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/09 13:08:34 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/28 17:06:27 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ static int	check_limiter(char **str_array, int index, char *limiter,
 	result = 0;
 	temp = 0;
 	temp = ft_strjoin(limiter, "\n");
-	result = ft_strcmp(str_array[index], temp);
+	if (str_array && str_array[index])
+		result = ft_strcmp(str_array[index], temp);
 	if (!result)
 	{
 		if (!null_index_delta)

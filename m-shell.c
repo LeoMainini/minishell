@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/28 14:39:38 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/28 17:43:08 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ void exit_status(int status, t_ms *data)
 {
 	int	i;
 
-	free(*(data->rl_addr));
+	if (data->rl_addr && *(data->rl_addr))
+		free(*(data->rl_addr));
 	i = -1;
 	while (g_envs[++i])
 		free(g_envs[i]);
@@ -85,6 +86,8 @@ int	check_envp_duplicate_error(char **envs)
 
 int	check_builtin(char *cmd)
 {
+	if (!cmd)
+		return (0);
 	if (!ft_strcmp(cmd, "cd"))
 		return (1);
 	if (!ft_strcmp(cmd, "env"))
@@ -223,32 +226,90 @@ char *get_executable_path(t_ms *data, char *cmd, char **envp)
 	return (ft_strjoin(data->path, cmd));
 }
 
-int	handle_redirections(int	i)
+int	strs_to_fd(char **array, int fd)
+{
+	int	i;
+
+	if (!array)
+		return (-1);
+	i = -1;
+	while (array[++i])
+	{
+		if (write(fd, array[i], ft_strlen(array[i])) == -1)
+			return (0);
+		free(array[i]);
+	}
+	free(array);
+	return (1);
+}
+
+int	handle_redirections(int	i, t_ms *data, int pip[2])
 {
 	int		success;
 	int		fd;
 	t_spl	*spl;
 	int		j;
+	int		pid;
+	int		status;
 
 	spl = fetch_cmdsplit(0);
 	success = 0;
+	j = -1;
+	//int	log_fd =  open(ft_strjoin(ft_itoa(i), "-logfile.txt"), O_CREAT | O_RDWR | O_TRUNC);
+	//redir input files
 	j = -1;
 	if (spl->input_files && spl->input_files[i][0])
 	{
 		while (spl->input_files[i][++j])
 		{
 			printf("input file = %s\n", spl->input_files[i][j]);
-			fd = open(spl->input_files[i][j], R_OK);	
+			if (!spl->input_types[i][j])
+				fd = open(spl->input_files[i][j], R_OK);
+			else if (spl->input_types[i][j] == 1)
+			{
+				fd = open("/tmp/hd_data", O_CREAT | O_TRUNC | O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
+				pid = fork();
+				if (!pid)
+				{
+					close(pip[1]);
+					close(pip[0]);
+					if (fd == -1)
+					{
+						ft_putendl_fd("couldnt open fd", STDERR_FILENO);
+						success = -1;
+					}
+					else
+					{
+						ft_putendl_fd("opened fd", STDERR_FILENO);
+						char ** data1 = 0;
+						data1 = parse_stdin_tolimit(spl->input_files[i][j]);
+						if (data1)
+							ft_putendl_fd("got data", STDERR_FILENO);
+						else
+							ft_putendl_fd("couldnt get data", STDERR_FILENO);
+						//strs_to_fd(data1, STDOUT_FILENO);
+						strs_to_fd(data1, fd);
+					}
+					close(fd);
+					exit_status(0, data);
+				}
+				else
+					waitpid(pid, &status, 0);
+			}
 			if (fd == -1)
 				success = -1;
-			if (!spl->input_files[i][j + 1] && fd != -1)
+			if (!spl->input_files[i][j + 1] && fd != -1 && ft_putstr_fd("redirecting stdin", STDERR_FILENO))
 				dup2(fd, STDIN_FILENO);
 			close(fd);
 		}
-		if (success != -1)
+		//ft_putstr_fd(ft_strjoin(ft_itoa(i)," finished ins"), log_fd);
+		if (success != -1)// && ft_putstr_fd("- redired in\n", log_fd))
 			success = 1;
 	}
+	//else
+	//	ft_putstr_fd("no input files", log_fd);
 	j = -1;
+	//redir output
 	if (spl->output_files && spl->output_files[i][0])
 	{
 		while (spl->output_files[i][++j])
@@ -260,15 +321,21 @@ int	handle_redirections(int	i)
 				fd = open(spl->output_files[i][j], O_APPEND | O_RDWR | O_CREAT);
 			if (fd == -1)
 				success = -1;
-			if (!spl->input_files[i][j + 1] && fd != -1)
+			if (!spl->output_files[i][j + 1] && fd != -1)
 				dup2(fd, STDOUT_FILENO);
-			close(fd);
+			if (fd >= 0)
+				close(fd);
 		}
-		if (success == 1)
+		//ft_putstr_fd(ft_strjoin(ft_itoa(i)," finished outs"), log_fd);
+		if (success == 1)// && ft_putstr_fd("- redired in and out\n", log_fd))
 			success = 3;
-		else if (!success)
+		else if (!success)// && ft_putstr_fd("- redired out\n", log_fd))
 			success = 2;
+		else if (fd == -1)
+			success = -1;
 	}
+	//else
+	//	ft_putstr_fd("no output files", log_fd);
 	//1 ON REDIRS STDIN 2 REDIRS STDOUT 3 REDIRS BOTH 0 ON NO REDIRS -1 ON ERROR
 	return (success);
 }
@@ -285,11 +352,14 @@ int	exec_sys_func(char*** cmd_argv, int *i, t_ms *data, int pip[2])
 	if (pipe(pip) == -1)
 		return -2;
 	out_fd = pip[1];
+	redirs_status = 0;
 	pid = fork();
 	if (!pid)
 	{
-		redirs_status = handle_redirections(*i);
-		printf("redirs status in %d = %d \n", *i, redirs_status);
+		redirs_status = handle_redirections(*i, data, pip);
+		ft_putstr_fd("redirs status in ((i) = (status)) =", STDERR_FILENO);
+		ft_putstr_fd(ft_strjoin(ft_itoa(*i), " ="), STDERR_FILENO);
+		ft_putendl_fd(ft_itoa(redirs_status), STDERR_FILENO);
 		if (in_fd > -1 && redirs_status != 1 && redirs_status != 3)
 			dup2(in_fd, STDIN_FILENO);
 		if(cmd_argv[*i + 1] && redirs_status != 2 && redirs_status != 3 )
@@ -299,6 +369,8 @@ int	exec_sys_func(char*** cmd_argv, int *i, t_ms *data, int pip[2])
 		if (redirs_status == -1
 			&& ft_putstr_fd("No such file or directory\n", STDERR_FILENO))
 			exit(126);
+		if (!cmd_argv[*i][0])
+			exit_status(0, data);
 		exec_path = (get_executable_path(data, cmd_argv[*i][0], g_envs));
 		execve(exec_path, cmd_argv[*i], g_envs);
 		free(exec_path);
@@ -427,6 +499,7 @@ int	main(int argc, char **argv, char **envp)
 	data->ret = 0;
 	data->builtins_outfd = -1;
 	data->system_outfd = -1;
+	data->rl_addr = 0;
 	signal(SIGINT, sighandler);
 	signal(SIGQUIT, sighandler);
 	g_envs = duplicate_envp(envp, 0, 0);
@@ -451,9 +524,11 @@ int	main(int argc, char **argv, char **envp)
 			if (!execute_builtin(spl->ss, i, data, pip))
 				pids = save_pid(&pids, exec_sys_func(spl->ss, &i, data, pip), 0);
 		}
-		j = -1;
-		while(pids[++j])
-			waitpid(pids[j], &data->ret, 0);
+		j = 0;
+		while(pids[j])
+			j++;
+		while (j > 0)
+			waitpid(pids[--j], &data->ret, 0);
 		free(pids);		
 		if (WIFSIGNALED(data->ret))
 		{

@@ -15,3 +15,6 @@
 minishell
 .vscode
 .vscode/*
+*.txt
+*/*.txt
+*/*/*.txt
