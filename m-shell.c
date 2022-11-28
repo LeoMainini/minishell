@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/25 16:29:08 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/28 14:39:38 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,7 +289,7 @@ int	exec_sys_func(char*** cmd_argv, int *i, t_ms *data, int pip[2])
 	if (!pid)
 	{
 		redirs_status = handle_redirections(*i);
-		printf("redirs status = %d \n", redirs_status);
+		printf("redirs status in %d = %d \n", *i, redirs_status);
 		if (in_fd > -1 && redirs_status != 1 && redirs_status != 3)
 			dup2(in_fd, STDIN_FILENO);
 		if(cmd_argv[*i + 1] && redirs_status != 2 && redirs_status != 3 )
