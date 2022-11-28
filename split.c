@@ -6,7 +6,7 @@
 /*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/28 15:59:37 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/28 16:58:23 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,12 @@ int	isvalidcmd(char *s,  t_spl *spl)
 void	init_spl(t_spl *spl)
 {
 	spl->ss = NULL;
+	spl->input_files = NULL;
+	spl->output_files = NULL;
 	spl->cmd_count = 0;
 	spl->quotebool = 1;
 	spl->redir_bool = 0;
-	spl->input_files = NULL;
 	spl->input_types = 0;
-	spl->output_files = NULL;
 	spl->output_types = 0;
 	spl->redir_in = 0;
 	spl->redir_out = 0;
@@ -311,6 +311,8 @@ void	init_redir_arrays(t_spl *spl)
 	int	j;
 	int	l;
 
+	spl->redir_in = 0;
+	spl->redir_out = 0;
 	l = -1;
 	while (spl->ss[++l])
 	{
@@ -334,13 +336,12 @@ void	init_redir_arrays(t_spl *spl)
 	while (spl->ss[++l])
 	{
 		o = -1;
-		i =-1;
+		i = -1;
 		j = -1;
 		while (spl->ss[l][++j])
 		{
 			if (!ft_strcmp(spl->ss[l][j], "<") || !ft_strcmp(spl->ss[l][j], "<<"))
 			{
-						
 				spl->input_files[l][++i] = ft_strdup(spl->ss[l][j + 1]);
 				if (!ft_strcmp(spl->ss[l][j], "<"))
 					spl->input_types[l][i] = 0;
@@ -349,18 +350,36 @@ void	init_redir_arrays(t_spl *spl)
 				if (!spl->input_files[l][i])
 					return;
 			}
-			else if (!ft_strcmp(spl->ss[l][j], ">")|| !ft_strcmp(spl->ss[l][j], ">>"))
+			else if (!ft_strcmp(spl->ss[l][j], ">") || !ft_strcmp(spl->ss[l][j], ">>"))
 			{
 				spl->output_files[l][++o] = ft_strdup(spl->ss[l][j + 1]);
 				if (!ft_strcmp(spl->ss[l][j], ">"))
 					spl->output_types[l][o] = 0;
 				else if (!ft_strcmp(spl->ss[l][j], ">>"))
-					spl->output_types[l][o] = 1;
-				if (spl->output_files[l][o])
-					return ;
+					spl->output_types[l][o] = 1;	
+				if (!spl->output_files[l][o])
+					return;
 			}
 		}
 	}
+
+	
+	//printing
+	// l = -1;
+	// while (spl->input_files[++l])
+	// {
+	// 	j = -1;
+	// 	while (spl->input_files[l][++j])
+	// 		printf("infiles %d %d %s\n",l,j, spl->input_files[l][j]);
+	// }
+
+	// l = -1;
+	// while (spl->output_files[++l])
+	// {
+	// 	j = -1;
+	// 	while (spl->output_files[l][++j])
+	// 		printf("outfiles %d %d %s\n",l,j, spl->output_files[l][j]);
+	// }
 }
 
 void	free_cmdarray(t_spl *spl)
@@ -429,88 +448,8 @@ void	dupwithoutredirs(t_spl *spl)
 	free_cmdarray(spl);
 	spl->ss = aux;
 
-	 l = -1;
-	while (spl->input_files[++l])
-	{
-		j = -1;
-		while (spl->input_files[l][++j])
-		{
-			printf("post move %d %d %s\n",l,j, spl->input_files[l][j]);
-		}
-	}
 
-	 l = -1;
-	while (spl->output_files[++l])
-	{
-		j = -1;
-		while (spl->output_files[l][++j])
-		{
-			printf("post move %d %d %s\n",l,j, spl->output_files[l][j]);
-		}
-	}
 }
-
-/* void	strmove(t_spl *spl)
-{
-	int	l;
-	int	j;
-
-	l = -1;
-	while (spl->ss[++l])
-	{
-		j = 0;
-		while (spl->ss[l][j])
-		{
-				
-			if (!ft_strcmp(spl->ss[l][j], "<") || !ft_strcmp(spl->ss[l][j], ">")
-				|| !ft_strcmp(spl->ss[l][j], ">>") || !ft_strcmp(spl->ss[l][j], "<<"))
-				{
-					free(spl->ss[l][j]);
-					free(spl->ss[l][j + 1]);
-					if (spl->ss[l][j + 2])
-					{
-						
-						while (spl->ss[l][j + 2] )
-						{
-							spl->ss[l][j] = ft_strdup(spl->ss[l][j + 2]);
-							free (spl->ss[l][j + 2]);
-							spl->ss[l][j+2] = NULL;
-							j++;
-						}
-						j = 0;
-						continue ;
-					}
-					else 
-					{
-						spl->ss[l][j] = NULL;
-						spl->ss[l][j + 1] = NULL;
-					}
-				}
-			j++;
-		}
-	}
-	// printing
-	// l = -1;
-	// while (spl->ss[++l])
-	// {
-	// 	j = -1;
-	// 	while (spl->ss[l][++j])
-	// 	{
-	// 		printf("post move %d %d %s\n",l,j, spl->ss[l][j]);
-	// 	}
-	// }
-	
-	//  l = -1;
-	// while (spl->input_files[++l])
-	// {
-	// 	j = -1;
-	// 	while (spl->input_files[l][++j])
-	// 	{
-	// 		printf("post move %d %d %s\n",l,j, spl->input_files[l][j]);
-	// 	}
-	// }
-			
-} */
 
 t_spl	cmd_split(char *s)
 {
