@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/28 17:43:08 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/29 14:50:02 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 char **g_envs;
 
-void exit_status(int status, t_ms *data)
+void free_data(t_ms *data)
 {
 	int	i;
 
@@ -32,6 +32,11 @@ void exit_status(int status, t_ms *data)
 		free(g_envs[i]);
 	free(g_envs);
 	rl_clear_history();
+}
+
+void exit_status(int status, t_ms *data)
+{
+	free_data(data);
 	exit(status);
 }
 
@@ -242,83 +247,130 @@ int	strs_to_fd(char **array, int fd)
 	free(array);
 	return (1);
 }
-
-int	handle_redirections(int	i, t_ms *data, int pip[2])
+/*
+int	handle_hd(int *success, t_ms *data, char *limit, int pip[2])
 {
-	int		success;
-	int		fd;
-	t_spl	*spl;
-	int		j;
-	int		pid;
-	int		status;
+	int	fd;
+	int	pid;
+	char **parse_d;
 
+	fd = open("/tmp/hd_data", O_CREAT | O_TRUNC | O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
+	pid = fork();
+	if (!pid)
+	{
+		close(pip[1]);
+		close(pip[0]);
+		if (fd == -1)
+			*success = -1;
+		else
+		{
+			parse_d = parse_stdin_tolimit(limit);
+			strs_to_fd(parse_d, fd);
+		}
+		close(fd);
+		exit_status(0, data);
+	}
+	waitpid(pid, 0, 0);
+	return(open("/tmp/hd_data", O_RDONLY));
+*/
+//}
+
+int	handle_hd(t_ms *data, char *limit)
+{
+	int	fd;
+	int	pid;
+	char **parse_d;
+
+	fd = open("/tmp/hd_data", O_CREAT | O_TRUNC | O_RDWR,
+		S_IRWXU | S_IRWXG | S_IRWXO);
+	pid = fork();
+	if (!pid)
+	{
+		if (fd == -1)
+			return (0);
+		parse_d = parse_stdin_tolimit(limit);
+		strs_to_fd(parse_d, fd);
+		close(fd);
+		exit_status(0, data);
+	}
+	waitpid(pid, 0, 0);
+	return (open("/tmp/hd_data", O_RDONLY));
+}
+
+int	*perform_hd_chain(t_ms *data)
+{
+	t_spl		*spl;
+	static int	*hds;
+	int			i;
+	int			j;
+
+	if (!data)
+		return (hds);
 	spl = fetch_cmdsplit(0);
+	hds = ft_calloc(spl->cmd_count, sizeof(int));
+	i = -1;
+	while (spl->input_files && spl->input_files[++i] && spl->input_files[i][0])
+	{
+		j = -1;
+		while (spl->input_files[i][++j])
+		{
+			if (!spl->input_files[i][j + 1] && spl->input_types[i][j])
+				hds[i] = handle_hd(data, spl->input_files[i][j]);
+			else if (spl->input_types[i][j])
+				handle_hd(data, spl->input_files[i][j]);
+		}
+	}
+	return (hds);
+}
+
+int	handle_in(int i, t_spl *spl)
+{
+	int	fd;
+	int	success;
+	int	j;
+
 	success = 0;
-	j = -1;
-	//int	log_fd =  open(ft_strjoin(ft_itoa(i), "-logfile.txt"), O_CREAT | O_RDWR | O_TRUNC);
-	//redir input files
 	j = -1;
 	if (spl->input_files && spl->input_files[i][0])
 	{
 		while (spl->input_files[i][++j])
 		{
-			printf("input file = %s\n", spl->input_files[i][j]);
 			if (!spl->input_types[i][j])
 				fd = open(spl->input_files[i][j], R_OK);
-			else if (spl->input_types[i][j] == 1)
-			{
-				fd = open("/tmp/hd_data", O_CREAT | O_TRUNC | O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
-				pid = fork();
-				if (!pid)
-				{
-					close(pip[1]);
-					close(pip[0]);
-					if (fd == -1)
-					{
-						ft_putendl_fd("couldnt open fd", STDERR_FILENO);
-						success = -1;
-					}
-					else
-					{
-						ft_putendl_fd("opened fd", STDERR_FILENO);
-						char ** data1 = 0;
-						data1 = parse_stdin_tolimit(spl->input_files[i][j]);
-						if (data1)
-							ft_putendl_fd("got data", STDERR_FILENO);
-						else
-							ft_putendl_fd("couldnt get data", STDERR_FILENO);
-						//strs_to_fd(data1, STDOUT_FILENO);
-						strs_to_fd(data1, fd);
-					}
-					close(fd);
-					exit_status(0, data);
-				}
-				else
-					waitpid(pid, &status, 0);
-			}
 			if (fd == -1)
 				success = -1;
-			if (!spl->input_files[i][j + 1] && fd != -1 && ft_putstr_fd("redirecting stdin", STDERR_FILENO))
+			if (!spl->input_files[i][j + 1] && fd != -1)
 				dup2(fd, STDIN_FILENO);
 			close(fd);
 		}
-		//ft_putstr_fd(ft_strjoin(ft_itoa(i)," finished ins"), log_fd);
-		if (success != -1)// && ft_putstr_fd("- redired in\n", log_fd))
+		if (success != -1)
 			success = 1;
 	}
-	//else
-	//	ft_putstr_fd("no input files", log_fd);
-	j = -1;
-	//redir output
+	return (success);
+}
+
+int	open_outfile(t_spl *spl, int i, int j)
+{
+	int	fd;
+
+	if (!spl->output_types[i][j])
+		fd = open(spl->output_files[i][j], O_RDWR | O_TRUNC | O_CREAT);
+	else if (spl->output_types[i][j] == 1)
+		fd = open(spl->output_files[i][j], O_APPEND | O_RDWR | O_CREAT);
+	return (fd);
+}
+
+int	handle_out(int i, t_spl *spl, int success)
+{
+	int	j;
+	int	fd;
+
+	j = -1;	
 	if (spl->output_files && spl->output_files[i][0])
 	{
 		while (spl->output_files[i][++j])
 		{
-			printf("output file = %s in mode %d\n", spl->output_files[i][j], spl->output_types[i][j]);
-			if (!spl->output_types[i][j])
-				fd = open(spl->output_files[i][j], O_RDWR | O_TRUNC | O_CREAT);
-			else if (spl->output_types[i][j] == 1)
-				fd = open(spl->output_files[i][j], O_APPEND | O_RDWR | O_CREAT);
+			fd = open_outfile(spl, i, j);
 			if (fd == -1)
 				success = -1;
 			if (!spl->output_files[i][j + 1] && fd != -1)
@@ -326,17 +378,33 @@ int	handle_redirections(int	i, t_ms *data, int pip[2])
 			if (fd >= 0)
 				close(fd);
 		}
-		//ft_putstr_fd(ft_strjoin(ft_itoa(i)," finished outs"), log_fd);
-		if (success == 1)// && ft_putstr_fd("- redired in and out\n", log_fd))
-			success = 3;
-		else if (!success)// && ft_putstr_fd("- redired out\n", log_fd))
-			success = 2;
+		if (success == 1)
+			return (3);
+		else if (!success)
+			return (2);
 		else if (fd == -1)
-			success = -1;
+			return (-1);
 	}
-	//else
-	//	ft_putstr_fd("no output files", log_fd);
-	//1 ON REDIRS STDIN 2 REDIRS STDOUT 3 REDIRS BOTH 0 ON NO REDIRS -1 ON ERROR
+	return (success);
+}
+
+int	handle_redirections(int	i, int pip[2])
+{
+	int		success;
+	t_spl	*spl;
+
+	spl = fetch_cmdsplit(0);
+	success = 0;
+	if(perform_hd_chain(0)[i])
+	{
+		dup2(perform_hd_chain(0)[i], STDIN_FILENO);
+		success = 1;
+		close(pip[0]);
+		close(pip[1]);
+	}
+	else
+		success = handle_in(i, spl);
+	success = handle_out(i, spl, success);
 	return (success);
 }
 
@@ -356,10 +424,10 @@ int	exec_sys_func(char*** cmd_argv, int *i, t_ms *data, int pip[2])
 	pid = fork();
 	if (!pid)
 	{
-		redirs_status = handle_redirections(*i, data, pip);
-		ft_putstr_fd("redirs status in ((i) = (status)) =", STDERR_FILENO);
-		ft_putstr_fd(ft_strjoin(ft_itoa(*i), " ="), STDERR_FILENO);
-		ft_putendl_fd(ft_itoa(redirs_status), STDERR_FILENO);
+		redirs_status = handle_redirections(*i, pip);
+		//ft_putstr_fd("redirs status in ((i) = (status)) =", STDERR_FILENO);
+		//ft_putstr_fd(ft_strjoin(ft_itoa(*i), " ="), STDERR_FILENO);
+		//ft_putendl_fd(ft_itoa(redirs_status), STDERR_FILENO);
 		if (in_fd > -1 && redirs_status != 1 && redirs_status != 3)
 			dup2(in_fd, STDIN_FILENO);
 		if(cmd_argv[*i + 1] && redirs_status != 2 && redirs_status != 3 )
@@ -450,6 +518,7 @@ void	free_cmdsplit(t_spl *cspl)
 	free(cspl->ss);
 	cspl->ss = NULL;
 	free_spl_redirs(cspl);
+	free(perform_hd_chain(0));
 	free(cspl);
 }
 
@@ -491,6 +560,7 @@ int	main(int argc, char **argv, char **envp)
 	int			pip[2];
 	int			*pids;
 	int			j;
+	int			status;
 
 	(void)argc;
 	(void)argv;
@@ -513,6 +583,7 @@ int	main(int argc, char **argv, char **envp)
 		fetch_cmdsplit(spl);
 		if (!spl)
 			break ;
+		perform_hd_chain(data);
 		pip[0] = -1;
 		pip[1] = -1;
 		i = -1;
@@ -528,17 +599,17 @@ int	main(int argc, char **argv, char **envp)
 		while(pids[j])
 			j++;
 		while (j > 0)
-			waitpid(pids[--j], &data->ret, 0);
+			waitpid(pids[--j], &status, 0);
 		free(pids);		
-		if (WIFSIGNALED(data->ret))
+		if (WIFSIGNALED(status) && !check_builtin(spl->ss[i - 1][0]))
 		{
-			if (WTERMSIG(data->ret) == 2)
+			if (WTERMSIG(status) == SIGINT)
 				data->ret = 130;
 		}
-		else if (WIFSTOPPED(data->ret))
-			data->ret = WSTOPSIG(data->ret);
-		else
-			data->ret = WEXITSTATUS(data->ret);
+		else if (WIFSTOPPED(status) && !check_builtin(spl->ss[i - 1][0]))
+			data->ret = WSTOPSIG(status);
+		else if (!check_builtin(spl->ss[i - 1][0]))
+			data->ret = WEXITSTATUS(status);
 		printf("last exit status int %d\n", data->ret);
 		close(pip[0]);
 		free_cmdsplit(spl);

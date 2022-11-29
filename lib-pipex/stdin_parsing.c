@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 17:15:06 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/28 17:06:27 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/29 14:36:55 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,11 @@ char	**parse_stdin_tolimit(char *limiter)
 	k = 0;
 	lines_in[k] = get_next_line(STDIN_FILENO);
 	if (check_limiter(lines_in, k, limiter, 1))
+	{
+		free(lines_in[k]);
+		lines_in[k] = ft_strdup("");
 		return (lines_in);
+	}
 	while (lines_in[k++])
 	{
 		lines_in[k] = ft_strfreedup(get_next_line(STDIN_FILENO));

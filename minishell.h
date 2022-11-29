@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/28 17:08:46 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/29 14:38:38 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ int     set_pwd(t_ms *data);
 int	    unset(t_cmdd *argd, t_ms *data, int before_pipe);
 t_ms	*get_struct(t_ms **data);
 t_spl	*fetch_cmdsplit(t_spl *cmdsplit);
-int		handle_redirections(int	i, t_ms *data, int pip[2]);
+int		handle_redirections(int	i, int pip[2]);
+int	*perform_hd_chain(t_ms *data);
 
 #endif
