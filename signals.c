@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:59:48 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/23 16:19:54 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/29 15:50:18 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,6 @@ void	sighandler(int signum)
 		return ;
 	}
 	else if (signum == SIGQUIT)
-		exit(131);
+		return ;
 	return ;
 }

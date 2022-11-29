@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/29 14:50:02 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/29 16:45:43 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -534,8 +534,8 @@ t_ms *get_struct(t_ms **data)
 t_spl *get_cmdsplit(char *read_line)
 {
 	t_spl *temp;
+
 	temp = (t_spl *)ft_calloc(1, sizeof(t_spl));
-	
 	if (!temp)
 		return (0);
 	*temp = cmd_split(read_line);
@@ -549,6 +549,33 @@ t_spl	*fetch_cmdsplit(t_spl *cmdsplit)
 	if (cmdsplit)
 		temp = cmdsplit;
 	return (temp);
+}
+
+void split_inter(t_spl *spl, int i)
+{
+	char	**split_out;
+	char	**result;
+	int		k;
+	int		j;
+
+	split_out = ft_split(spl->ss[i][0], ' ');
+	k = 0;
+	while (split_out[k])
+		k++;
+	j = 0;
+	while (spl->ss[i][j])
+		j++;
+	result = ft_calloc(j + k, sizeof(char *));
+	k = -1;
+	while (split_out[++k])
+		result[k] = split_out[k];
+	j = 0;
+	while (spl->ss[i][++j])
+		result[k + (j - 1)] = spl->ss[i][j];
+	free(spl->ss[i][0]);
+	free(spl->ss[i]);
+	free(split_out);
+	spl->ss[i] = result;
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -592,6 +619,7 @@ int	main(int argc, char **argv, char **envp)
 		while (spl->ss && spl->ss[++i])
 		{
 			interpret_strings(spl->ss[i], data);
+			split_inter(spl, i);
 			if (!execute_builtin(spl->ss, i, data, pip))
 				pids = save_pid(&pids, exec_sys_func(spl->ss, &i, data, pip), 0);
 		}
@@ -601,16 +629,16 @@ int	main(int argc, char **argv, char **envp)
 		while (j > 0)
 			waitpid(pids[--j], &status, 0);
 		free(pids);		
-		if (WIFSIGNALED(status) && !check_builtin(spl->ss[i - 1][0]))
+		if (spl->ss && spl->ss[0] && WIFSIGNALED(status)
+			&& !check_builtin(spl->ss[i - 1][0]))
 		{
 			if (WTERMSIG(status) == SIGINT)
 				data->ret = 130;
+			if (WTERMSIG(status) == SIGQUIT)
+				data->ret = 131;
 		}
-		else if (WIFSTOPPED(status) && !check_builtin(spl->ss[i - 1][0]))
-			data->ret = WSTOPSIG(status);
-		else if (!check_builtin(spl->ss[i - 1][0]))
+		else if (spl->ss && spl->ss[0] && !check_builtin(spl->ss[i - 1][0]))
 			data->ret = WEXITSTATUS(status);
-		printf("last exit status int %d\n", data->ret);
 		close(pip[0]);
 		free_cmdsplit(spl);
 		free(read_line);
