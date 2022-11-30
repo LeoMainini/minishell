@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/30 16:48:13 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/30 17:51:57 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-char **g_envs;
+char	**g_envs;
 
-void free_data(t_ms *data)
+void	free_data(t_ms *data)
 {
 	int	i;
 
@@ -34,17 +34,17 @@ void free_data(t_ms *data)
 	rl_clear_history();
 }
 
-void exit_status(int status, t_ms *data)
+void	exit_status(int status, t_ms *data)
 {
 	free_data(data);
 	ft_putendl_fd("exit", STDERR_FILENO);
 	exit(status);
 }
 
-char	**alloc_envmem(char **envs, int	offset)
+char	**alloc_envmem(char **envs, int offset)
 {
-	int	i;
-	char **temp;
+	int		i;
+	char	**temp;
 
 	if (!envs)
 		return (0);
@@ -148,7 +148,7 @@ int	handle_b_out(int i, t_spl *spl, int success)
 	int	j;
 	int	fd;
 
-	j = -1;	
+	j = -1;
 	if (spl->output_files && spl->output_files[i][0])
 	{
 		while (spl->output_files[i][++j] && success != -1)
@@ -165,7 +165,7 @@ int	handle_b_out(int i, t_spl *spl, int success)
 	return (success);
 }
 
-int	handle_b_redirections(int	i)
+int	handle_b_redirections(int i)
 {
 	int		success;
 	t_spl	*spl;
@@ -174,56 +174,68 @@ int	handle_b_redirections(int	i)
 	spl = fetch_cmdsplit(0);
 	success = 0;
 	fd = perform_hd_chain(0)[i];
-	if(!fd)
+	if (!fd)
 		success = handle_b_in(i, spl);
 	success = handle_b_out(i, spl, success);
 	return (success);
 }
 
-int execute_builtin(char ***cmd_argvs, int k, t_ms *data, int pip[2])
+int	pre_exec_prep(char ***cmd_argvs, int k, int pip[2], t_cmdd *cmds)
 {
-	int	i;
 	int	redirs_status;
-	t_cmdd		cmds;
 
-	i = check_builtin(cmd_argvs[k][0]);
-	if (!i)
-		return (0);
-	cmds.args = cmd_argvs[k];
-	cmds.in_fd = -1;
+	(*cmds).args = cmd_argvs[k];
+	(*cmds).in_fd = -1;
 	close(pip[0]);
 	if (pipe(pip) == -1)
 		return (-1);
 	redirs_status = handle_b_redirections(k);
 	if (cmd_argvs[k + 1] != 0 && redirs_status <= 0)
-		cmds.out_fd = pip[1];
+		(*cmds).out_fd = pip[1];
 	else if (redirs_status <= 0)
-		cmds.out_fd = STDOUT_FILENO;
+		(*cmds).out_fd = STDOUT_FILENO;
 	else
 	{
 		close(pip[1]);
-		cmds.out_fd = redirs_status;
+		(*cmds).out_fd = redirs_status;
 	}
+	return (redirs_status);
+}
+
+void	select_builtin(int i, t_ms *data, t_cmdd *cmds, int nil)
+{
+	if (i == 1)
+		change_dir(cmds, data, nil);
+	if (i == 2)
+		env(cmds, data);
+	if (i == 3)
+		pwd(cmds, data);
+	if (i == 4)
+		export(cmds, data, nil);
+	if (i == 5)
+		unset(cmds, data, nil);
+	if (i == 6)
+		exit_shell(cmds, data, nil);
+	if (i == 7)
+		echo(cmds, data);
+}
+
+int	execute_builtin(char ***cmd_argvs, int k, t_ms *data, int pip[2])
+{
+	int		i;
+	int		redirs_status;
+	t_cmdd	cmds;
+
+	i = check_builtin(cmd_argvs[k][0]);
+	if (!i)
+		return (0);
+	redirs_status = pre_exec_prep(cmd_argvs, k, pip, &cmds);
 	if (redirs_status == -1 && !close(pip[1])
 		&& ft_putstr_fd("No such file or directory\n", STDERR_FILENO))
-		return(set_ret_return(data, 126));
-		//change all sub process exits to free_exit
+		return (set_ret_return(data, 126));
 	if (cmds.out_fd == STDOUT_FILENO)
 		close(pip[0]);
-	if (i == 1)
-		change_dir(&cmds, data, cmd_argvs[k + 1] != 0);
-	if (i == 2)
-		env(&cmds, data);
-	if (i == 3)
-		pwd(&cmds, data);
-	if (i == 4)
-		export(&cmds, data, cmd_argvs[k + 1] != 0);
-	if (i == 5)
-		unset(&cmds, data, cmd_argvs[k + 1] != 0);
-	if (i == 6)
-		exit_shell(&cmds, data, cmd_argvs[k + 1] != 0);
-	if (i == 7)
-		echo(&cmds, data);
+	select_builtin(i, data, &cmds, (cmd_argvs[k + 1] != 0));
 	if (redirs_status <= 0)
 		close(pip[1]);
 	return (1);
@@ -231,13 +243,14 @@ int execute_builtin(char ***cmd_argvs, int k, t_ms *data, int pip[2])
 
 int	check_cmd_executable(char *cmd)
 {
-	char *temp;
+	char	*temp;
 
 	if (!strchr(cmd, '/'))
 		return (0);
 	if (access(cmd, F_OK) && ft_putstr_fd("File not found\n", STDERR_FILENO))
 		return (0);
-	if ((access(cmd, X_OK)) && ft_putstr_fd("File not executable\n", STDERR_FILENO))
+	if ((access(cmd, X_OK))
+		&& ft_putstr_fd("File not executable\n", STDERR_FILENO))
 		return (0);
 	temp = ft_strjoin(cmd, "/.");
 	if (!access(temp, F_OK) && ft_putstr_fd("File is a folder\n", STDERR_FILENO))
@@ -252,7 +265,7 @@ int	check_cmd_executable(char *cmd)
 	return (1);
 }
 
-char *get_executable_path(t_ms *data, char *cmd, char **envp)
+char	*get_executable_path(t_ms *data, char *cmd, char **envp)
 {
 	(void)envp;
 	if (check_cmd_executable(cmd))
@@ -277,17 +290,28 @@ int	strs_to_fd(char **array, int fd)
 	return (1);
 }
 
+char	*create_hd_fp(void)
+{
+	char		*char_i;
+	static int	i;
+	char		*temp;
+
+	char_i = ft_itoa(i++);
+	temp = ft_strjoin("/tmp/hd_data", char_i);
+	free(char_i);
+	return (temp);
+}
+
 int	handle_hd(t_ms *data, char *limit)
 {
 	int			fd;
 	int			pid;
 	char		**parse_d;
 	char		*file_path;
-	static int	i;
 
-	file_path = ft_strjoin("/tmp/hd_data", ft_itoa(i++));
+	file_path = create_hd_fp();
 	fd = open(file_path, O_CREAT | O_TRUNC | O_RDWR,
-		S_IRWXU | S_IRWXG | S_IRWXO);
+			S_IRWXU | S_IRWXG | S_IRWXO);
 	pid = fork();
 	if (!pid)
 	{
@@ -361,7 +385,7 @@ int	handle_out(int i, t_spl *spl, int success)
 	int	j;
 	int	fd;
 
-	j = -1;	
+	j = -1;
 	if (spl->output_files && spl->output_files[i][0])
 	{
 		while (spl->output_files[i][++j] && success != -1)
@@ -384,7 +408,7 @@ int	handle_out(int i, t_spl *spl, int success)
 	return (success);
 }
 
-int	handle_redirections(int	i, int pip[2])
+int	handle_redirections(int i)
 {
 	int		success;
 	t_spl	*spl;
@@ -393,12 +417,10 @@ int	handle_redirections(int	i, int pip[2])
 	spl = fetch_cmdsplit(0);
 	success = 0;
 	fd = perform_hd_chain(0)[i];
-	if(fd)
+	if (fd)
 	{
 		dup2(fd, STDIN_FILENO);
 		success = 1;
-		close(pip[0]);
-		close(pip[1]);
 	}
 	else
 		success = handle_in(i, spl);
@@ -406,41 +428,54 @@ int	handle_redirections(int	i, int pip[2])
 	return (success);
 }
 
-int	exec_sys_func(char*** cmd_argv, int *i, t_ms *data, int pip[2])
+int	pre_sys_exec_prep(int in_fd, int out_fd, int i, char ***cmd_argv)
+{
+	int	redirs_status;
+
+	redirs_status = handle_redirections(i);
+	if (in_fd > -1 && redirs_status != 1 && redirs_status != 3)
+		dup2(in_fd, STDIN_FILENO);
+	if (cmd_argv[i + 1] && redirs_status != 2 && redirs_status != 3)
+		dup2(out_fd, STDOUT_FILENO);
+	close(in_fd);
+	close(out_fd);
+	return (redirs_status);
+}
+
+void	exec_child_pid(int in_fd, int out_fd, int i, char ***cmd_argv)
+{
+	int		redirs_status;
+	char	*exec_path;
+	t_ms	*data;
+
+	data = get_struct(0);
+	redirs_status = pre_sys_exec_prep(in_fd, out_fd, i, cmd_argv);
+	if (redirs_status == -1
+		&& ft_putstr_fd("No such file or directory\n", STDERR_FILENO))
+		exit(126);
+	if (!cmd_argv[i][0])
+		exit_status(0, data);
+	exec_path = (get_executable_path(data, cmd_argv[i][0], g_envs));
+	execve(exec_path, cmd_argv[i], g_envs);
+	free(exec_path);
+	ft_putstr_fd("Error executing: ", STDERR_FILENO);
+	ft_putendl_fd(cmd_argv[i][0], STDERR_FILENO);
+	exit_status(127, data);
+}
+
+int	exec_sys_func(char ***cmd_argv, int *i, int pip[2])
 {
 	int		pid;
 	int		in_fd;
 	int		out_fd;
-	char	*exec_path;
-	int		redirs_status;
 
 	in_fd = pip[0];
 	if (pipe(pip) == -1)
-		return -2;
+		return (-2);
 	out_fd = pip[1];
-	redirs_status = 0;
 	pid = fork();
 	if (!pid)
-	{
-		redirs_status = handle_redirections(*i, pip);
-		if (in_fd > -1 && redirs_status != 1 && redirs_status != 3)
-			dup2(in_fd, STDIN_FILENO);
-		if(cmd_argv[*i + 1] && redirs_status != 2 && redirs_status != 3 )
-			dup2(out_fd, STDOUT_FILENO);
-		close(in_fd);
-		close(out_fd);
-		if (redirs_status == -1
-			&& ft_putstr_fd("No such file or directory\n", STDERR_FILENO))
-			exit(126);
-		if (!cmd_argv[*i][0])
-			exit_status(0, data);
-		exec_path = (get_executable_path(data, cmd_argv[*i][0], g_envs));
-		execve(exec_path, cmd_argv[*i], g_envs);
-		free(exec_path);
-		ft_putstr_fd("Error executing: ", STDERR_FILENO);
-		ft_putendl_fd(cmd_argv[*i][0], STDERR_FILENO);
-		exit_status(127, data);	
-	}
+		exec_child_pid(in_fd, out_fd, *i, cmd_argv);
 	else
 		close(pip[1]);
 	return (pid);
@@ -487,37 +522,6 @@ void	free_inout_strs(char ****files, int ***types)
 	free((*types));
 }
 
-// static void free_spl_redirs(t_spl *cspl)
-// {
-// 	int	i;
-// 	int	j;
-
-// 	i = -1;
-// 	while (cspl->input_files && cspl->input_files[++i])
-// 	{
-// 		j = -1;
-// 		while (cspl->input_files[i][++j])
-// 			free(cspl->input_files[i][j]);
-// 		free(cspl->input_files[i]);
-// 		free(cspl->input_types[i]);
-// 	}
-// 	free(cspl->input_files);
-// 	cspl->input_files = 0;
-// 	free(cspl->input_types);
-// 	i = -1;
-// 	while (cspl->output_files && cspl->output_files[++i])
-// 	{
-// 		j = -1;
-// 		while (cspl->output_files[i][++j])
-// 			free(cspl->output_files[i][j]);
-// 		free(cspl->output_files[i]);
-// 		free(cspl->output_types[i]);
-// 	}
-// 	free(cspl->output_files);
-// 	cspl->output_files = 0;
-// 	free(cspl->output_types);
-// }
-
 void	free_cmdsplit(t_spl *cspl)
 {
 	int	i;
@@ -533,25 +537,24 @@ void	free_cmdsplit(t_spl *cspl)
 	}
 	free(cspl->ss);
 	cspl->ss = NULL;
-	//free_spl_redirs(cspl);
 	free_inout_strs(&cspl->input_files, &cspl->input_types);
 	free_inout_strs(&cspl->output_files, &cspl->output_types);
 	free(perform_hd_chain(0));
 	free(cspl);
 }
 
-t_ms *get_struct(t_ms **data)
+t_ms	*get_struct(t_ms **data)
 {
-	static t_ms *result;
+	static t_ms	*result;
 
 	if (data)
 		result = *data;
 	return (result);
 }
 
-t_spl *get_cmdsplit(char *read_line)
+t_spl	*get_cmdsplit(char *read_line)
 {
-	t_spl *temp;
+	t_spl	*temp;
 
 	temp = (t_spl *)ft_calloc(1, sizeof(t_spl));
 	if (!temp)
@@ -563,13 +566,13 @@ t_spl *get_cmdsplit(char *read_line)
 t_spl	*fetch_cmdsplit(t_spl *cmdsplit)
 {
 	static t_spl	*temp;
-	
+
 	if (cmdsplit)
 		temp = cmdsplit;
 	return (temp);
 }
 
-void split_inter(t_spl *spl, int i)
+void	split_inter(t_spl *spl, int i)
 {
 	char	**split_out;
 	char	**result;
@@ -602,11 +605,11 @@ void	await_pid_returns(t_ms *data, int *pids, t_spl *spl, int i)
 	int	status;
 
 	j = 0;
-	while(pids[j])
+	while (pids[j])
 		j++;
 	while (j > 0)
 		waitpid(pids[--j], &status, 0);
-	free(pids);		
+	free(pids);
 	if (spl->ss && spl->ss[0] && WIFSIGNALED(status)
 		&& !check_builtin(spl->ss[i - 1][0]))
 	{
@@ -638,18 +641,18 @@ void	init_data(int argc, char **argv, t_ms **data, char **envp)
 
 int	handle_exec_data(char **read_line, t_ms *data, t_spl **spl)
 {
-		add_history(*read_line);
-		data->rl_addr = read_line;
-		*spl = get_cmdsplit(*read_line);
-		fetch_cmdsplit(*spl);
-		if (!*spl)
-			return (0);
-		perform_hd_chain(data);
-		data->pip[0] = -1;
-		data->pip[1] = -1;
-		save_pid(0, 0, 1);
-		data->pids = (int *)ft_calloc(1, sizeof(int));
-		return (1);
+	add_history(*read_line);
+	data->rl_addr = read_line;
+	*spl = get_cmdsplit(*read_line);
+	fetch_cmdsplit(*spl);
+	if (!*spl)
+		return (0);
+	perform_hd_chain(data);
+	data->pip[0] = -1;
+	data->pip[1] = -1;
+	save_pid(0, 0, 1);
+	data->pids = (int *)ft_calloc(1, sizeof(int));
+	return (1);
 }
 
 void	execute_cmd(t_ms *data, t_spl *spl, int i)
@@ -658,14 +661,14 @@ void	execute_cmd(t_ms *data, t_spl *spl, int i)
 	split_inter(spl, i);
 	if (!execute_builtin(spl->ss, i, data, data->pip))
 		data->pids = save_pid(&(data->pids),
-				exec_sys_func(spl->ss, &i, data, data->pip), 0);
+				exec_sys_func(spl->ss, &i, data->pip), 0);
 }
 
 void	cleanup_exec_data(t_ms *data, t_spl *spl, char **read_line)
 {
-		close(data->pip[0]);
-		free_cmdsplit(spl);
-		free(*read_line);
+	close(data->pip[0]);
+	free_cmdsplit(spl);
+	free(*read_line);
 }
 
 int	main(int argc, char **argv, char **envp)

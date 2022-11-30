@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/30 12:35:36 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/30 17:25:36 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int     set_pwd(t_ms *data);
 int	    unset(t_cmdd *argd, t_ms *data, int before_pipe);
 t_ms	*get_struct(t_ms **data);
 t_spl	*fetch_cmdsplit(t_spl *cmdsplit);
-int		handle_redirections(int	i, int pip[2]);
+int		handle_redirections(int	i);
 int	*perform_hd_chain(t_ms *data);
 
 #endif
