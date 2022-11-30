@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/30 16:47:49 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/30 16:50:40 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,7 +184,7 @@ int	ft_argsize(char *s, int i)
 	return (i - j);
 }
 
-char	*separate_redir(char *s)
+char	*separate_redirs(char *s)
 {
 	char	*aux;
 	char	temp;
@@ -261,21 +261,21 @@ int	validate_redirs(t_spl *spl)
 		{
 			if (*s[l][j] == '<' || *s[l][j] == '>')
 			{	
-				if (ft_strcmp(s[l][j], "<") && ft_strcmp(s[l][j], ">")
-					&& ft_strcmp(s[l][j], ">>") && ft_strcmp(s[l][j], "<<"))
+				if (scmp(s[l][j], "<") && scmp(s[l][j], ">")
+					&& scmp(s[l][j], ">>") && scmp(s[l][j], "<<"))
 				{
 					printf("parse error near '%s'\n", s[l][j]);
 					spl->redir_bool = 0;
 					return (1);
 				}
-				if ((!ft_strcmp(s[l][j], "<") || !ft_strcmp(s[l][j], ">")
-					|| !ft_strcmp(s[l][j], ">>") || !ft_strcmp(s[l][j], "<<")))
+				if ((!scmp(s[l][j], "<") || !scmp(s[l][j], ">")
+					|| !scmp(s[l][j], ">>") || !scmp(s[l][j], "<<")))
 				{
 					if ((!s[l][j + 1]) || *s[l][j + 1] == '|'
-						|| (!ft_strcmp(s[l][j + 1], "<")
-							|| !ft_strcmp(s[l][j + 1], ">")
-								|| !ft_strcmp(s[l][j + 1], ">>")
-									|| !ft_strcmp(s[l][j + 1], "<<")))
+						|| (!scmp(s[l][j + 1], "<")
+							|| !scmp(s[l][j + 1], ">")
+								|| !scmp(s[l][j + 1], ">>")
+									|| !scmp(s[l][j + 1], "<<")))
 					{
 						printf("parse error near '%s'\n", s[l][j]);
 						spl->redir_bool = 0;
@@ -316,18 +316,18 @@ void	dup_to_iolists(t_spl *spl, int l, int i, int o)
 		j = -1;
 		while (spl->ss[l][++j])
 		{
-			if (!ft_strcmp(spl->ss[l][j], "<")
-				|| !ft_strcmp(spl->ss[l][j], "<<"))
+			if (!scmp(spl->ss[l][j], "<")
+				|| !scmp(spl->ss[l][j], "<<"))
 			{
-				spl->input_types[l][++i] = (!ft_strcmp(spl->ss[l][j], "<<"));
+				spl->input_types[l][++i] = (!scmp(spl->ss[l][j], "<<"));
 				spl->input_files[l][i] = ft_strdup(spl->ss[l][j + 1]);
 				if (!spl->input_files[l][i])
 					return ;
 			}
-			else if (!ft_strcmp(spl->ss[l][j], ">")
-				|| !ft_strcmp(spl->ss[l][j], ">>"))
+			else if (!scmp(spl->ss[l][j], ">")
+				|| !scmp(spl->ss[l][j], ">>"))
 			{
-				spl->output_types[l][++o] = (!ft_strcmp(spl->ss[l][j], ">>"));
+				spl->output_types[l][++o] = (!scmp(spl->ss[l][j], ">>"));
 				spl->output_files[l][o] = ft_strdup(spl->ss[l][j + 1]);
 				if (!spl->output_files[l][o])
 					return ;
@@ -349,11 +349,11 @@ void	init_redir_arrays(t_spl *spl)
 			j = -1;
 		while (spl->ss[l][++j])
 		{
-			if (!ft_strcmp(spl->ss[l][j], "<")
-				|| !ft_strcmp(spl->ss[l][j], "<<"))
+			if (!scmp(spl->ss[l][j], "<")
+				|| !scmp(spl->ss[l][j], "<<"))
 				spl->redir_in++;
-			else if (!ft_strcmp(spl->ss[l][j], ">")
-				|| !ft_strcmp(spl->ss[l][j], ">>"))
+			else if (!scmp(spl->ss[l][j], ">")
+				|| !scmp(spl->ss[l][j], ">>"))
 				spl->redir_out++;
 		}
 		spl->input_files[l] = ft_calloc(spl->redir_in + 1, sizeof(char *));
@@ -397,10 +397,10 @@ void	get_nbr_redirs_and_alloc(t_spl *spl, char ****aux)
 		j = -1;
 		while (spl->ss[l][++j])
 		{
-			if (!ft_strcmp(spl->ss[l][j], "<")
-				|| !ft_strcmp(spl->ss[l][j], "<<")
-					|| !ft_strcmp(spl->ss[l][j], ">")
-						|| !ft_strcmp(spl->ss[l][j], ">>"))
+			if (!scmp(spl->ss[l][j], "<")
+				|| !scmp(spl->ss[l][j], "<<")
+					|| !scmp(spl->ss[l][j], ">")
+						|| !scmp(spl->ss[l][j], ">>"))
 				j++;
 			else
 				i++;
@@ -424,10 +424,10 @@ void	duptoaux(t_spl *spl, char ****aux)
 		j = -1;
 		while (spl->ss[l][++j])
 		{
-			if (!ft_strcmp(spl->ss[l][j], "<")
-				|| !ft_strcmp(spl->ss[l][j], "<<")
-					|| !ft_strcmp(spl->ss[l][j], ">")
-						|| !ft_strcmp(spl->ss[l][j], ">>"))
+			if (!scmp(spl->ss[l][j], "<")
+				|| !scmp(spl->ss[l][j], "<<")
+					|| !scmp(spl->ss[l][j], ">")
+						|| !scmp(spl->ss[l][j], ">>"))
 					j++;
 			else
 			{
