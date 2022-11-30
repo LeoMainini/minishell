@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 16:13:52 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/14 17:32:50 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/30 16:46:06 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	p_steps_back(t_vars *data, int i)
 	steps_back = 0;
 	file_path = ft_split(data->cmds[i][0], '/');
 	while (file_path[++k])
-		if (!ft_strcmp(file_path[k], ".."))
+		if (!scmp(file_path[k], ".."))
 			steps_back++;
 	k = -1;
 	while (file_path[++k])

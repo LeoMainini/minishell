@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:29:45 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/29 15:58:15 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/30 16:46:06 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	get_index(char	*env)
 	{
 		k = -1;
 		sep_env = get_sep_env_values(g_envs[i]);
-		if (!ft_strcmp((const char*)env, (const char*)(sep_env[0])))
+		if (!scmp((const char*)env, (const char*)(sep_env[0])))
 		{
 			while (sep_env[++k])
 				free(sep_env[k]);
@@ -146,7 +146,7 @@ int	print_sorted_envs(int fd)
 	{
 		k = -1;
 		while (split_envs[++k])
-			if (ft_strcmp(split_envs[i][0], split_envs[k][0]) < 0)
+			if (scmp(split_envs[i][0], split_envs[k][0]) < 0)
 				ft_str_swap(&split_envs[i], &split_envs[k]);
 	}
 	print_free_3darray(&split_envs, fd);
@@ -179,7 +179,7 @@ int	export(t_cmdd *argd, t_ms *data, int before_pipe)
 	i = 0;
 	while (argd->args[++i])
 	{
-		if (ft_strchr(argd->args[i], '=') && ft_strcmp(argd->args[i], "="))
+		if (ft_strchr(argd->args[i], '=') && scmp(argd->args[i], "="))
 			name = ft_substr(argd->args[i], 0,
 				(ft_strchr(argd->args[i], '=') - argd->args[i]));
 		else 

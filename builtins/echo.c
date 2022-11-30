@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 16:38:25 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/10 18:56:06 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/30 16:46:06 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	echo(t_cmdd *argd, t_ms *data)
 	int	printed_c;
 
 	n_line = 1;
-	if (argd->args[1] && !ft_strcmp(argd->args[1], "-n"))
+	if (argd->args[1] && !scmp(argd->args[1], "-n"))
 		n_line = 0;
 	i = 1;
 	while (argd->args[1] && argd->args[++i - n_line])

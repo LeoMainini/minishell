@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/29 16:45:43 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/30 16:46:06 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void free_data(t_ms *data)
 void exit_status(int status, t_ms *data)
 {
 	free_data(data);
+	ft_putendl_fd("exit", STDERR_FILENO);
 	exit(status);
 }
 
@@ -84,7 +85,7 @@ int	check_envp_duplicate_error(char **envs)
 
 	i = -1;
 	while (envs[++i])
-		if (ft_strcmp(envs[i], g_envs[i]))
+		if (scmp(envs[i], g_envs[i]))
 			return (i);
 	return (0);
 }
@@ -93,61 +94,89 @@ int	check_builtin(char *cmd)
 {
 	if (!cmd)
 		return (0);
-	if (!ft_strcmp(cmd, "cd"))
+	if (!scmp(cmd, "cd"))
 		return (1);
-	if (!ft_strcmp(cmd, "env"))
+	if (!scmp(cmd, "env"))
 		return (2);
-	if (!ft_strcmp(cmd, "pwd"))
+	if (!scmp(cmd, "pwd"))
 		return (3);
-	if (!ft_strcmp(cmd, "export"))
+	if (!scmp(cmd, "export"))
 		return (4);
-	if (!ft_strcmp(cmd, "unset"))
+	if (!scmp(cmd, "unset"))
 		return (5);
-	if (!ft_strcmp(cmd, "exit"))
+	if (!scmp(cmd, "exit"))
 		return (6);
-	if (!ft_strcmp(cmd, "echo"))
+	if (!scmp(cmd, "echo"))
 		return (7);
 	return (0);
 }
-int	handle_b_redirections(int	i)
-{
-	int		success;
-	int		fd;
-	t_spl	*spl;
-	int		j;
 
-	printf("i = %d\n", i);
-	spl = fetch_cmdsplit(0);
+int	handle_b_in(int i, t_spl *spl)
+{
+	int	fd;
+	int	success;
+	int	j;
+
 	success = 0;
 	j = -1;
 	if (spl->input_files && spl->input_files[i][0])
+	{
 		while (spl->input_files[i][++j])
 		{
-			printf("input file = %s\n", spl->input_files[i][j]);
-			fd = open(spl->input_files[i][j], R_OK);	
+			if (!spl->input_types[i][j])
+				fd = open(spl->input_files[i][j], R_OK);
 			if (fd == -1)
 				success = -1;
-			close(fd);
 		}
-	j = -1;
+	}
+	return (success);
+}
+
+int	open_outfile(t_spl *spl, int i, int j)
+{
+	int	fd;
+
+	if (!spl->output_types[i][j])
+		fd = open(spl->output_files[i][j], O_RDWR | O_TRUNC | O_CREAT);
+	else if (spl->output_types[i][j] == 1)
+		fd = open(spl->output_files[i][j], O_APPEND | O_RDWR | O_CREAT);
+	return (fd);
+}
+
+int	handle_b_out(int i, t_spl *spl, int success)
+{
+	int	j;
+	int	fd;
+
+	j = -1;	
 	if (spl->output_files && spl->output_files[i][0])
 	{
-		while (spl->output_files[i][++j])
+		while (spl->output_files[i][++j] && success != -1)
 		{
-			printf("output file = %s in mode %d\n", spl->output_files[i][j], spl->output_types[i][j]);
-			//test file opening for directory before opening if trying this fails
-			if (!spl->output_types[i][j])
-				fd = open(spl->output_files[i][j], O_RDWR | O_TRUNC | O_CREAT);
-			else if (spl->output_types[i][j] == 1)
-				fd = open(spl->output_files[i][j], O_APPEND | O_RDWR | O_CREAT);
+				fd = open_outfile(spl, i, j);
 			if (fd == -1)
 				success = -1;
-			if (spl->input_files[i][j + 1] && fd != -1)
+			if (!spl->output_files[i][j + 1] && fd != -1 && success > -1)
+				success = fd;
+			else
 				close(fd);
 		}
-		if (success != -1)
-			success = fd;
 	}
+	return (success);
+}
+
+int	handle_b_redirections(int	i)
+{
+	int		success;
+	t_spl	*spl;
+	int		fd;
+
+	spl = fetch_cmdsplit(0);
+	success = 0;
+	fd = perform_hd_chain(0)[i];
+	if(!fd)
+		success = handle_b_in(i, spl);
+	success = handle_b_out(i, spl, success);
 	return (success);
 }
 
@@ -247,41 +276,17 @@ int	strs_to_fd(char **array, int fd)
 	free(array);
 	return (1);
 }
-/*
-int	handle_hd(int *success, t_ms *data, char *limit, int pip[2])
-{
-	int	fd;
-	int	pid;
-	char **parse_d;
-
-	fd = open("/tmp/hd_data", O_CREAT | O_TRUNC | O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
-	pid = fork();
-	if (!pid)
-	{
-		close(pip[1]);
-		close(pip[0]);
-		if (fd == -1)
-			*success = -1;
-		else
-		{
-			parse_d = parse_stdin_tolimit(limit);
-			strs_to_fd(parse_d, fd);
-		}
-		close(fd);
-		exit_status(0, data);
-	}
-	waitpid(pid, 0, 0);
-	return(open("/tmp/hd_data", O_RDONLY));
-*/
-//}
 
 int	handle_hd(t_ms *data, char *limit)
 {
-	int	fd;
-	int	pid;
-	char **parse_d;
+	int			fd;
+	int			pid;
+	char		**parse_d;
+	char		*file_path;
+	static int	i;
 
-	fd = open("/tmp/hd_data", O_CREAT | O_TRUNC | O_RDWR,
+	file_path = ft_strjoin("/tmp/hd_data", ft_itoa(i++));
+	fd = open(file_path, O_CREAT | O_TRUNC | O_RDWR,
 		S_IRWXU | S_IRWXG | S_IRWXO);
 	pid = fork();
 	if (!pid)
@@ -294,7 +299,9 @@ int	handle_hd(t_ms *data, char *limit)
 		exit_status(0, data);
 	}
 	waitpid(pid, 0, 0);
-	return (open("/tmp/hd_data", O_RDONLY));
+	fd = open(file_path, O_RDONLY);
+	free(file_path);
+	return (fd);
 }
 
 int	*perform_hd_chain(t_ms *data)
@@ -309,7 +316,7 @@ int	*perform_hd_chain(t_ms *data)
 	spl = fetch_cmdsplit(0);
 	hds = ft_calloc(spl->cmd_count, sizeof(int));
 	i = -1;
-	while (spl->input_files && spl->input_files[++i] && spl->input_files[i][0])
+	while (spl->input_files && spl->input_files[++i])
 	{
 		j = -1;
 		while (spl->input_files[i][++j])
@@ -349,17 +356,6 @@ int	handle_in(int i, t_spl *spl)
 	return (success);
 }
 
-int	open_outfile(t_spl *spl, int i, int j)
-{
-	int	fd;
-
-	if (!spl->output_types[i][j])
-		fd = open(spl->output_files[i][j], O_RDWR | O_TRUNC | O_CREAT);
-	else if (spl->output_types[i][j] == 1)
-		fd = open(spl->output_files[i][j], O_APPEND | O_RDWR | O_CREAT);
-	return (fd);
-}
-
 int	handle_out(int i, t_spl *spl, int success)
 {
 	int	j;
@@ -368,7 +364,7 @@ int	handle_out(int i, t_spl *spl, int success)
 	j = -1;	
 	if (spl->output_files && spl->output_files[i][0])
 	{
-		while (spl->output_files[i][++j])
+		while (spl->output_files[i][++j] && success != -1)
 		{
 			fd = open_outfile(spl, i, j);
 			if (fd == -1)
@@ -392,12 +388,14 @@ int	handle_redirections(int	i, int pip[2])
 {
 	int		success;
 	t_spl	*spl;
+	int		fd;
 
 	spl = fetch_cmdsplit(0);
 	success = 0;
-	if(perform_hd_chain(0)[i])
+	fd = perform_hd_chain(0)[i];
+	if(fd)
 	{
-		dup2(perform_hd_chain(0)[i], STDIN_FILENO);
+		dup2(fd, STDIN_FILENO);
 		success = 1;
 		close(pip[0]);
 		close(pip[1]);
@@ -425,9 +423,6 @@ int	exec_sys_func(char*** cmd_argv, int *i, t_ms *data, int pip[2])
 	if (!pid)
 	{
 		redirs_status = handle_redirections(*i, pip);
-		//ft_putstr_fd("redirs status in ((i) = (status)) =", STDERR_FILENO);
-		//ft_putstr_fd(ft_strjoin(ft_itoa(*i), " ="), STDERR_FILENO);
-		//ft_putendl_fd(ft_itoa(redirs_status), STDERR_FILENO);
 		if (in_fd > -1 && redirs_status != 1 && redirs_status != 3)
 			dup2(in_fd, STDIN_FILENO);
 		if(cmd_argv[*i + 1] && redirs_status != 2 && redirs_status != 3 )
@@ -463,44 +458,65 @@ int	*save_pid(int **pids, int new_pid, int reset)
 		return (0);
 	}
 	(*pids)[k] = new_pid;
+	printf("new pid = %d\n", new_pid);
 	temp_pids = (int *)ft_calloc(k + 2, sizeof(int));
 	i = -1;
 	while (++i <= k)
 		temp_pids[i] = (*pids)[i];
+	k++;
 	free(*pids);
 	return (temp_pids);
 }
 
-static void free_spl_redirs(t_spl *cspl)
+void	free_inout_strs(char ****files, int ***types)
 {
 	int	i;
 	int	j;
 
 	i = -1;
-	while (cspl->input_files && cspl->input_files[++i])
+	while ((*files) && (*files)[++i])
 	{
 		j = -1;
-		while (cspl->input_files[i][++j])
-			free(cspl->input_files[i][j]);
-		free(cspl->input_files[i]);
-		free(cspl->input_types[i]);
+		while ((*files)[i][++j])
+			free((*files)[i][j]);
+		free((*files)[i]);
+		free((*types)[i]);
 	}
-	free(cspl->input_files);
-	cspl->input_files = 0;
-	free(cspl->input_types);
-	i = -1;
-	while (cspl->output_files && cspl->output_files[++i])
-	{
-		j = -1;
-		while (cspl->output_files[i][++j])
-			free(cspl->output_files[i][j]);
-		free(cspl->output_files[i]);
-		free(cspl->output_types[i]);
-	}
-	free(cspl->output_files);
-	cspl->output_files = 0;
-	free(cspl->output_types);
+	free((*files));
+	(*files) = 0;
+	free((*types));
 }
+
+// static void free_spl_redirs(t_spl *cspl)
+// {
+// 	int	i;
+// 	int	j;
+
+// 	i = -1;
+// 	while (cspl->input_files && cspl->input_files[++i])
+// 	{
+// 		j = -1;
+// 		while (cspl->input_files[i][++j])
+// 			free(cspl->input_files[i][j]);
+// 		free(cspl->input_files[i]);
+// 		free(cspl->input_types[i]);
+// 	}
+// 	free(cspl->input_files);
+// 	cspl->input_files = 0;
+// 	free(cspl->input_types);
+// 	i = -1;
+// 	while (cspl->output_files && cspl->output_files[++i])
+// 	{
+// 		j = -1;
+// 		while (cspl->output_files[i][++j])
+// 			free(cspl->output_files[i][j]);
+// 		free(cspl->output_files[i]);
+// 		free(cspl->output_types[i]);
+// 	}
+// 	free(cspl->output_files);
+// 	cspl->output_files = 0;
+// 	free(cspl->output_types);
+// }
 
 void	free_cmdsplit(t_spl *cspl)
 {
@@ -517,7 +533,9 @@ void	free_cmdsplit(t_spl *cspl)
 	}
 	free(cspl->ss);
 	cspl->ss = NULL;
-	free_spl_redirs(cspl);
+	//free_spl_redirs(cspl);
+	free_inout_strs(&cspl->input_files, &cspl->input_types);
+	free_inout_strs(&cspl->output_files, &cspl->output_types);
 	free(perform_hd_chain(0));
 	free(cspl);
 }
@@ -578,72 +596,97 @@ void split_inter(t_spl *spl, int i)
 	spl->ss[i] = result;
 }
 
+void	await_pid_returns(t_ms *data, int *pids, t_spl *spl, int i)
+{
+	int	j;
+	int	status;
+
+	j = 0;
+	while(pids[j])
+		j++;
+	while (j > 0)
+		waitpid(pids[--j], &status, 0);
+	free(pids);		
+	if (spl->ss && spl->ss[0] && WIFSIGNALED(status)
+		&& !check_builtin(spl->ss[i - 1][0]))
+	{
+		if (WTERMSIG(status) == SIGINT)
+			data->ret = 130;
+		if (WTERMSIG(status) == SIGQUIT)
+			data->ret = 131;
+	}
+	else if (spl->ss && spl->ss[0] && !check_builtin(spl->ss[i - 1][0]))
+		data->ret = WEXITSTATUS(status);
+}
+
+void	init_data(int argc, char **argv, t_ms **data, char **envp)
+{
+	(void)argc;
+	(void)argv;
+	*data = (t_ms *)ft_calloc(1, sizeof(t_ms));
+	get_struct(data);
+	(*data)->ret = 0;
+	(*data)->builtins_outfd = -1;
+	(*data)->system_outfd = -1;
+	(*data)->rl_addr = 0;
+	(*data)->in_child = 0;
+	signal(SIGINT, sighandler);
+	signal(SIGQUIT, sighandler);
+	g_envs = duplicate_envp(envp, 0, 0);
+	(*data)->path = find_shell_path(g_envs);
+}
+
+int	handle_exec_data(char **read_line, t_ms *data, t_spl **spl)
+{
+		add_history(*read_line);
+		data->rl_addr = read_line;
+		*spl = get_cmdsplit(*read_line);
+		fetch_cmdsplit(*spl);
+		if (!*spl)
+			return (0);
+		perform_hd_chain(data);
+		data->pip[0] = -1;
+		data->pip[1] = -1;
+		save_pid(0, 0, 1);
+		data->pids = (int *)ft_calloc(1, sizeof(int));
+		return (1);
+}
+
+void	execute_cmd(t_ms *data, t_spl *spl, int i)
+{
+	interpret_strings(spl->ss[i], data);
+	split_inter(spl, i);
+	if (!execute_builtin(spl->ss, i, data, data->pip))
+		data->pids = save_pid(&(data->pids),
+				exec_sys_func(spl->ss, &i, data, data->pip), 0);
+}
+
+void	cleanup_exec_data(t_ms *data, t_spl *spl, char **read_line)
+{
+		close(data->pip[0]);
+		free_cmdsplit(spl);
+		free(*read_line);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	char		*read_line;
 	t_spl		*spl;
 	t_ms		*data;
 	int			i;
-	int			pip[2];
-	int			*pids;
-	int			j;
-	int			status;
 
-	(void)argc;
-	(void)argv;
-	data = (t_ms *)ft_calloc(1, sizeof(t_ms));
-	get_struct(&data);
-	data->ret = 0;
-	data->builtins_outfd = -1;
-	data->system_outfd = -1;
-	data->rl_addr = 0;
-	signal(SIGINT, sighandler);
-	signal(SIGQUIT, sighandler);
-	g_envs = duplicate_envp(envp, 0, 0);
-	data->path = find_shell_path(g_envs);
+	init_data(argc, argv, &data, envp);
 	read_line = readline("shell:> ");
 	while (read_line)
 	{
-		add_history(read_line);
-		data->rl_addr = &read_line;
-		spl = get_cmdsplit(read_line);
-		fetch_cmdsplit(spl);
-		if (!spl)
+		if (!handle_exec_data(&read_line, data, &spl))
 			break ;
-		perform_hd_chain(data);
-		pip[0] = -1;
-		pip[1] = -1;
 		i = -1;
-		save_pid(0, 0, 1);
-		pids = (int *)ft_calloc(1, sizeof(int));
 		while (spl->ss && spl->ss[++i])
-		{
-			interpret_strings(spl->ss[i], data);
-			split_inter(spl, i);
-			if (!execute_builtin(spl->ss, i, data, pip))
-				pids = save_pid(&pids, exec_sys_func(spl->ss, &i, data, pip), 0);
-		}
-		j = 0;
-		while(pids[j])
-			j++;
-		while (j > 0)
-			waitpid(pids[--j], &status, 0);
-		free(pids);		
-		if (spl->ss && spl->ss[0] && WIFSIGNALED(status)
-			&& !check_builtin(spl->ss[i - 1][0]))
-		{
-			if (WTERMSIG(status) == SIGINT)
-				data->ret = 130;
-			if (WTERMSIG(status) == SIGQUIT)
-				data->ret = 131;
-		}
-		else if (spl->ss && spl->ss[0] && !check_builtin(spl->ss[i - 1][0]))
-			data->ret = WEXITSTATUS(status);
-		close(pip[0]);
-		free_cmdsplit(spl);
-		free(read_line);
+			execute_cmd(data, spl, i);
+		await_pid_returns(data, data->pids, spl, i);
+		cleanup_exec_data(data, spl, &read_line);
 		read_line = readline("shell:> ");
 	}
-	ft_putendl_fd("exit", STDERR_FILENO);
 	exit_status(0, data);
 }

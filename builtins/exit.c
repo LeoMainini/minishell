@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:34:10 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/29 15:33:37 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/30 16:46:06 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ int	check_numeric(char *str)
 	while (str[++i])
 		if (str[i] < '0' || str[i] > '9')
 			return (0);
-	if ((ft_strcmp(str, "9223372036854775807") > 0 && ft_strlen(str) >= 19)
-		|| (ft_strcmp(str, "-9223372036854775808") > 0 && ft_strlen(str) >= 20))
+	if ((scmp(str, "9223372036854775807") > 0 && ft_strlen(str) >= 19)
+		|| (scmp(str, "-9223372036854775808") > 0 && ft_strlen(str) >= 20))
 		return (0);
 	return (1);
 }

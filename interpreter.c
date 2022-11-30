@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 16:52:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/25 13:33:29 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/30 16:46:06 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int	convert_to_value(char **str, int i, t_ms *data)
 		&& (*str)[(i + 1) + j] != '$')
 		j++;
 	substr = ft_substr(*str, i + 1, j);
-	if (!ft_strcmp(substr, "?"))
+	if (!scmp(substr, "?"))
 	{
 		free(substr);
 		substr = ft_itoa(data->ret);
@@ -101,7 +101,7 @@ int	convert_to_value(char **str, int i, t_ms *data)
 		substr = get_env_value(substr, data);
 		*str = remove_char(*str, i);
 		*str = replace_name(*str, substr, i, j);
-		if (!ft_strcmp(substr, ""))
+		if (!scmp(substr, ""))
 			not_empty = 0;
 	}
 	free(substr);

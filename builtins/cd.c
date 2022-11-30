@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:37:49 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/24 13:10:00 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/30 16:46:06 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ extern	char**g_envs;
 int	check_folder(t_cmdd *argd, int i)
 {
 	char *temp;
-	if (!ft_strcmp(argd->args[1], "-"))
+	if (!scmp(argd->args[1], "-"))
 		return (3);
 	if (access(argd->args[i], F_OK)
 		&& ft_putstr_fd("File not found\n", STDERR_FILENO))
@@ -46,7 +46,7 @@ int	steps_back(t_cmdd *argd, int i)
 	steps_back = 0;
 	file_path = ft_split(argd->args[i], '/');
 	while (file_path[++k])
-		if (!ft_strcmp(file_path[k], ".."))
+		if (!scmp(file_path[k], ".."))
 			steps_back++;
 	k = -1;
 	while (file_path[++k])

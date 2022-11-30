@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:08:53 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/11 08:22:51 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/30 16:46:06 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 int	check_hd_get_cmds(t_vars *data, int argc, char **argv)
 {
-	if (!ft_strcmp(argv[1], "here_doc"))
+	if (!scmp(argv[1], "here_doc"))
 	{
 		data->lines_in = parse_stdin_tolimit(argv[2]);
 		data->here_doc = 1;
@@ -43,7 +43,7 @@ int	init_struct(t_vars *data, int argc, char **argv)
 	if (argc < 4 && printf("ERROR:\tMissing arguments\n"))
 		return (0);
 	data->arg_count = argc;
-	if (!ft_strcmp(argv[1], argv[argc - 1])
+	if (!scmp(argv[1], argv[argc - 1])
 		&& printf("ERROR:\tInfile same as outfile\n"))
 		return (0);
 	if (!check_hd_get_cmds(data, argc, argv) && printf("Init error\n"))
