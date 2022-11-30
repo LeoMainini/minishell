@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
+#    By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/11/18 17:09:57 by leferrei         ###   ########.fr        #
+#    Updated: 2022/11/30 17:32:02 by bcarreir         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,10 @@ BUILTINS_DIR =	builtins
 
 
 SOURCES = 	m-shell.c\
+			cmd_ac_size.c\
+			cmd_redirs.c\
+			cmd_redirs2.c\
+			cmd_validation.c\
 			signals.c\
 			split.c\
 			utils.c\
