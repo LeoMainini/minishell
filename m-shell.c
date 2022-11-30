@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m-shell.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/29 16:45:43 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/30 15:37:24 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ int	handle_b_redirections(int	i)
 				fd = open(spl->output_files[i][j], O_APPEND | O_RDWR | O_CREAT);
 			if (fd == -1)
 				success = -1;
-			if (spl->input_files[i][j + 1] && fd != -1)
+			if (spl->output_files[i][j + 1] && fd != -1)
 				close(fd);
 		}
 		if (success != -1)
