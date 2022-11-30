@@ -6,7 +6,7 @@
 /*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/30 13:55:03 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/11/30 14:38:28 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -474,7 +474,6 @@ int	verify_alloc_ss(char *s, t_spl *spl)
 			return (1);
 		l++;
 	}
-	printf("%d\n", spl->cmd_count);
 	return (0);
 }
 
@@ -544,8 +543,7 @@ void	copytoarg(t_spl *spl, int *i, int*j, int *l)
 			if (spl->str[(*i)] && (ft_isspace(spl->str[(*i)]) || spl->str[(*i)] == '|'))
 				break ;
 		}
-		spl->ss[(*l)][(*j)][k] = '\0';
-		j++;
+		(*j)++;
 }
 
 t_spl	cmd_split(char *s)
@@ -559,7 +557,7 @@ t_spl	cmd_split(char *s)
 	l = 0;
 	i = 0;
 	verify_alloc_ss(s, &spl);
-	while (s[i])
+	while (spl.str[i])
 	{
 		if (get_new_arg(&spl, &i, &l, &j))
 			break ;
@@ -570,17 +568,17 @@ t_spl	cmd_split(char *s)
 	spl.str = NULL;
 		
 	//printing
-	l = 0;
-	j = 0;
-	while (spl.ss[l])
-	{
-		j = 0;
-		while (spl.ss[l] && spl.ss[l][j])
-		{
-			printf("%d %d %s\n",l,j, spl.ss[l][j]);
-			j++;
-		}
-		l++;
-	}
+	// l = 0;
+	// j = 0;
+	// while (spl.ss[l])
+	// {
+	// 	j = 0;
+	// 	while (spl.ss[l] && spl.ss[l][j])
+	// 	{
+	// 		printf("%d %d %s\n",l,j, spl.ss[l][j]);
+	// 		j++;
+	// 	}
+	// 	l++;
+	// }
 	return (spl);
 }
