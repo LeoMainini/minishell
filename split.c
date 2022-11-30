@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/30 16:46:06 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/11/30 16:47:49 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	ffquotedtext(t_spl *spl, char *s, int *j, char qt)
 		return (1);
 }
 
-int	isvalidcmd(char *s,  t_spl *spl)
+int	isvalidcmd(char *s, t_spl *spl)
 {
 	int	j;
 	int	k;
@@ -56,9 +56,9 @@ int	isvalidcmd(char *s,  t_spl *spl)
 		if (s[j] == '|')
 		{
 			k = j + 1;
-			while(s[k] && ft_isspace(s[k]))
+			while (s[k] && ft_isspace(s[k]))
 				k++;
-			if (!s[k] || s[k]== '|' || s[j+1] == '|' || j == 0)
+			if (!s[k] || s[k] == '|' || s[j + 1] == '|' || j == 0)
 			{
 				printf("parse error near `|'\n");
 				return (1);
@@ -108,7 +108,7 @@ int	checkemptycmds(char **s)
 	return (0);
 }
 
-int	ft_argspercmd(t_spl *spl, char *s, int l)
+int	arg_count(t_spl *spl, char *s, int l)
 {
 	static int	i;
 	char		q;
@@ -125,7 +125,7 @@ int	ft_argspercmd(t_spl *spl, char *s, int l)
 			spl->quotebool = 0;
 			i++;
 		}
-		if (!s[i])	
+		if (!s[i])
 			break ;
 		if (s[i] && s[i] == '|')
 		{
@@ -151,10 +151,8 @@ int	ft_argspercmd(t_spl *spl, char *s, int l)
 			}
 			if (s[i] && s[i] != '|' && !ft_isspace(s[i]))
 				i++;
-
 		}
 	}
-	// printf("args per cmd %d\n", argc);
 	return (argc);
 }
 
@@ -183,11 +181,10 @@ int	ft_argsize(char *s, int i)
 		else if (s[i] && (ft_isspace(s[i]) || s[i] == '|'))
 			break ;
 	}
-	// printf("argsize %d\n", i - j);
 	return (i - j);
 }
 
-char	*separate_redirs(char *s)
+char	*separate_redir(char *s)
 {
 	char	*aux;
 	char	temp;
@@ -215,7 +212,7 @@ char	*separate_redirs(char *s)
 			if (!s[i])
 				break ;
 		}
-		i++;			
+		i++;
 	}
 	if (!redir_count)
 		return (NULL);
@@ -237,7 +234,7 @@ char	*separate_redirs(char *s)
 		}
 		if (s[i] && (s[i] == '<' || s[i] == '>'))
 		{
-			aux[j++] = ' ';	
+			aux[j++] = ' ';
 			while (s[i] && (s[i] == '<' || s[i] == '>'))
 				aux[j++] = s[i++];
 			aux[j++] = ' ';
@@ -246,7 +243,6 @@ char	*separate_redirs(char *s)
 		aux[j++] = s[i++];
 	}
 	aux[j] = '\0';
-	// printf ("aux is %s\n", aux);
 	return (aux);
 }
 
@@ -265,20 +261,26 @@ int	validate_redirs(t_spl *spl)
 		{
 			if (*s[l][j] == '<' || *s[l][j] == '>')
 			{	
-				if (scmp(s[l][j], "<") && scmp(s[l][j], ">") && scmp(s[l][j], ">>") && scmp(s[l][j], "<<"))
+				if (ft_strcmp(s[l][j], "<") && ft_strcmp(s[l][j], ">")
+					&& ft_strcmp(s[l][j], ">>") && ft_strcmp(s[l][j], "<<"))
 				{
 					printf("parse error near '%s'\n", s[l][j]);
 					spl->redir_bool = 0;
 					return (1);
 				}
-				if ((!scmp(s[l][j], "<") || !scmp(s[l][j], ">") || !scmp(s[l][j], ">>") || !scmp(s[l][j], "<<"))
-						&& ((!s[l][j + 1]) || *s[l][j + 1] == '|' 
-							|| (!scmp(s[l][j + 1], "<") || !scmp(s[l][j + 1], ">")
-								|| !scmp(s[l][j + 1], ">>") || !scmp(s[l][j + 1], "<<"))))
+				if ((!ft_strcmp(s[l][j], "<") || !ft_strcmp(s[l][j], ">")
+					|| !ft_strcmp(s[l][j], ">>") || !ft_strcmp(s[l][j], "<<")))
 				{
-					printf("parse error near '%s'\n", s[l][j]);
-					spl->redir_bool = 0;
-					return (1);
+					if ((!s[l][j + 1]) || *s[l][j + 1] == '|'
+						|| (!ft_strcmp(s[l][j + 1], "<")
+							|| !ft_strcmp(s[l][j + 1], ">")
+								|| !ft_strcmp(s[l][j + 1], ">>")
+									|| !ft_strcmp(s[l][j + 1], "<<")))
+					{
+						printf("parse error near '%s'\n", s[l][j]);
+						spl->redir_bool = 0;
+						return (1);
+					}
 				}
 				spl->redir_bool = 1;
 			}
@@ -289,25 +291,53 @@ int	validate_redirs(t_spl *spl)
 
 void	alloc_redir_arrays(t_spl *spl)
 {
-	//ALLOCATION OF **CHAR MISSING AFTER REDIR COUNT
-	spl->output_files = ft_calloc(sizeof(char**), (spl->cmd_count + 1));
+	spl->output_files = ft_calloc(sizeof(char **), (spl->cmd_count + 1));
 	if (!spl->output_files)
 		return ;
-	spl->input_files = ft_calloc(sizeof(char**), (spl->cmd_count + 1));
+	spl->input_files = ft_calloc(sizeof(char **), (spl->cmd_count + 1));
 	if (!spl->input_files)
 		return ;
-	spl->output_types = ft_calloc(sizeof(int*), (spl->cmd_count + 1));
+	spl->output_types = ft_calloc(sizeof(int *), (spl->cmd_count + 1));
 	if (!spl->output_types)
 		return ;
-	spl->input_types = ft_calloc(sizeof(int*), (spl->cmd_count + 1));
+	spl->input_types = ft_calloc(sizeof(int *), (spl->cmd_count + 1));
 	if (!spl->input_types)
 		return ;
 }
 
+void	dup_to_iolists(t_spl *spl, int l, int i, int o)
+{
+	int	j;
+
+	while (spl->ss[++l])
+	{
+		o = -1;
+		i = -1;
+		j = -1;
+		while (spl->ss[l][++j])
+		{
+			if (!ft_strcmp(spl->ss[l][j], "<")
+				|| !ft_strcmp(spl->ss[l][j], "<<"))
+			{
+				spl->input_types[l][++i] = (!ft_strcmp(spl->ss[l][j], "<<"));
+				spl->input_files[l][i] = ft_strdup(spl->ss[l][j + 1]);
+				if (!spl->input_files[l][i])
+					return ;
+			}
+			else if (!ft_strcmp(spl->ss[l][j], ">")
+				|| !ft_strcmp(spl->ss[l][j], ">>"))
+			{
+				spl->output_types[l][++o] = (!ft_strcmp(spl->ss[l][j], ">>"));
+				spl->output_files[l][o] = ft_strdup(spl->ss[l][j + 1]);
+				if (!spl->output_files[l][o])
+					return ;
+			}
+		}
+	}
+}
+
 void	init_redir_arrays(t_spl *spl)
 {
-	int	i;
-	int	o;
 	int	j;
 	int	l;
 
@@ -316,70 +346,25 @@ void	init_redir_arrays(t_spl *spl)
 	l = -1;
 	while (spl->ss[++l])
 	{
-			j =-1;
+			j = -1;
 		while (spl->ss[l][++j])
 		{
-			if (!scmp(spl->ss[l][j], "<") || !scmp(spl->ss[l][j], "<<"))
+			if (!ft_strcmp(spl->ss[l][j], "<")
+				|| !ft_strcmp(spl->ss[l][j], "<<"))
 				spl->redir_in++;
-			else if (!scmp(spl->ss[l][j], ">") || !scmp(spl->ss[l][j], ">>"))
+			else if (!ft_strcmp(spl->ss[l][j], ">")
+				|| !ft_strcmp(spl->ss[l][j], ">>"))
 				spl->redir_out++;
 		}
-		spl->input_files[l] = ft_calloc(spl->redir_in + 1, sizeof(char*));
-		spl->output_files[l] = ft_calloc(spl->redir_out + 1, sizeof(char*));
+		spl->input_files[l] = ft_calloc(spl->redir_in + 1, sizeof(char *));
+		spl->output_files[l] = ft_calloc(spl->redir_out + 1, sizeof(char *));
 		spl->input_types[l] = ft_calloc(spl->redir_in + 1, sizeof(int));
 		spl->output_types[l] = ft_calloc(spl->redir_out + 1, sizeof(int));
 		if (!spl->input_files[l] || !spl->output_files[l]
 			|| !spl->input_types[l] || !spl->output_types[l])
 			return ;
 	}
-	l = -1;
-	while (spl->ss[++l])
-	{
-		o = -1;
-		i = -1;
-		j = -1;
-		while (spl->ss[l][++j])
-		{
-			if (!scmp(spl->ss[l][j], "<") || !scmp(spl->ss[l][j], "<<"))
-			{
-				spl->input_files[l][++i] = ft_strdup(spl->ss[l][j + 1]);
-				if (!scmp(spl->ss[l][j], "<"))
-					spl->input_types[l][i] = 0;
-				else if (!scmp(spl->ss[l][j], "<<"))
-					spl->input_types[l][i] = 1;	
-				if (!spl->input_files[l][i])
-					return;
-			}
-			else if (!scmp(spl->ss[l][j], ">") || !scmp(spl->ss[l][j], ">>"))
-			{
-				spl->output_files[l][++o] = ft_strdup(spl->ss[l][j + 1]);
-				if (!scmp(spl->ss[l][j], ">"))
-					spl->output_types[l][o] = 0;
-				else if (!scmp(spl->ss[l][j], ">>"))
-					spl->output_types[l][o] = 1;	
-				if (!spl->output_files[l][o])
-					return;
-			}
-		}
-	}
-
-	
-	//printing
-	// l = -1;
-	// while (spl->input_files[++l])
-	// {
-	// 	j = -1;
-	// 	while (spl->input_files[l][++j])
-	// 		printf("infiles %d %d %s mode = %d\n",l,j, spl->input_files[l][j], spl->input_types[l][j]);
-	// }
-
-	// l = -1;
-	// while (spl->output_files[++l])
-	// {
-	// 	j = -1;
-	// 	while (spl->output_files[l][++j])
-	// 		printf("outfiles %d %d %s\n",l,j, spl->output_files[l][j]);
-	// }
+	dup_to_iolists(spl, -1, -1, -1);
 }
 
 void	free_cmdarray(t_spl *spl)
@@ -399,17 +384,12 @@ void	free_cmdarray(t_spl *spl)
 	spl->ss = NULL;
 }
 
-void	dupwithoutredirs(t_spl *spl)
+void	get_nbr_redirs_and_alloc(t_spl *spl, char ****aux)
 {
-	char	***aux;
-	int		l;
-	int		j;
-	int		i;
+	int	i;
+	int	j;
+	int	l;
 
-	aux = NULL;
-	aux = ft_calloc(spl->cmd_count + 1, sizeof(char**));
-	if (!aux)
-		return ;
 	l = -1;
 	while (spl->ss[++l])
 	{
@@ -417,16 +397,26 @@ void	dupwithoutredirs(t_spl *spl)
 		j = -1;
 		while (spl->ss[l][++j])
 		{
-			if (!scmp(spl->ss[l][j], "<") || !scmp(spl->ss[l][j], "<<") 
-				|| !scmp(spl->ss[l][j], ">")|| !scmp(spl->ss[l][j], ">>"))
+			if (!ft_strcmp(spl->ss[l][j], "<")
+				|| !ft_strcmp(spl->ss[l][j], "<<")
+					|| !ft_strcmp(spl->ss[l][j], ">")
+						|| !ft_strcmp(spl->ss[l][j], ">>"))
 				j++;
 			else
 				i++;
 		}
-		aux[l] = ft_calloc(i + 1, sizeof(char *));
-		if (!aux[l])
+		(*aux)[l] = ft_calloc(i + 1, sizeof(char *));
+		if (!(*aux)[l])
 			return ;
 	}
+}
+
+void	duptoaux(t_spl *spl, char ****aux)
+{
+	int		l;
+	int		j;
+	int		i;
+
 	l = -1;
 	while (spl->ss[++l])
 	{
@@ -434,21 +424,32 @@ void	dupwithoutredirs(t_spl *spl)
 		j = -1;
 		while (spl->ss[l][++j])
 		{
-			if (!scmp(spl->ss[l][j], "<") || !scmp(spl->ss[l][j], "<<") 
-				|| !scmp(spl->ss[l][j], ">")|| !scmp(spl->ss[l][j], ">>"))
+			if (!ft_strcmp(spl->ss[l][j], "<")
+				|| !ft_strcmp(spl->ss[l][j], "<<")
+					|| !ft_strcmp(spl->ss[l][j], ">")
+						|| !ft_strcmp(spl->ss[l][j], ">>"))
 					j++;
 			else
 			{
-				aux[l][++i] = ft_strdup(spl->ss[l][j]);
-				if (!aux[l][i])
+				(*aux)[l][++i] = ft_strdup(spl->ss[l][j]);
+				if (!(*aux)[l][i])
 					return ;
 			}
 		}
 	}
+}
+
+void	dupwithoutredirs(t_spl *spl)
+{
+	char	***aux;
+
+	aux = ft_calloc(spl->cmd_count + 1, sizeof(char **));
+	if (!aux)
+		return ;
+	get_nbr_redirs_and_alloc(spl, &aux);
+	duptoaux(spl, &aux);
 	free_cmdarray(spl);
 	spl->ss = aux;
-
-
 }
 
 int	verify_alloc_ss(char *s, t_spl *spl)
@@ -466,10 +467,11 @@ int	verify_alloc_ss(char *s, t_spl *spl)
 	spl->ss = ft_calloc(sizeof(char **), (spl->cmd_count + 1));
 	if (!spl->ss)
 		return (1);
+	s = spl->str;
 	l = 0;
 	while (l < spl->cmd_count)
 	{
-		spl->ss[l] = ft_calloc(sizeof(char*), (ft_argspercmd(spl, spl->str, l) + 1));
+		spl->ss[l] = ft_calloc(sizeof(char *), (arg_count(spl, s, l) + 1));
 		if (!spl->ss[l])
 			return (1);
 		l++;
@@ -485,7 +487,7 @@ void	manage_redirs(t_spl *spl)
 	{
 		alloc_redir_arrays(spl);
 		init_redir_arrays(spl);
-		dupwithoutredirs(spl);	
+		dupwithoutredirs(spl);
 	}
 }
 
@@ -495,25 +497,25 @@ int	get_new_arg(t_spl *spl, int *i, int *l, int *j)
 
 	k = 0;
 	while (spl->str[(*i)] && ft_isspace(spl->str[(*i)]))
-				(*i)++;
-		if (!spl->str[(*i)])
-			return (1);
-		if (spl->str[(*i)] && spl->str[(*i)] == '|')
-		{
-			(*l)++;
-			(*j) = 0;
+		(*i)++;
+	if (!spl->str[(*i)])
+		return (1);
+	if (spl->str[(*i)] && spl->str[(*i)] == '|')
+	{
+		(*l)++;
+		(*j) = 0;
+		(*i)++;
+		while (spl->str[(*i)] && ft_isspace(spl->str[(*i)]))
 			(*i)++;
-			while (spl->str[(*i)] && ft_isspace(spl->str[(*i)]))
-				(*i)++;
-		}
-		if (spl->str[(*i)] && spl->str[(*i)] != '|')
-		{
-			k = ft_argsize(spl->str, (*i));
-			spl->ss[(*l)][(*j)] = ft_calloc(sizeof(char), (k + 1));
-			if (!spl->ss[(*l)][(*j)])
-				return (1);
-		}
-		return (0);
+	}
+	if (spl->str[(*i)] && spl->str[(*i)] != '|')
+	{
+		k = ft_argsize(spl->str, (*i));
+		spl->ss[(*l)][(*j)] = ft_calloc(sizeof(char), (k + 1));
+		if (!spl->ss[(*l)][(*j)])
+			return (1);
+	}
+	return (0);
 }
 
 void	copytoarg(t_spl *spl, int *i, int*j, int *l)
@@ -522,28 +524,27 @@ void	copytoarg(t_spl *spl, int *i, int*j, int *l)
 	int	q;
 
 	k = 0;
-		while (spl->str[(*i)])
+	while (spl->str[(*i)])
+	{
+		while (spl->str[(*i)] && !ft_isspace(spl->str[(*i)]) && spl->str[(*i)] != '|')
 		{
-			while (spl->str[(*i)] && !ft_isspace(spl->str[(*i)]) && spl->str[(*i)] != '|')
+			if ((spl->str[(*i)] == 34 || spl->str[(*i)] == 39) && (q = spl->str[(*i)]))
 			{
-				if (spl->str[(*i)] && (spl->str[(*i)] == 34 || spl->str[(*i)] == 39))
-				{
-					q = spl->str[(*i)];
-					spl->ss[(*l)][(*j)][k++] = spl->str[(*i)++];
-					while (spl->str[(*i)] && spl->str[(*i)] != q)
-						spl->ss[(*l)][(*j)][k++] = spl->str[(*i)++];
-					if (spl->str[(*i)] && spl->str[(*i)] == q)
-					{
-						spl->ss[(*l)][(*j)][k++] = spl->str[(*i)++];
-						continue ;
-					}
-				}
 				spl->ss[(*l)][(*j)][k++] = spl->str[(*i)++];
+				while (spl->str[(*i)] && spl->str[(*i)] != q)
+					spl->ss[(*l)][(*j)][k++] = spl->str[(*i)++];
+				if (spl->str[(*i)] && spl->str[(*i)] == q)
+				{
+					spl->ss[(*l)][(*j)][k++] = spl->str[(*i)++];
+					continue ;
+				}
 			}
-			if (spl->str[(*i)] && (ft_isspace(spl->str[(*i)]) || spl->str[(*i)] == '|'))
-				break ;
+			spl->ss[(*l)][(*j)][k++] = spl->str[(*i)++];
 		}
-		(*j)++;
+		if (spl->str[(*i)] && (ft_isspace(spl->str[(*i)]) || spl->str[(*i)] == '|'))
+			break ;
+	}
+	(*j)++;
 }
 
 t_spl	cmd_split(char *s)
