@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/30 17:53:25 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/02 14:48:10 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ t_spl   cmd_split(char *s);
 int     change_dir(t_cmdd *argd, t_ms *data, int before_pipe);
 int		echo(t_cmdd *argd, t_ms *data);
 int		env(t_cmdd *argd, t_ms *data);
-void	exit_status(int status, t_ms *data);
+void	exit_status(int status, t_ms *data, unsigned int print_exit);
 int		exit_shell(t_cmdd *argd, t_ms *data, int before_pipe);
 int		export(t_cmdd *argd, t_ms *data, int before_pipe);
 char	**duplicate_envp(char **envs, int offset, int freeable);

@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:34:10 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/30 16:46:06 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/02 14:50:34 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,7 @@ int	exit_shell(t_cmdd *argd, t_ms *data, int before_pipe)
 	code = 0;
 	if (!argd->args[1])
 		if (!before_pipe)
-			exit_status(0, data);
-
+			exit_status(0, data, 1);
 	i = 0;
 	while (argd->args[++i])
 	{
@@ -50,7 +49,7 @@ int	exit_shell(t_cmdd *argd, t_ms *data, int before_pipe)
 		ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
 
 		if (!before_pipe)
-			exit_status(2, data);
+			exit_status(2, data, 1);
 	}
 	if (argd->args[2] && ft_putstr_fd("Too many arguments\n", STDERR_FILENO))
 		if (!before_pipe)
@@ -59,6 +58,6 @@ int	exit_shell(t_cmdd *argd, t_ms *data, int before_pipe)
 	if (status)
 		code = 256 + status;
 	if (!before_pipe)
-		exit_status((int)code, data);
+		exit_status((int)code, data, 1);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/30 17:51:57 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/02 14:49:07 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,11 @@ void	free_data(t_ms *data)
 	rl_clear_history();
 }
 
-void	exit_status(int status, t_ms *data)
+void	exit_status(int status, t_ms *data, unsigned int print_exit)
 {
 	free_data(data);
-	ft_putendl_fd("exit", STDERR_FILENO);
+	if (print_exit)
+		ft_putendl_fd("exit", STDERR_FILENO);
 	exit(status);
 }
 
@@ -320,7 +321,7 @@ int	handle_hd(t_ms *data, char *limit)
 		parse_d = parse_stdin_tolimit(limit);
 		strs_to_fd(parse_d, fd);
 		close(fd);
-		exit_status(0, data);
+		exit_status(0, data, 0);
 	}
 	waitpid(pid, 0, 0);
 	fd = open(file_path, O_RDONLY);
@@ -454,13 +455,13 @@ void	exec_child_pid(int in_fd, int out_fd, int i, char ***cmd_argv)
 		&& ft_putstr_fd("No such file or directory\n", STDERR_FILENO))
 		exit(126);
 	if (!cmd_argv[i][0])
-		exit_status(0, data);
+		exit_status(0, data, 0);
 	exec_path = (get_executable_path(data, cmd_argv[i][0], g_envs));
 	execve(exec_path, cmd_argv[i], g_envs);
 	free(exec_path);
 	ft_putstr_fd("Error executing: ", STDERR_FILENO);
 	ft_putendl_fd(cmd_argv[i][0], STDERR_FILENO);
-	exit_status(127, data);
+	exit_status(127, data, 0);
 }
 
 int	exec_sys_func(char ***cmd_argv, int *i, int pip[2])
@@ -691,5 +692,5 @@ int	main(int argc, char **argv, char **envp)
 		cleanup_exec_data(data, spl, &read_line);
 		read_line = readline("shell:> ");
 	}
-	exit_status(0, data);
+	exit_status(0, data, 1);
 }
