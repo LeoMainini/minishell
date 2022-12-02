@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_validation.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 17:07:13 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/30 17:33:31 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/12/02 16:37:54 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	isvalidcmd(char *s, t_spl *spl)
 			continue ;
 		}
 		if (invalidpipe(s, spl, &j, &k))
-            return (1);
+			return (1);
 		j++;
 	}
 	return (0);
@@ -85,7 +85,6 @@ void	init_spl(t_spl *spl)
 	spl->redir_in = 0;
 	spl->redir_out = 0;
 }
-
 
 char	*separate_redirs(char *s)
 {

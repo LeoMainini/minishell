@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_redirs.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 17:10:39 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/30 17:15:01 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/12/02 16:37:30 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,6 @@ void	dupwithoutredirs(t_spl *spl)
 	free_cmdarray(spl);
 	spl->ss = aux;
 }
-
 
 int	validate_redirs(t_spl *spl)
 {

@@ -6,14 +6,14 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 16:35:28 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/24 13:12:46 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/02 16:44:01 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include <unistd.h>
 
-char	*get_pwd()
+char	*get_pwd(void)
 {
 	int		i;
 	char	*resp;

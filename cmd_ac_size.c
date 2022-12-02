@@ -1,17 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmd_argc_size.c                                    :+:      :+:    :+:   */
+/*   cmd_ac_size.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 17:30:42 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/30 17:31:04 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/12/02 16:37:09 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 int	arg_count(t_spl *spl, char *s, int l)
 {

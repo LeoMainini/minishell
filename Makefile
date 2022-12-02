@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+         #
+#    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/11/30 17:32:02 by bcarreir         ###   ########.fr        #
+#    Updated: 2022/12/02 16:22:53 by leferrei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,12 +24,20 @@ SOURCES = 	m-shell.c\
 			split.c\
 			utils.c\
 			interpreter.c\
+			env_var.c\
+			builtin_exec_utils.c\
+			system_exec_utils.c\
+			file_utils.c\
+			getters_setters.c\
+			mem_utils.c\
+			here_doc_utils.c\
+			execution.c\
+			m-shell_routine_utils.c\
 			$(BUILTINS_DIR)/cd.c\
 			$(BUILTINS_DIR)/pwd.c\
 			$(BUILTINS_DIR)/env.c\
 			$(BUILTINS_DIR)/exit.c\
 			$(BUILTINS_DIR)/echo.c\
-			libft/ft_calloc.c
 
 
 OBJS =	$(SOURCES:.c=.o)

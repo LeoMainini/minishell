@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 16:52:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/30 16:46:06 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/02 15:25:39 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int	convert_to_value(char **str, int i, t_ms *data)
 	j = 0;
 	not_empty = 1;
 	while ((*str)[(i + 1) + j] && !ft_isspace((*str)[(i + 1) + j])
-		&& (*str)[(i + 1) + j] != '"' && (*str)[(i + 1) + j] != 39 
+		&& (*str)[(i + 1) + j] != '"' && (*str)[(i + 1) + j] != 39
 		&& (*str)[(i + 1) + j] != '$')
 		j++;
 	substr = ft_substr(*str, i + 1, j);
@@ -134,7 +134,7 @@ int	handle_quotes(char **str, int i, int *in_doubles, int *in_singles)
 		*in_singles = 0;
 	}
 	return (remove);
-} 
+}
 
 int	interpret_strings(char **strs, t_ms *data)
 {
@@ -163,7 +163,7 @@ int	interpret_strings(char **strs, t_ms *data)
 			if (inc && strs[k][i])
 				i++;
 			else if (!strs[k][i])
-				break;
+				break ;
 		}
 	}
 	return (!in_doubles && !in_singles);
