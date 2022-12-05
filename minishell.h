@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/12/05 13:27:45 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/05 14:49:18 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,9 @@ int		print_sorted_envs(int fd);
 int		is_alphastr(char *str);
 void	ft_str_swap(char ***s1, char ***s2);
 int		get_index(char	*env);
-
+void	print_free_3darray(char ****str_array, int fd);
+int		check_folder(t_cmdd *argd, int i);
+int		steps_back(t_cmdd *argd, int i);
+char	*rel_to_abs_pwd(t_cmdd *argd, int i, char *pwd);
 
 #endif

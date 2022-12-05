@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:34:10 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/02 14:50:34 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/05 15:00:11 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,18 @@ int	check_numeric(char *str)
 	return (1);
 }
 
+int	check_alpha(t_cmdd *argd, int before_pipe, t_ms *data, int i)
+{
+	if (check_numeric(argd->args[i]))
+		return (0);
+	ft_putstr_fd("exit: ", STDERR_FILENO);
+	ft_putstr_fd(argd->args[1], STDERR_FILENO);
+	ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
+	if (!before_pipe)
+		exit_status(2, data, 0);
+	return (1);
+}
+
 int	exit_shell(t_cmdd *argd, t_ms *data, int before_pipe)
 {
 	int				status;
@@ -41,16 +53,8 @@ int	exit_shell(t_cmdd *argd, t_ms *data, int before_pipe)
 			exit_status(0, data, 1);
 	i = 0;
 	while (argd->args[++i])
-	{
-		if (check_numeric(argd->args[i]))
+		if (!check_alpha(argd, before_pipe, data, i))
 			continue ;
-		ft_putstr_fd("exit: ", STDERR_FILENO);
-		ft_putstr_fd(argd->args[1], STDERR_FILENO);
-		ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
-
-		if (!before_pipe)
-			exit_status(2, data, 1);
-	}
 	if (argd->args[2] && ft_putstr_fd("Too many arguments\n", STDERR_FILENO))
 		if (!before_pipe)
 			return (set_ret_return(data, 1));

@@ -6,7 +6,7 @@
 #    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/12/05 13:25:04 by leferrei         ###   ########.fr        #
+#    Updated: 2022/12/05 14:48:10 by leferrei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,6 +41,8 @@ SOURCES = 	m-shell.c\
 			$(BUILTINS_DIR)/echo.c\
 			$(BUILTINS_DIR)/export.c\
 			$(BUILTINS_DIR)/unset.c\
+			$(BUILTINS_DIR)/env_utils.c\
+			$(BUILTINS_DIR)/cd_utils.c
 
 
 OBJS =	$(SOURCES:.c=.o)
