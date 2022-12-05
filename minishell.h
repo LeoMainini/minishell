@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/12/05 13:04:08 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/05 13:27:45 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ char	*get_pwd(void);
 char	**get_sep_env_values(char *str);
 void	init_redir_arrays(t_spl *spl);
 void	init_spl(t_spl *spl);
-void		interpret_strings(char **strs, t_ms *data);
+void	interpret_strings(char **strs, t_ms *data);
 int		isvalidcmd(char *s, t_spl *spl);
 void	manage_redirs(t_spl *spl);
 int		pwd(t_cmdd *argd, t_ms *data);
@@ -103,5 +103,14 @@ void	split_inter(t_spl *spl, int i);
 void	await_pid_returns(t_ms *data, int *pids, t_spl *spl, int i);
 void	init_data(int argc, char **argv, t_ms **data, char **envp);
 int		handle_exec_data(char **read_line, t_ms *data, t_spl **spl);
+int		replace_value_str(char **str, int i, t_ms *data, int j);
+char	*get_env_value(char *env_name, t_ms *data);
+char	*replace_name(char *str, char *env, int i, int j);
+char	*remove_char(char *str, int index);
+int		print_sorted_envs(int fd);
+int		is_alphastr(char *str);
+void	ft_str_swap(char ***s1, char ***s2);
+int		get_index(char	*env);
+
 
 #endif

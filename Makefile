@@ -6,7 +6,7 @@
 #    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/12/02 16:22:53 by leferrei         ###   ########.fr        #
+#    Updated: 2022/12/05 13:25:04 by leferrei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,7 @@ SOURCES = 	m-shell.c\
 			split.c\
 			utils.c\
 			interpreter.c\
+			interpreter_utils.c\
 			env_var.c\
 			builtin_exec_utils.c\
 			system_exec_utils.c\
@@ -38,6 +39,8 @@ SOURCES = 	m-shell.c\
 			$(BUILTINS_DIR)/env.c\
 			$(BUILTINS_DIR)/exit.c\
 			$(BUILTINS_DIR)/echo.c\
+			$(BUILTINS_DIR)/export.c\
+			$(BUILTINS_DIR)/unset.c\
 
 
 OBJS =	$(SOURCES:.c=.o)
