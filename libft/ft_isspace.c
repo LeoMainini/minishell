@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ft_isspace.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 16:53:48 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/10/25 16:53:49 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/12/05 15:32:37 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 
-int ft_isspace(int c)
+int	ft_isspace(int c)
 {
-    if ((c >= 9 && c <= 13) || c == 32)
-        return (1);
-    return (0);
+	if ((c >= 9 && c <= 13) || c == 32)
+		return (1);
+	return (0);
 }

@@ -6,7 +6,7 @@
 #    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/12/05 14:48:10 by leferrei         ###   ########.fr        #
+#    Updated: 2022/12/05 15:31:04 by leferrei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,8 @@ SOURCES = 	m-shell.c\
 			here_doc_utils.c\
 			execution.c\
 			m-shell_routine_utils.c\
+			stdin_parsing.c\
+			shell_path_utils.c\
 			$(BUILTINS_DIR)/cd.c\
 			$(BUILTINS_DIR)/pwd.c\
 			$(BUILTINS_DIR)/env.c\
@@ -49,7 +51,6 @@ OBJS =	$(SOURCES:.c=.o)
 
 CC = gcc
 
-PP = lib-pipex/libpipex.a
 
 LFT = libft/libft.a
 
@@ -57,14 +58,14 @@ CFLAGS = -Wall -Werror -Wextra
 
 DEBUG = -fsanitize=address -g
 
-INC = -I. -I libft -I lib-pipex 
+INC = -I. -I libft
 
-LINK = -L . -L ./libft  -L ./lib-pipex -lpipex -lft -lreadline 
+LINK = -L . -L ./libft -lft -lreadline 
 
 .c.o: 
 	$(CC) $(CFLAGS) $(DEBUG) $(INC) -c $< -o $(<:.c=.o)
 
-$(NAME):	$(LFT)	$(PP)	$(OBJS)
+$(NAME):	$(LFT)	$(OBJS)
 			$(CC) $(CFLAGS) $(INC) $(DEBUG) $(OBJS) -o $(NAME) $(LINK)
 
 $(PP):
@@ -80,12 +81,10 @@ re: fclean all
 
 clean:
 	@make -C libft clean -s
-	@make -C lib-pipex clean -s 
 	rm -f $(OBJS)
 
 fclean: clean
 	@make -C libft fclean -s
-	@make -C lib-pipex fclean -s
 	rm -f $(NAME)
 
 .PHONY: all re clean fclean

@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/12/05 14:49:18 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/05 15:36:38 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,21 @@
 # define MINISHELL_H
 
 # include "libft/libft.h"
-# include "lib-pipex/pipex.h"
+//# include "lib-pipex/pipex.h"
 # include <stdio.h>
 # include <unistd.h>
+
+typedef struct s_ms
+{
+	int		ret;
+	char	**rl_addr;
+	int		builtins_outfd;
+	int		system_outfd;
+	char	*path;
+	int		in_child;
+	int		*pids;
+	int		pip[2];
+}	t_ms;
 
 typedef struct s_spl
 {
@@ -115,5 +127,8 @@ void	print_free_3darray(char ****str_array, int fd);
 int		check_folder(t_cmdd *argd, int i);
 int		steps_back(t_cmdd *argd, int i);
 char	*rel_to_abs_pwd(t_cmdd *argd, int i, char *pwd);
+char	**parse_stdin_tolimit(char *limiter);
+char	*find_shell_path(char **envp);
+char	*join_chunks(char **str_chunks, char *sep, int limiter);
 
 #endif

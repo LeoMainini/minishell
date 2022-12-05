@@ -1,16 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   shell_path_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/27 15:12:40 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/22 22:24:41 by leferrei         ###   ########.fr       */
+/*   Created: 2022/12/05 15:13:20 by leferrei          #+#    #+#             */
+/*   Updated: 2022/12/05 15:35:42 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "minishell.h"
+
+char	*clean_path(char **dirty_path, char *extra)
+{
+	char	*eo_path;
+	char	*c_path;
+	long	size;
+
+	eo_path = ft_strnstr(*dirty_path, extra, ft_strlen(*dirty_path));
+	if (!eo_path)
+	{
+		free(*dirty_path);
+		return (0);
+	}
+	size = (long)eo_path - (long)*dirty_path;
+	c_path = (char *)ft_calloc(size + 1, sizeof(char));
+	ft_memmove(c_path, *dirty_path, size);
+	free(*dirty_path);
+	return (c_path);
+}
 
 char	*find_shell_path(char **envp)
 {
@@ -38,39 +57,4 @@ char	*find_shell_path(char **envp)
 	if (!output)
 		return (0);
 	return (clean_path(&output, "ls"));
-}
-
-void	free_zeroout(void *p)
-{
-	free(p);
-	p = 0;
-}
-
-void	free_and_exit(t_vars *data, int status, int _exit)
-{
-	int	i;
-	int	k;
-
-	(void)status;
-	i = -1;
-	while (data->cmds[++i])
-	{
-		k = -1;
-		while (data->cmds[i][++k])
-			free_zeroout(data->cmds[i][k]);
-		free_zeroout(data->cmds[i]);
-	}
-	free_zeroout(data->cmds);
-	close(data->fds[0]);
-	i = -1;
-	while (data->lines_in && data->lines_in[++i])
-		free_zeroout(data->lines_in[i]);
-	if (data->lines_in)
-		free_zeroout(data->lines_in);
-	if (data->path)
-		free_zeroout(data->path);
-	if (data)
-		free_zeroout (data);
-	if (_exit)
-		exit(status);
 }

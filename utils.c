@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 17:26:35 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/02 16:40:43 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/05 15:35:27 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,26 @@ void	exit_status(int status, t_ms *data, unsigned int print_exit)
 	if (print_exit)
 		ft_putendl_fd("exit", STDERR_FILENO);
 	exit(status);
+}
+
+char	*join_chunks(char **str_chunks, char *sep, int limiter)
+{
+	int		k;
+	char	*complete_str;
+
+	k = -1;
+	complete_str = 0;
+	while (str_chunks[++k] && (k < limiter || limiter < 0))
+	{
+		if (!complete_str)
+			complete_str = ft_strjoin(sep, str_chunks[k]);
+		else
+		{
+			complete_str = ft_strfree_join(&complete_str, sep);
+			complete_str = ft_strfree_join(&complete_str, str_chunks[k]);
+		}
+	}
+	if (complete_str)
+		return (ft_strfree_join(&complete_str, sep));
+	return (complete_str);
 }

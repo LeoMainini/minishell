@@ -6,12 +6,12 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 17:15:06 by leferrei          #+#    #+#             */
-/*   Updated: 2022/11/30 16:46:06 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/05 15:35:18 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
-#include "get_next_line/get_next_line.h"
+#include "minishell.h"
+#include <readline/readline.h>
 
 char	*ft_strfreedup(char *s)
 {
@@ -38,7 +38,7 @@ static int	check_limiter(char **str_array, int index, char *limiter,
 							int null_index_delta)
 {
 	char	*temp;
-	int 	result;
+	int		result;
 
 	result = 0;
 	temp = 0;
@@ -72,6 +72,16 @@ static int	extend_array(char ***str_array, int k)
 	return (1);
 }
 
+char	*get_nlended_line(char *prompt)
+{
+	char	*str;
+
+	str = readline(prompt);
+	if (str)
+		str = ft_strfree_join(&str, "\n");
+	return (str);
+}
+
 char	**parse_stdin_tolimit(char *limiter)
 {
 	char	**lines_in;
@@ -81,7 +91,7 @@ char	**parse_stdin_tolimit(char *limiter)
 	if (!lines_in)
 		return (0);
 	k = 0;
-	lines_in[k] = get_next_line(STDIN_FILENO);
+	lines_in[k] = get_nlended_line("> ");
 	if (check_limiter(lines_in, k, limiter, 1))
 	{
 		free(lines_in[k]);
@@ -90,7 +100,7 @@ char	**parse_stdin_tolimit(char *limiter)
 	}
 	while (lines_in[k++])
 	{
-		lines_in[k] = ft_strfreedup(get_next_line(STDIN_FILENO));
+		lines_in[k] = get_nlended_line("> ");
 		extend_array(&lines_in, k);
 		if (check_limiter(lines_in, k, limiter, 0))
 			break ;
