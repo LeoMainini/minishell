@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 16:35:28 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/02 16:44:01 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/05 15:02:59 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	pwd(t_cmdd *argd, t_ms *data)
 	return (set_ret_return(data, 0));
 }
 
-int set_pwd(t_ms *data)
+int	set_pwd(t_ms *data)
 {
 	char	*pwd;
 	t_cmdd	temp;
@@ -55,7 +55,7 @@ int set_pwd(t_ms *data)
 	if (!pwd)
 		return (0);
 	temp.args = ft_calloc(3, sizeof(char *));
-	if(!temp.args)
+	if (!temp.args)
 		return (0);
 	temp.args[0] = ft_strdup("export");
 	temp.args[1] = ft_strjoin("PWD=", pwd);
