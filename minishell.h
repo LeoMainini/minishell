@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/12/02 16:43:56 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/05 13:04:08 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ char	*get_pwd(void);
 char	**get_sep_env_values(char *str);
 void	init_redir_arrays(t_spl *spl);
 void	init_spl(t_spl *spl);
-int		interpret_strings(char **strs, t_ms *data);
+void		interpret_strings(char **strs, t_ms *data);
 int		isvalidcmd(char *s, t_spl *spl);
 void	manage_redirs(t_spl *spl);
 int		pwd(t_cmdd *argd, t_ms *data);

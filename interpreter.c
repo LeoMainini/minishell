@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 16:52:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/02 15:25:39 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/05 13:04:03 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,18 +76,12 @@ char	*get_env_value(char *env_name, t_ms *data)
 	return (env_name);
 }
 
-int	convert_to_value(char **str, int i, t_ms *data)
+int	replace_value_str(char **str, int i, t_ms *data, int j)
 {
-	int		j;
 	char	*substr;
 	int		not_empty;
 
-	j = 0;
 	not_empty = 1;
-	while ((*str)[(i + 1) + j] && !ft_isspace((*str)[(i + 1) + j])
-		&& (*str)[(i + 1) + j] != '"' && (*str)[(i + 1) + j] != 39
-		&& (*str)[(i + 1) + j] != '$')
-		j++;
 	substr = ft_substr(*str, i + 1, j);
 	if (!scmp(substr, "?"))
 	{
@@ -105,6 +99,27 @@ int	convert_to_value(char **str, int i, t_ms *data)
 			not_empty = 0;
 	}
 	free(substr);
+	return (not_empty);
+}
+
+int	convert_to_value(char **str, int i, t_ms *data)
+{
+	int		j;
+	int		not_empty;
+
+	j = 0;
+	not_empty = 1;
+	while ((*str)[(i + 1) + j] && !ft_isspace((*str)[(i + 1) + j])
+		&& (*str)[(i + 1) + j] != '"' && (*str)[(i + 1) + j] != 39
+		&& (*str)[(i + 1) + j] != '$')
+		j++;
+	printf("j = %d\n", j);
+	if (!j && !ft_strncmp(&(*str)[i], "$$", 2))
+	{
+		*str = remove_char(*str, i);
+		return (1);
+	}
+	not_empty = replace_value_str(str, i, data, j);
 	return (not_empty);
 }
 
@@ -136,35 +151,39 @@ int	handle_quotes(char **str, int i, int *in_doubles, int *in_singles)
 	return (remove);
 }
 
-int	interpret_strings(char **strs, t_ms *data)
+void	check_str_char_condition(char **strs, int k, t_ms *data)
 {
-	int		i;
+	int	i;
+	int	inc;
+	int	in_singles;
+	int	in_doubles;
+
+	i = 0;
+	in_singles = 0;
+	in_doubles = 0;
+
+	while (strs[k][i])
+	{
+		inc = 0;
+		if (!handle_quotes(&(strs[k]), i, &in_doubles, &in_singles))
+			inc = 1;
+		else
+			strs[k] = remove_char(strs[k], i);
+		if (((in_doubles || !in_doubles) && !in_singles)
+			&& strs[k][i] == '$' && strs[k][i + 1])
+				inc = convert_to_value(&strs[k], i, data);
+		if (inc && strs[k][i])
+			i++;
+		else if (!strs[k][i])
+			break ;
+	}
+}
+
+void	interpret_strings(char **strs, t_ms *data)
+{
 	int		k;
-	int		in_doubles;
-	int		in_singles;
-	int		inc;
 
 	k = -1;
-	in_doubles = 0;
-	in_singles = 0;
 	while (strs[++k])
-	{
-		i = 0;
-		while (strs[k][i])
-		{
-			inc = 0;
-			if (!handle_quotes(&(strs[k]), i, &in_doubles, &in_singles))
-				inc = 1;
-			else
-				strs[k] = remove_char(strs[k], i);
-			if (((in_doubles || !in_doubles) && !in_singles)
-				&& strs[k][i] == '$' && strs[k][i + 1])
-					inc = convert_to_value(&strs[k], i, data);
-			if (inc && strs[k][i])
-				i++;
-			else if (!strs[k][i])
-				break ;
-		}
-	}
-	return (!in_doubles && !in_singles);
+		check_str_char_condition(strs, k, data);
 }
