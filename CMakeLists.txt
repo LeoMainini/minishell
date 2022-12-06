@@ -42,7 +42,7 @@ add_executable(minishell
         libft/ft_isascii.c
         libft/ft_isdigit.c
         libft/ft_isprint.c
-        libft/ft_isspace.c
+        libft/ispc.c
         libft/ft_itoa.c
         libft/ft_lstadd_back.c
         libft/ft_lstadd_front.c

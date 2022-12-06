@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/12/05 15:36:38 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/06 15:39:07 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ typedef struct s_cmdd
 char	**alloc_envmem(char **envs, int offset);
 void	alloc_redir_arrays(t_spl *spl);
 int		arg_count(t_spl *spl, char *s, int l);
+void	free_cmdarray(t_spl *spl);
 t_spl	cmd_split(char *s);
 int		change_dir(t_cmdd *argd, t_ms *data, int before_pipe);
 int		echo(t_cmdd *argd, t_ms *data);
@@ -66,9 +67,12 @@ char	**duplicate_envp(char **envs, int offset, int freeable);
 void	dupwithoutredirs(t_spl *spl);
 int		ft_argsize(char *s, int i);
 void	ft_parsing(char *str);
+t_spl	*get_cmdsplit(t_spl *cmdsplit);
 char	**get_env(char *env, t_ms *data);
 char	*get_pwd(void);
 char	**get_sep_env_values(char *str);
+t_ms	*get_struct(t_ms **data);
+int		handle_redirections(int i);
 void	init_redir_arrays(t_spl *spl);
 void	init_spl(t_spl *spl);
 void	interpret_strings(char **strs, t_ms *data);
@@ -81,9 +85,6 @@ char	*separate_redirs(char *s);
 int		set_pwd(t_ms *data);
 int		unset(t_cmdd *argd, t_ms *data, int before_pipe);
 int		validate_redirs(t_spl *spl);
-t_ms	*get_struct(t_ms **data);
-t_spl	*get_cmdsplit(t_spl *cmdsplit);
-int		handle_redirections(int i);
 int		*perform_hd_chain(t_ms *data);
 int		check_builtin(char *cmd);
 int		handle_b_in(int i, t_spl *spl);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_validation.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 17:07:13 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/12/02 16:37:54 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/06 15:39:27 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	invalidpipe(char *s, t_spl *spl, int *j, int *k)
 	if (s[(*j)] == '|')
 	{
 		(*k) = (*j) + 1;
-		while (s[(*k)] && ft_isspace(s[(*k)]))
+		while (s[(*k)] && ispc(s[(*k)]))
 			(*k)++;
 		if (!s[(*k)] || s[(*k)] == '|' || s[(*j) + 1] == '|' || (*j) == 0)
 		{
@@ -84,66 +84,4 @@ void	init_spl(t_spl *spl)
 	spl->output_types = 0;
 	spl->redir_in = 0;
 	spl->redir_out = 0;
-}
-
-char	*separate_redirs(char *s)
-{
-	char	*aux;
-	char	temp;
-	int		redir_count;
-	int		i;
-	int		j;
-
-	redir_count = 0;
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == 34 || s[i] == 39)
-		{
-			temp = s[i++];
-			while (s[i] && s[i] != temp)
-				i++;
-			i++;
-			continue ;
-		}
-		if (s[i] && (s[i] == '<' || s[i] == '>'))
-		{
-			while (s[i] && (s[i] == '<' || s[i] == '>'))
-				i++;
-			redir_count++;
-			if (!s[i])
-				break ;
-		}
-		i++;
-	}
-	if (!redir_count)
-		return (NULL);
-	aux = ft_calloc(sizeof(char), ((redir_count * 2) + i + 1));
-	if (!aux)
-		return (NULL);
-	j = 0;
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == 34 || s[i] == 39)
-		{
-			temp = s[i];
-			aux[j++] = s[i++];
-			while (s[i] && s[i] != temp)
-				aux[j++] = s[i++];
-			aux[j++] = s[i++];
-			continue ;
-		}
-		if (s[i] && (s[i] == '<' || s[i] == '>'))
-		{
-			aux[j++] = ' ';
-			while (s[i] && (s[i] == '<' || s[i] == '>'))
-				aux[j++] = s[i++];
-			aux[j++] = ' ';
-			continue ;
-		}
-		aux[j++] = s[i++];
-	}
-	aux[j] = '\0';
-	return (aux);
 }

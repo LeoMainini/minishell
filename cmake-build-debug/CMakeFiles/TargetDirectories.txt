@@ -1,3 +1,0 @@
-/nfs/homes/leferrei/Documents/minishell/cmake-build-debug/CMakeFiles/minishell.dir
-/nfs/homes/leferrei/Documents/minishell/cmake-build-debug/CMakeFiles/edit_cache.dir
-/nfs/homes/leferrei/Documents/minishell/cmake-build-debug/CMakeFiles/rebuild_cache.dir

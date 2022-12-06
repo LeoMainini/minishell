@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
+#    By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/12/05 15:31:04 by leferrei         ###   ########.fr        #
+#    Updated: 2022/12/06 15:39:42 by bcarreir         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,7 @@ SOURCES = 	m-shell.c\
 			cmd_redirs.c\
 			cmd_redirs2.c\
 			cmd_validation.c\
+			cmd_validation2.c\
 			signals.c\
 			split.c\
 			utils.c\

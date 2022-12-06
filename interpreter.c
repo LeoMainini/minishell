@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   interpreter.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 16:52:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/05 13:14:14 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/06 14:31:50 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	convert_to_value(char **str, int i, t_ms *data)
 
 	j = 0;
 	not_empty = 1;
-	while ((*str)[(i + 1) + j] && !ft_isspace((*str)[(i + 1) + j])
+	while ((*str)[(i + 1) + j] && !ispc((*str)[(i + 1) + j])
 		&& (*str)[(i + 1) + j] != '"' && (*str)[(i + 1) + j] != 39
 		&& (*str)[(i + 1) + j] != '$')
 		j++;

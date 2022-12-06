@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_redirs.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 17:10:39 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/12/02 16:37:30 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/06 14:18:48 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ void	free_cmdarray(t_spl *spl)
 			free(spl->ss[i][j]);
 		free(spl->ss[i]);
 	}
-	free(spl->ss);
+	if (spl->ss)
+		free(spl->ss);
 	spl->ss = NULL;
 }
 
@@ -95,47 +96,4 @@ void	dupwithoutredirs(t_spl *spl)
 	duptoaux(spl, &aux);
 	free_cmdarray(spl);
 	spl->ss = aux;
-}
-
-int	validate_redirs(t_spl *spl)
-{
-	char	***s;
-	int		l;
-	int		j;
-
-	s = spl->ss;
-	l = -1;
-	while (s[++l])
-	{
-		j = -1;
-		while (s[l][++j])
-		{
-			if (*s[l][j] == '<' || *s[l][j] == '>')
-			{	
-				if (scmp(s[l][j], "<") && scmp(s[l][j], ">")
-					&& scmp(s[l][j], ">>") && scmp(s[l][j], "<<"))
-				{
-					printf("parse error near '%s'\n", s[l][j]);
-					spl->redir_bool = 0;
-					return (1);
-				}
-				if ((!scmp(s[l][j], "<") || !scmp(s[l][j], ">")
-					|| !scmp(s[l][j], ">>") || !scmp(s[l][j], "<<")))
-				{
-					if ((!s[l][j + 1]) || *s[l][j + 1] == '|'
-						|| (!scmp(s[l][j + 1], "<")
-							|| !scmp(s[l][j + 1], ">")
-								|| !scmp(s[l][j + 1], ">>")
-									|| !scmp(s[l][j + 1], "<<")))
-					{
-						printf("parse error near '%s'\n", s[l][j]);
-						spl->redir_bool = 0;
-						return (1);
-					}
-				}
-				spl->redir_bool = 1;
-			}
-		}
-	}
-	return (0);
 }

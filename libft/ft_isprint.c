@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_isprint.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com>   +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 13:19:51 by leferrei          #+#    #+#             */
-/*   Updated: 2022/02/17 14:26:30 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/06 14:31:50 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 /*
-static int	ft_isspace(int c)
+static int	ispc(int c)
 {
 	if ((c >= 9 && c <= 13) || c == 32)
 		return (1);
