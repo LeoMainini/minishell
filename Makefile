@@ -6,24 +6,29 @@
 #    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/12/06 15:47:30 by leferrei         ###   ########.fr        #
+#    Updated: 2022/12/06 16:32:35 by leferrei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-BUILTINS_DIR =	builtins
+BUILTINS_DIR =	builtins/
 
+SRC_DIR = src/
 
-SOURCES = 	$(BUILTINS_DIR)/cd.c\
-			$(BUILTINS_DIR)/cd_utils.c\
-			$(BUILTINS_DIR)/echo.c\
-			$(BUILTINS_DIR)/env.c\
-			$(BUILTINS_DIR)/env_utils.c\
-			$(BUILTINS_DIR)/exit.c\
-			$(BUILTINS_DIR)/export.c\
-			$(BUILTINS_DIR)/pwd.c\
-			$(BUILTINS_DIR)/unset.c\
+OBJ_DIR = obj/
+
+LIBS_FOLDER = lib/
+
+SOURCES = 	$(BUILTINS_DIR)cd.c\
+			$(BUILTINS_DIR)cd_utils.c\
+			$(BUILTINS_DIR)echo.c\
+			$(BUILTINS_DIR)env.c\
+			$(BUILTINS_DIR)env_utils.c\
+			$(BUILTINS_DIR)exit.c\
+			$(BUILTINS_DIR)export.c\
+			$(BUILTINS_DIR)pwd.c\
+			$(BUILTINS_DIR)unset.c\
 			builtin_exec_utils.c\
 			cmd_ac_size.c\
 			cmd_redirs.c\
@@ -45,46 +50,51 @@ SOURCES = 	$(BUILTINS_DIR)/cd.c\
 			stdin_parsing.c\
 			system_exec_utils.c\
 			utils.c\
-			m-shell.c\
+			m-shell.c
 
+SRCS = $(addprefix $(SRC_DIR), $(SOURCES))
 
-OBJS =	$(SOURCES:.c=.o)
+OBJECTS = $(SOURCES:.c=.o)
+
+OBJS =	$(addprefix $(OBJ_DIR), $(OBJECTS))
 
 CC = gcc
 
-LFT = libft/libft.a
+LFT = $(LIBS_FOLDER)libft/libft.a
 
 CFLAGS = -Wall -Werror -Wextra
 
 DEBUG = -fsanitize=address -g
 
-INC = -I. -I libft
+INC = -I. -I $(LIBS_FOLDER)libft
 
-LINK = -L . -L ./libft -lft -lreadline 
+LINK = -L . -L $(LIBS_FOLDER)/libft -lft -lreadline 
 
-%.o: %.c
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c | $(OBJ_DIR)
 	@printf "Compiling $@\n"
 	@$(CC) $(CFLAGS) $(DEBUG) $(INC) -c $< -o $@
 
-$(NAME):	$(LFT)	$(OBJS)
+all:		$(NAME)
+
+$(NAME):	$(LFT)	$(OBJS)  $(SRCS)
 			@printf "Compiling object files into $(NAME)\n"
 			@$(CC) $(CFLAGS) $(INC) $(DEBUG) $(OBJS) -o $(NAME) $(LINK)
 
-$(LFT):
-			@make -C libft -s
+$(OBJ_DIR):
+			mkdir -p $(OBJ_DIR)$(BUILTINS_DIR)
 
-all:		$(NAME)
-			
+$(LFT):		$(LIBS_FOLDER)
+			@make -C $(LIBS_FOLDER)libft -s			
 
 re: fclean all
 
 clean:
-	@make -C libft clean -s
+	@make -C $(LIBS_FOLDER)libft clean -s
 	@printf "Removing object files\n"
 	@rm -f $(OBJS)
 
 fclean: clean
-	@make -C libft fclean -s
+	@make -C $(LIBS_FOLDER)libft fclean -s
 	@printf "Removing program files\n"
 	@rm -f $(NAME)
 

@@ -6,15 +6,14 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/12/06 15:46:21 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/06 16:35:44 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "libft/libft.h"
-//# include "lib-pipex/pipex.h"
+# include "libft.h"
 # include <stdio.h>
 # include <unistd.h>
 

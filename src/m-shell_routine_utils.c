@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:21:34 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/02 16:40:10 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/06 15:48:50 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int	*save_pid(int **pids, int new_pid, int reset)
 		return (0);
 	}
 	(*pids)[k] = new_pid;
-	printf("new pid = %d\n", new_pid);
 	temp_pids = (int *)ft_calloc(k + 2, sizeof(int));
 	i = -1;
 	while (++i <= k)

@@ -6,11 +6,11 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 13:20:54 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/05 13:41:26 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/06 16:20:16 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "minishell.h"
 
 extern char	**g_envs;
 

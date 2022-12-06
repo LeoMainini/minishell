@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 15:25:54 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/05 15:09:34 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/06 16:37:26 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <fcntl.h>
-//#include "lib-pipex/pipex.h"
 #include <sys/wait.h>
 #include <unistd.h>
 

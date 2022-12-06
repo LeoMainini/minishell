@@ -6,13 +6,12 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 14:55:05 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/05 15:05:35 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/06 16:36:19 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include <fcntl.h>
-//#include "lib-pipex/pipex.h"
 #include <sys/wait.h>
 #include <unistd.h>
 
