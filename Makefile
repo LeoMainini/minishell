@@ -6,7 +6,7 @@
 #    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/12/05 15:31:04 by leferrei         ###   ########.fr        #
+#    Updated: 2022/12/06 15:08:22 by leferrei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,7 +51,6 @@ OBJS =	$(SOURCES:.c=.o)
 
 CC = gcc
 
-
 LFT = libft/libft.a
 
 CFLAGS = -Wall -Werror -Wextra
@@ -62,14 +61,13 @@ INC = -I. -I libft
 
 LINK = -L . -L ./libft -lft -lreadline 
 
-.c.o: 
-	$(CC) $(CFLAGS) $(DEBUG) $(INC) -c $< -o $(<:.c=.o)
+%.o: %.c
+	@printf "Compiling $@\n"
+	@$(CC) $(CFLAGS) $(DEBUG) $(INC) -c $< -o $@
 
 $(NAME):	$(LFT)	$(OBJS)
-			$(CC) $(CFLAGS) $(INC) $(DEBUG) $(OBJS) -o $(NAME) $(LINK)
-
-$(PP):
-			@make -C lib-pipex -s
+			@printf "Compiling object files into $(NAME)\n"
+			@$(CC) $(CFLAGS) $(INC) $(DEBUG) $(OBJS) -o $(NAME) $(LINK)
 
 $(LFT):
 			@make -C libft -s
@@ -81,10 +79,12 @@ re: fclean all
 
 clean:
 	@make -C libft clean -s
-	rm -f $(OBJS)
+	@printf "Removing object files\n"
+	@rm -f $(OBJS)
 
 fclean: clean
 	@make -C libft fclean -s
-	rm -f $(NAME)
+	@printf "Removing program files\n"
+	@rm -f $(NAME)
 
 .PHONY: all re clean fclean
