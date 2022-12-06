@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+         #
+#    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/12/06 15:41:21 by bcarreir         ###   ########.fr        #
+#    Updated: 2022/12/06 15:47:30 by leferrei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,37 +15,37 @@ NAME = minishell
 BUILTINS_DIR =	builtins
 
 
-SOURCES = 	m-shell.c\
+SOURCES = 	$(BUILTINS_DIR)/cd.c\
+			$(BUILTINS_DIR)/cd_utils.c\
+			$(BUILTINS_DIR)/echo.c\
+			$(BUILTINS_DIR)/env.c\
+			$(BUILTINS_DIR)/env_utils.c\
+			$(BUILTINS_DIR)/exit.c\
+			$(BUILTINS_DIR)/export.c\
+			$(BUILTINS_DIR)/pwd.c\
+			$(BUILTINS_DIR)/unset.c\
+			builtin_exec_utils.c\
 			cmd_ac_size.c\
 			cmd_redirs.c\
 			cmd_redirs2.c\
 			cmd_validation.c\
 			cmd_validation2.c\
-			signals.c\
-			split.c\
-			utils.c\
-			interpreter.c\
-			interpreter_utils.c\
 			env_var.c\
-			builtin_exec_utils.c\
-			system_exec_utils.c\
+			execution.c\
 			file_utils.c\
 			getters_setters.c\
-			mem_utils.c\
 			here_doc_utils.c\
-			execution.c\
+			interpreter.c\
+			interpreter_utils.c\
 			m-shell_routine_utils.c\
-			stdin_parsing.c\
+			mem_utils.c\
 			shell_path_utils.c\
-			$(BUILTINS_DIR)/cd.c\
-			$(BUILTINS_DIR)/pwd.c\
-			$(BUILTINS_DIR)/env.c\
-			$(BUILTINS_DIR)/exit.c\
-			$(BUILTINS_DIR)/echo.c\
-			$(BUILTINS_DIR)/export.c\
-			$(BUILTINS_DIR)/unset.c\
-			$(BUILTINS_DIR)/env_utils.c\
-			$(BUILTINS_DIR)/cd_utils.c
+			signals.c\
+			split.c\
+			stdin_parsing.c\
+			system_exec_utils.c\
+			utils.c\
+			m-shell.c\
 
 
 OBJS =	$(SOURCES:.c=.o)
