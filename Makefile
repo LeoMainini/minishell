@@ -6,7 +6,7 @@
 #    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/12/09 19:05:22 by leferrei         ###   ########.fr        #
+#    Updated: 2022/12/09 19:11:08 by leferrei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,7 +64,7 @@ LFT = $(LIBS_FOLDER)libft/libft.a
 
 CFLAGS = -Wall -Werror -Wextra
 
-DEBUG = -g #-fsanitize=address
+DEBUG =# -g #-fsanitize=address
 
 INC = -I. -I $(LIBS_FOLDER)libft
 
