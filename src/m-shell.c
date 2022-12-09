@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/06 16:37:22 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 19:01:18 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	execute_cmd(t_ms *data, t_spl *spl, int i)
 	split_inter(spl, i);
 	if (!execute_builtin(spl->ss, i, data, data->pip))
 		data->pids = save_pid(&(data->pids),
-				exec_sys_func(spl->ss, &i, data->pip), 0);
+				exec_sys_func(spl->ss, &i, data->pip), 0, data);
 }
 
 int	main(int argc, char **argv, char **envp)

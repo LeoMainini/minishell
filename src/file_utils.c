@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 15:04:40 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/06 16:37:07 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 17:50:19 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,10 @@ int	check_cmd_executable(char *cmd)
 	temp = ft_strjoin(cmd, "/.");
 	if (!access(temp, F_OK) && ft_putstr_fd("File is a folder\n", STDERR_FILENO))
 	{
-		free(temp);
+		check_free_zeroout((void **)&temp);
 		return (0);
 	}
-	free(temp);
+	check_free_zeroout((void **)&temp);
 	if (!ft_strncmp(cmd, "..", 2)
 		|| !ft_strncmp(cmd, "./", 2))
 		return (2);
@@ -70,6 +70,6 @@ char	*create_hd_fp(void)
 
 	char_i = ft_itoa(i++);
 	temp = ft_strjoin("/tmp/hd_data", char_i);
-	free(char_i);
+	check_free_zeroout((void **)&char_i);
 	return (temp);
 }

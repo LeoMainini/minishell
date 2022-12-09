@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:37:49 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/06 16:35:56 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 17:50:19 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,13 @@ int	exec_dir_change(t_cmdd *argd, t_ms *data, int before_pipe)
 	{
 		absolute_path = rel_to_abs_pwd(argd, 1, pwd);
 		chdir(absolute_path);
-		free(absolute_path);
+		check_free_zeroout((void **)&absolute_path);
 	}
 	if (i == 3 && argd->args[1])
 		if (!change_back(data, pwd, argd->out_fd, before_pipe)
 			&& ft_putstr_fd("Failed to change directory\n", STDERR_FILENO))
 			result = 1;
-	free(pwd);
+	check_free_zeroout((void **)&pwd);
 	return (result);
 }
 

@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 13:09:35 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/05 13:11:36 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 17:50:19 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char	*remove_char(char *str, int index)
 		if (size > index)
 			result[size - 1] = str[size];
 	}
-	free(str);
+	check_free_zeroout((void **)&str);
 	return (result);
 }
 
@@ -42,12 +42,12 @@ char	*replace_name(char *str, char *env, int i, int j)
 
 	temp = ft_substr(str, 0, i);
 	result = ft_strjoin("", temp);
-	free(temp);
+	check_free_zeroout((void **)&temp);
 	result = ft_strfree_join(&result, env);
 	temp = ft_substr(str, i + j, ft_strlen(str) - i - j);
 	result = ft_strfree_join(&result, temp);
-	free(temp);
-	free(str);
+	check_free_zeroout((void **)&temp);
+	check_free_zeroout((void **)&str);
 	return (result);
 }
 
@@ -58,7 +58,7 @@ char	*get_env_value(char *env_name, t_ms *data)
 
 	env_addr = 0;
 	env_addr = get_env(env_name, data);
-	free(env_name);
+	check_free_zeroout((void **)&env_name);
 	if (env_addr)
 	{
 		env_name = *env_addr;
@@ -67,9 +67,9 @@ char	*get_env_value(char *env_name, t_ms *data)
 			env_name = ft_strdup(temp[1]);
 		else
 			env_name = ft_strdup("");
-		free(temp[1]);
-		free(temp[0]);
-		free(temp);
+		check_free_zeroout((void **)&temp[1]);
+		check_free_zeroout((void **)&temp[0]);
+		check_free_zeroout((void **)&temp);
 	}
 	else
 		env_name = ft_strdup("");
@@ -85,7 +85,7 @@ int	replace_value_str(char **str, int i, t_ms *data, int j)
 	substr = ft_substr(*str, i + 1, j);
 	if (!scmp(substr, "?"))
 	{
-		free(substr);
+		check_free_zeroout((void **)&substr);
 		substr = ft_itoa(data->ret);
 		*str = remove_char(*str, i);
 		*str = replace_name(*str, substr, i, j);
@@ -98,6 +98,6 @@ int	replace_value_str(char **str, int i, t_ms *data, int j)
 		if (!scmp(substr, ""))
 			not_empty = 0;
 	}
-	free(substr);
+	check_free_zeroout((void **)&substr);
 	return (not_empty);
 }

@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 15:13:20 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/05 15:35:42 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 17:50:19 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,13 @@ char	*clean_path(char **dirty_path, char *extra)
 	eo_path = ft_strnstr(*dirty_path, extra, ft_strlen(*dirty_path));
 	if (!eo_path)
 	{
-		free(*dirty_path);
+		check_free_zeroout((void **)&*dirty_path);
 		return (0);
 	}
 	size = (long)eo_path - (long)*dirty_path;
 	c_path = (char *)ft_calloc(size + 1, sizeof(char));
 	ft_memmove(c_path, *dirty_path, size);
-	free(*dirty_path);
+	check_free_zeroout((void **)&*dirty_path);
 	return (c_path);
 }
 
@@ -50,10 +50,10 @@ char	*find_shell_path(char **envp)
 		if (!access(temp, F_OK | X_OK) && !output)
 			output = ft_strdup(temp);
 		if (temp)
-			free(temp);
+			check_free_zeroout((void **)&temp);
 	}
 	if (all_paths)
-		free(all_paths);
+		check_free_zeroout((void **)&all_paths);
 	if (!output)
 		return (0);
 	return (clean_path(&output, "ls"));

@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:13:13 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/05 15:09:59 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 18:42:54 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ int	strs_to_fd(char **array, int fd)
 	{
 		if (write(fd, array[i], ft_strlen(array[i])) == -1)
 			return (0);
-		free(array[i]);
+		check_free_zeroout((void **)&array[i]);
 	}
-	free(array);
+	check_free_zeroout((void **)&array);
 	return (1);
 }
 
@@ -39,8 +39,10 @@ int	handle_hd(t_ms *data, char *limit)
 	int			pid;
 	char		**parse_d;
 	char		*file_path;
+	t_spl		*spl;
 
 	file_path = create_hd_fp();
+	spl = get_cmdsplit(0);
 	fd = open(file_path, O_CREAT | O_TRUNC | O_RDWR,
 			S_IRWXU | S_IRWXG | S_IRWXO);
 	pid = fork();
@@ -51,11 +53,11 @@ int	handle_hd(t_ms *data, char *limit)
 		parse_d = parse_stdin_tolimit(limit);
 		strs_to_fd(parse_d, fd);
 		close(fd);
-		exit_status(0, data, 0);
+		free_hd_pid_mem(data, spl, file_path);
 	}
 	waitpid(pid, 0, 0);
 	fd = open(file_path, O_RDONLY);
-	free(file_path);
+	check_free_zeroout((void **)&file_path);
 	return (fd);
 }
 
@@ -70,6 +72,7 @@ int	*perform_hd_chain(t_ms *data)
 		return (hds);
 	spl = get_cmdsplit(0);
 	hds = ft_calloc(spl->cmd_count, sizeof(int));
+	data->hds = hds;
 	i = -1;
 	while (spl->input_files && spl->input_files[++i])
 	{

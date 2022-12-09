@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 14:55:17 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/05 15:06:03 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 18:22:23 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ int	handle_in(int i, t_spl *spl)
 				success = -1;
 			if (!spl->input_files[i][j + 1] && fd != -1)
 				dup2(fd, STDIN_FILENO);
-			close(fd);
+			if (fd > 1)
+				close(fd);
 		}
 		if (success != -1)
 			success = 1;
@@ -56,7 +57,7 @@ int	handle_out(int i, t_spl *spl, int success)
 				success = -1;
 			if (!spl->output_files[i][j + 1] && fd != -1)
 				dup2(fd, STDOUT_FILENO);
-			if (fd >= 0)
+			if (fd >= 1)
 				close(fd);
 		}
 		if (success == 1)
@@ -98,7 +99,8 @@ int	pre_sys_exec_prep(int in_fd, int out_fd, int i, char ***cmd_argv)
 		dup2(in_fd, STDIN_FILENO);
 	if (cmd_argv[i + 1] && redirs_status != 2 && redirs_status != 3)
 		dup2(out_fd, STDOUT_FILENO);
-	close(in_fd);
+	if (in_fd > 1)
+		close(in_fd);
 	close(out_fd);
 	return (redirs_status);
 }

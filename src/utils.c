@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 17:26:35 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/05 15:35:27 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 18:44:12 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ int	set_ret_return(t_ms *data, int code)
 void	cleanup_exec_data(t_ms *data, t_spl *spl, char **read_line)
 {
 	close(data->pip[0]);
-	free_cmdsplit(spl);
-	free(*read_line);
+	free_cmdsplit(spl, data);
+	check_free_zeroout((void **)&*read_line);
 }
 
 void	exit_status(int status, t_ms *data, unsigned int print_exit)
@@ -57,4 +57,12 @@ char	*join_chunks(char **str_chunks, char *sep, int limiter)
 	if (complete_str)
 		return (ft_strfree_join(&complete_str, sep));
 	return (complete_str);
+}
+
+void	check_free_zeroout(void **ptr)
+{
+	if (!*ptr)
+		return ;
+	free(*ptr);
+	*ptr = 0;
 }

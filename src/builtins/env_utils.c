@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 14:29:49 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/06 16:20:16 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 17:50:19 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,14 @@ int	get_index(char	*env)
 		if (!scmp((const char *)env, (const char *)(sep_env[0])))
 		{
 			while (sep_env[++k])
-				free(sep_env[k]);
-			free(sep_env);
+				check_free_zeroout((void **)&sep_env[k]);
+			check_free_zeroout((void **)&sep_env);
 			result = i;
 			break ;
 		}
 		while (sep_env[++k])
-			free(sep_env[k]);
-		free(sep_env);
+			check_free_zeroout((void **)&sep_env[k]);
+		check_free_zeroout((void **)&sep_env);
 	}
 	return (result);
 }
@@ -98,16 +98,16 @@ void	print_free_3darray(char ****str_array, int fd)
 			ft_putstr_fd("=\"", fd);
 			ft_putstr_fd((*str_array)[i][1], fd);
 			ft_putstr_fd("\"\n", fd);
-			free((*str_array)[i][0]);
-			free((*str_array)[i][1]);
+			check_free_zeroout((void **)&(*str_array)[i][0]);
+			check_free_zeroout((void **)&(*str_array)[i][1]);
 		}
 		else
 		{
 			ft_putstr_fd("declare -x ", fd);
 			ft_putendl_fd((*str_array)[i][0], fd);
-			free((*str_array)[i][0]);
+			check_free_zeroout((void **)&(*str_array)[i][0]);
 		}
-		free((*str_array)[i]);
+		check_free_zeroout((void **)&(*str_array)[i]);
 	}
-	free((*str_array));
+	check_free_zeroout((void **)&(*str_array));
 }

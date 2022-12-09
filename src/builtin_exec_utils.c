@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 14:55:05 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/06 16:36:19 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 18:27:04 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,8 @@ int	pre_exec_prep(char ***cmd_argvs, int k, int pip[2], t_cmdd *cmds)
 
 	(*cmds).args = cmd_argvs[k];
 	(*cmds).in_fd = -1;
-	close(pip[0]);
+	if (pip[0] > 1)
+		close(pip[0]);
 	if (pipe(pip) == -1)
 		return (-1);
 	redirs_status = handle_b_redirections(k);

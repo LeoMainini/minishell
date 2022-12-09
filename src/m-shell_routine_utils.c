@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:21:34 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/06 15:48:50 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 19:01:06 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 extern char	**g_envs;
 
-int	*save_pid(int **pids, int new_pid, int reset)
+int	*save_pid(int **pids, int new_pid, int reset, t_ms *data)
 {
 	static int	k;
 	int			i;
@@ -28,13 +28,14 @@ int	*save_pid(int **pids, int new_pid, int reset)
 		k = 0;
 		return (0);
 	}
+	data->pids_written = 1;
 	(*pids)[k] = new_pid;
 	temp_pids = (int *)ft_calloc(k + 2, sizeof(int));
 	i = -1;
 	while (++i <= k)
 		temp_pids[i] = (*pids)[i];
 	k++;
-	free(*pids);
+	check_free_zeroout((void **)&*pids);
 	return (temp_pids);
 }
 
@@ -59,9 +60,9 @@ void	split_inter(t_spl *spl, int i)
 	j = 0;
 	while (spl->ss[i][++j])
 		result[k + (j - 1)] = spl->ss[i][j];
-	free(spl->ss[i][0]);
-	free(spl->ss[i]);
-	free(split_out);
+	check_free_zeroout((void **)&spl->ss[i][0]);
+	check_free_zeroout((void **)&spl->ss[i]);
+	check_free_zeroout((void **)&split_out);
 	spl->ss[i] = result;
 }
 
@@ -71,11 +72,13 @@ void	await_pid_returns(t_ms *data, int *pids, t_spl *spl, int i)
 	int	status;
 
 	j = 0;
+	status = 0;
 	while (pids[j])
 		j++;
 	while (j > 0)
 		waitpid(pids[--j], &status, 0);
-	free(pids);
+	check_free_zeroout((void **)&pids);
+	data->pids_written = 0;
 	if (spl->ss && spl->ss[0] && WIFSIGNALED(status)
 		&& !check_builtin(spl->ss[i - 1][0]))
 	{
@@ -116,7 +119,8 @@ int	handle_exec_data(char **read_line, t_ms *data, t_spl **spl)
 	perform_hd_chain(data);
 	data->pip[0] = -1;
 	data->pip[1] = -1;
-	save_pid(0, 0, 1);
+	save_pid(0, 0, 1, data);
 	data->pids = (int *)ft_calloc(1, sizeof(int));
+	data->pids_written = 0;
 	return (1);
 }

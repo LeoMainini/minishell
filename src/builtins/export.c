@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 13:20:54 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/06 16:20:16 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 18:30:14 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,12 @@ char	*get_var_name(t_cmdd *argd, int i)
 		return (ft_strdup(argd->args[i]));
 }
 
-int	name_invalid(char *name)
+int	name_invalid(char *name, int print)
 {
 	if (!is_alphastr(name))
 	{
+		if (!print)
+			return (1);
 		ft_putstr_fd("export: '", STDERR_FILENO);
 		ft_putstr_fd(name, STDERR_FILENO);
 		ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
@@ -43,17 +45,17 @@ void	add_genv_value(char **envi, t_cmdd *argd, int i, char *name)
 	{
 		if (ft_strchr(argd->args[i], '='))
 		{
-			free(*envi);
+			check_free_zeroout((void **)&*envi);
 			*envi = ft_strdup(argd->args[i]);
 		}
-		free(name);
+		check_free_zeroout((void **)&name);
 	}
 	else
 	{
-		free(name);
+		check_free_zeroout((void **)&name);
 		envi = g_envs;
 		g_envs = duplicate_envp(g_envs, 1, 1);
-		free(envi);
+		check_free_zeroout((void **)&envi);
 		last_i = 0;
 		while (g_envs[last_i])
 			last_i++;
@@ -77,10 +79,10 @@ int	export(t_cmdd *argd, t_ms *data, int before_pipe)
 	{
 		name = get_var_name(argd, i);
 		if (!result)
-			result = name_invalid(name);
-		if (name_invalid(name) || before_pipe)
+			result = name_invalid(name, 1);
+		if (name_invalid(name, 0) || before_pipe)
 		{
-			free(name);
+			check_free_zeroout((void **)&name);
 			continue ;
 		}
 		envi = get_env(name, data);

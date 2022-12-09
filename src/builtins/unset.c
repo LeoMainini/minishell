@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 13:21:44 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/06 16:20:16 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 17:50:19 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ int	unset(t_cmdd *argd, t_ms *data, int before_pipe)
 				temp[k] = ft_strdup(g_envs[k]);
 			if (k > found_i)
 				temp[k - 1] = ft_strdup(g_envs[k]);
-			free(g_envs[k]);
+			check_free_zeroout((void **)&g_envs[k]);
 		}
-		free(g_envs);
+		check_free_zeroout((void **)&g_envs);
 		g_envs = temp;
 	}
 	return (set_ret_return(data, 0));

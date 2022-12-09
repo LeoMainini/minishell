@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 14:53:40 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/02 16:38:08 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 17:50:19 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ char	**duplicate_envp(char **envs, int offset, int freeable)
 	{
 		temp[i] = ft_strdup(envs[i]);
 		if (freeable)
-			free(envs[i]);
+			check_free_zeroout((void **)&envs[i]);
 	}
 	return (temp);
 }

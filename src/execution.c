@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:17:06 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/02 16:38:21 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 19:05:56 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,10 @@ int	execute_builtin(char ***cmd_argvs, int k, t_ms *data, int pip[2])
 	if (redirs_status == -1 && !close(pip[1])
 		&& ft_putstr_fd("No such file or directory\n", STDERR_FILENO))
 		return (set_ret_return(data, 126));
-	if (cmds.out_fd == STDOUT_FILENO)
+	if (cmds.out_fd == STDOUT_FILENO && pip[0] > 1)
 		close(pip[0]);
 	select_builtin(i, data, &cmds, (cmd_argvs[k + 1] != 0));
-	if (redirs_status <= 0)
+	if (redirs_status <= 0 && pip[1] > 1)
 		close(pip[1]);
 	return (1);
 }
@@ -58,7 +58,9 @@ void	exec_child_pid(int in_fd, int out_fd, int i, char ***cmd_argv)
 	int		redirs_status;
 	char	*exec_path;
 	t_ms	*data;
+	t_spl	*spl;
 
+	spl = get_cmdsplit(0);
 	data = get_struct(0);
 	redirs_status = pre_sys_exec_prep(in_fd, out_fd, i, cmd_argv);
 	if (redirs_status == -1
@@ -68,9 +70,11 @@ void	exec_child_pid(int in_fd, int out_fd, int i, char ***cmd_argv)
 		exit_status(0, data, 0);
 	exec_path = (get_executable_path(data, cmd_argv[i][0], g_envs));
 	execve(exec_path, cmd_argv[i], g_envs);
-	free(exec_path);
+	check_free_zeroout((void **)&exec_path);
 	ft_putstr_fd("Error executing: ", STDERR_FILENO);
 	ft_putendl_fd(cmd_argv[i][0], STDERR_FILENO);
+	free_cmdsplit(spl, data);
+	check_free_zeroout((void **)&data->pids);
 	exit_status(127, data, 0);
 }
 

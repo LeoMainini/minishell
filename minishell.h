@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/12/06 16:35:44 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 19:00:37 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,16 @@
 
 typedef struct s_ms
 {
-	int		ret;
-	char	**rl_addr;
-	int		builtins_outfd;
-	int		system_outfd;
-	char	*path;
-	int		in_child;
-	int		*pids;
-	int		pip[2];
+	int			ret;
+	char		**rl_addr;
+	int			builtins_outfd;
+	int			system_outfd;
+	char		*path;
+	int			in_child;
+	int			*pids;
+	int			pip[2];
+	int			*hds;
+	int			pids_written;
 }	t_ms;
 
 typedef struct s_spl
@@ -68,7 +70,7 @@ char	*replace_name(char *str, char *env, int i, int j);
 char	*separate_redirs(char *s);
 int		*perform_hd_chain(t_ms *data);
 int		*perform_hd_chain(t_ms *data);
-int		*save_pid(int **pids, int new_pid, int reset);
+int		*save_pid(int **pids, int new_pid, int reset, t_ms *data);
 int		arg_count(t_spl *spl, char *s, int l);
 int		change_dir(t_cmdd *argd, t_ms *data, int before_pipe);
 int		check_builtin(char *cmd);
@@ -111,12 +113,13 @@ t_spl	*set_cmdsplit(char *read_line);
 t_spl	cmd_split(char *s);
 void	alloc_redir_arrays(t_spl *spl);
 void	await_pid_returns(t_ms *data, int *pids, t_spl *spl, int i);
+void	check_free_zeroout(void **ptr);
 void	cleanup_exec_data(t_ms *data, t_spl *spl, char **read_line);
 void	dupwithoutredirs(t_spl *spl);
 void	exec_child_pid(int in_fd, int out_fd, int i, char ***cmd_argv);
 void	exit_status(int status, t_ms *data, unsigned int print_exit);
 void	free_cmdarray(t_spl *spl);
-void	free_cmdsplit(t_spl *cspl);
+void	free_cmdsplit(t_spl *cspl, t_ms *data);
 void	free_data(t_ms *data);
 void	free_inout_strs(char ****files, int ***types);
 void	ft_parsing(char *str);
@@ -130,5 +133,6 @@ void	print_free_3darray(char ****str_array, int fd);
 void	select_builtin(int i, t_ms *data, t_cmdd *cmds, int nil);
 void	sighandler(int signum);
 void	split_inter(t_spl *spl, int i);
+void	free_hd_pid_mem(t_ms *data, t_spl *spl, char *file_path);
 
 #endif

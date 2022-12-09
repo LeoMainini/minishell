@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 14:47:35 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/06 16:19:49 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 17:50:19 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ int	check_folder(t_cmdd *argd, int i)
 	if ((access(argd->args[i], X_OK) || access(temp, F_OK))
 		&& ft_putstr_fd("File is not a folder\n", STDERR_FILENO))
 	{
-		free(temp);
+		check_free_zeroout((void **)&temp);
 		return (0);
 	}
-	free(temp);
+	check_free_zeroout((void **)&temp);
 	if (!ft_strncmp(argd->args[i], "..", 2)
 		|| !ft_strncmp(argd->args[i], "./", 2))
 		return (2);
@@ -51,8 +51,8 @@ int	steps_back(t_cmdd *argd, int i)
 			steps_back++;
 	k = -1;
 	while (file_path[++k])
-		free(file_path[k]);
-	free(file_path);
+		check_free_zeroout((void **)&file_path[k]);
+	check_free_zeroout((void **)&file_path);
 	return (steps_back);
 }
 
@@ -72,7 +72,7 @@ char	*rel_to_abs_pwd(t_cmdd *argd, int i, char *pwd)
 	absolute = join_chunks(pwd_chunks, "/", k);
 	k = -1;
 	while (pwd_chunks[++k])
-		free(pwd_chunks[k]);
-	free(pwd_chunks);
+		check_free_zeroout((void **)&pwd_chunks[k]);
+	check_free_zeroout((void **)&pwd_chunks);
 	return (absolute);
 }

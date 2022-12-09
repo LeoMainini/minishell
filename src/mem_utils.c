@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 15:25:54 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/06 16:37:26 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 19:06:22 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,16 @@ void	free_inout_strs(char ****files, int ***types)
 	{
 		j = -1;
 		while ((*files)[i][++j])
-			free((*files)[i][j]);
-		free((*files)[i]);
-		free((*types)[i]);
+			check_free_zeroout((void **)&(*files)[i][j]);
+		check_free_zeroout((void **)&(*files)[i]);
+		check_free_zeroout((void **)&(*types)[i]);
 	}
-	free((*files));
+	check_free_zeroout((void **)&(*files));
 	(*files) = 0;
-	free((*types));
+	check_free_zeroout((void **)&(*types));
 }
 
-void	free_cmdsplit(t_spl *cspl)
+void	free_cmdsplit(t_spl *cspl, t_ms *data)
 {
 	int	i;
 	int	j;
@@ -48,15 +48,15 @@ void	free_cmdsplit(t_spl *cspl)
 	{
 		j = -1;
 		while (cspl->ss[i][++j])
-			free(cspl->ss[i][j]);
-		free(cspl->ss[i]);
+			check_free_zeroout((void **)&cspl->ss[i][j]);
+		check_free_zeroout((void **)&cspl->ss[i]);
 	}
-	free(cspl->ss);
+	check_free_zeroout((void **)&cspl->ss);
 	cspl->ss = NULL;
 	free_inout_strs(&cspl->input_files, &cspl->input_types);
 	free_inout_strs(&cspl->output_files, &cspl->output_types);
-	free(perform_hd_chain(0));
-	free(cspl);
+	check_free_zeroout((void **)&data->hds);
+	check_free_zeroout((void **)&cspl);
 }
 
 void	free_data(t_ms *data)
@@ -64,10 +64,20 @@ void	free_data(t_ms *data)
 	int	i;
 
 	if (data->rl_addr && *(data->rl_addr))
-		free(*(data->rl_addr));
+		check_free_zeroout((void **)&*(data->rl_addr));
 	i = -1;
 	while (g_envs[++i])
-		free(g_envs[i]);
-	free(g_envs);
+		check_free_zeroout((void **)&g_envs[i]);
+	check_free_zeroout((void **)&g_envs);
+	check_free_zeroout((void **)&data->hds);
+	check_free_zeroout((void **)&data->path);
 	rl_clear_history();
+	check_free_zeroout((void **)&data);
+}
+
+void	free_hd_pid_mem(t_ms *data, t_spl *spl, char *file_path)
+{
+	check_free_zeroout((void **)&file_path);
+	free_cmdsplit(spl, data);
+	exit_status(0, data, 0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_redirs.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 17:10:39 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/12/06 14:18:48 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/12/09 17:50:19 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,11 @@ void	free_cmdarray(t_spl *spl)
 	{
 		j = -1;
 		while (spl->ss[i][++j])
-			free(spl->ss[i][j]);
-		free(spl->ss[i]);
+			check_free_zeroout((void **)&spl->ss[i][j]);
+		check_free_zeroout((void **)&spl->ss[i]);
 	}
 	if (spl->ss)
-		free(spl->ss);
+		check_free_zeroout((void **)&spl->ss);
 	spl->ss = NULL;
 }
 

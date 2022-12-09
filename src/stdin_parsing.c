@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 17:15:06 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/05 15:35:18 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 17:50:19 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char	*ft_strfreedup(char *s)
 	while (s[++i] != 0)
 		res[i] = s[i];
 	res[i] = 0;
-	free(s);
+	check_free_zeroout((void **)&s);
 	return (res);
 }
 
@@ -48,10 +48,10 @@ static int	check_limiter(char **str_array, int index, char *limiter,
 	if (!result)
 	{
 		if (!null_index_delta)
-			free(str_array[index]);
+			check_free_zeroout((void **)&str_array[index]);
 		str_array[index + null_index_delta] = 0;
 	}
-	free(temp);
+	check_free_zeroout((void **)&temp);
 	return (result == 0);
 }
 
@@ -67,7 +67,7 @@ static int	extend_array(char ***str_array, int k)
 	while (++i <= k)
 		temp[i] = ft_strfreedup((*str_array)[i]);
 	temp[i] = 0;
-	free(*str_array);
+	check_free_zeroout((void **)&*str_array);
 	*str_array = temp;
 	return (1);
 }
@@ -94,7 +94,7 @@ char	**parse_stdin_tolimit(char *limiter)
 	lines_in[k] = get_nlended_line("> ");
 	if (check_limiter(lines_in, k, limiter, 1))
 	{
-		free(lines_in[k]);
+		check_free_zeroout((void **)&lines_in[k]);
 		lines_in[k] = ft_strdup("");
 		return (lines_in);
 	}

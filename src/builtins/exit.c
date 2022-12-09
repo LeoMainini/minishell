@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:34:10 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/05 15:00:11 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/09 19:04:44 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,14 @@ int	check_alpha(t_cmdd *argd, int before_pipe, t_ms *data, int i)
 	return (1);
 }
 
+void	free_data_exit_status(int status, t_ms *data, int print_exit)
+{
+	free_cmdsplit(get_cmdsplit(0), data);
+	if (!data->pids_written)
+		check_free_zeroout((void **)&data->pids);
+	exit_status(status, data, print_exit);
+}
+
 int	exit_shell(t_cmdd *argd, t_ms *data, int before_pipe)
 {
 	int				status;
@@ -50,7 +58,7 @@ int	exit_shell(t_cmdd *argd, t_ms *data, int before_pipe)
 	code = 0;
 	if (!argd->args[1])
 		if (!before_pipe)
-			exit_status(0, data, 1);
+			free_data_exit_status(0, data, 1);
 	i = 0;
 	while (argd->args[++i])
 		if (!check_alpha(argd, before_pipe, data, i))
@@ -62,6 +70,6 @@ int	exit_shell(t_cmdd *argd, t_ms *data, int before_pipe)
 	if (status)
 		code = 256 + status;
 	if (!before_pipe)
-		exit_status((int)code, data, 1);
+		free_data_exit_status((int)code, data, 1);
 	return (0);
 }
