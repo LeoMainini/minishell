@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   interpreter.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 16:52:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/06 14:31:50 by bcarreir         ###   ########.fr       */
+/*   Updated: 2022/12/11 13:17:26 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ int	convert_to_value(char **str, int i, t_ms *data)
 		&& (*str)[(i + 1) + j] != '"' && (*str)[(i + 1) + j] != 39
 		&& (*str)[(i + 1) + j] != '$')
 		j++;
-	printf("j = %d\n", j);
 	if (!j && !ft_strncmp(&(*str)[i], "$$", 2))
 	{
 		*str = remove_char(*str, i);
