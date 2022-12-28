@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:59:48 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/11/30 15:00:15 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/11 13:25:47 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 
 void	sighandler(int signum)
 {
-	printf("in child = %d\n", get_struct(0)->in_child);
 	if (signum == SIGINT)
 	{
 		printf("\n");

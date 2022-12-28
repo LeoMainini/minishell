@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 17:26:35 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/09 18:44:12 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/28 14:58:28 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,12 @@ int	set_ret_return(t_ms *data, int code)
 	return (code);
 }
 
-void	cleanup_exec_data(t_ms *data, t_spl *spl, char **read_line)
+int	cleanup_exec_data(t_ms *data, t_spl *spl, char **read_line)
 {
 	close(data->pip[0]);
 	free_cmdsplit(spl, data);
 	check_free_zeroout((void **)&*read_line);
+	return (1);
 }
 
 void	exit_status(int status, t_ms *data, unsigned int print_exit)

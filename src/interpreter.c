@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 16:52:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/11 13:17:26 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/28 14:43:04 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,13 @@ int	convert_to_value(char **str, int i, t_ms *data)
 	not_empty = 1;
 	while ((*str)[(i + 1) + j] && !ispc((*str)[(i + 1) + j])
 		&& (*str)[(i + 1) + j] != '"' && (*str)[(i + 1) + j] != 39
-		&& (*str)[(i + 1) + j] != '$')
+		&& (*str)[(i + 1) + j] != '$' && ft_isalpha((*str)[(i + 1) + j]))
 		j++;
 	if (!j && !ft_strncmp(&(*str)[i], "$$", 2))
 	{
 		*str = remove_char(*str, i);
+		if (!*str)
+			return (0);
 		return (1);
 	}
 	not_empty = replace_value_str(str, i, data, j);
@@ -62,7 +64,7 @@ int	handle_quotes(char **str, int i, int *in_doubles, int *in_singles)
 	return (remove);
 }
 
-void	check_str_char_condition(char **strs, int k, t_ms *data)
+int	check_str_char_condition(char **strs, int k, t_ms *data)
 {
 	int	i;
 	int	inc;
@@ -87,6 +89,7 @@ void	check_str_char_condition(char **strs, int k, t_ms *data)
 		else if (!strs[k][i])
 			break ;
 	}
+	return (1);
 }
 
 void	interpret_strings(char **strs, t_ms *data)

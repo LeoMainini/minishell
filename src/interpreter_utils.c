@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 13:09:35 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/09 17:50:19 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/28 13:52:23 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ char	*remove_char(char *str, int index)
 	while (str[size])
 		size++;
 	result = ft_calloc(size, sizeof(char));
+	if (!result)
+		return (0);
 	size = -1;
 	while (str[++size])
 	{

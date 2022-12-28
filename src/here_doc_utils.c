@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:13:13 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/09 18:42:54 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/28 14:57:32 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,28 +33,44 @@ int	strs_to_fd(char **array, int fd)
 	return (1);
 }
 
+void	free_hd_subp_mem(t_ms *data, t_spl *spl, char *file_path)
+{
+	free_data(data);
+	free_cmdsplit(spl, data);
+	free(file_path);
+	exit(0);
+}
+
+void	hd_process_routine(int fd, char *limit, t_ms *data, char *file_path)
+{
+	char	**parse_d;
+	t_spl	*spl;
+
+	spl = get_cmdsplit(0);
+	if (fd == -1)
+		exit(0);
+	parse_d = parse_stdin_tolimit(limit);
+	if (!parse_d)
+		free_hd_subp_mem(data, spl, file_path);
+	strs_to_fd(parse_d, fd);
+	close(fd);
+	free_hd_pid_mem(data, spl, file_path);
+}
+
 int	handle_hd(t_ms *data, char *limit)
 {
 	int			fd;
 	int			pid;
-	char		**parse_d;
 	char		*file_path;
-	t_spl		*spl;
 
 	file_path = create_hd_fp();
-	spl = get_cmdsplit(0);
 	fd = open(file_path, O_CREAT | O_TRUNC | O_RDWR,
 			S_IRWXU | S_IRWXG | S_IRWXO);
 	pid = fork();
+	if (!file_path || pid == -1)
+		return (0);
 	if (!pid)
-	{
-		if (fd == -1)
-			return (0);
-		parse_d = parse_stdin_tolimit(limit);
-		strs_to_fd(parse_d, fd);
-		close(fd);
-		free_hd_pid_mem(data, spl, file_path);
-	}
+		hd_process_routine(fd, limit, data, file_path);
 	waitpid(pid, 0, 0);
 	fd = open(file_path, O_RDONLY);
 	check_free_zeroout((void **)&file_path);
@@ -72,6 +88,8 @@ int	*perform_hd_chain(t_ms *data)
 		return (hds);
 	spl = get_cmdsplit(0);
 	hds = ft_calloc(spl->cmd_count, sizeof(int));
+	if (!hds)
+		return (0);
 	data->hds = hds;
 	i = -1;
 	while (spl->input_files && spl->input_files[++i])

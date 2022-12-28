@@ -6,7 +6,7 @@
 #    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2022/12/09 19:11:08 by leferrei         ###   ########.fr        #
+#    Updated: 2022/12/28 14:57:21 by leferrei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,6 +43,7 @@ SOURCES = 	$(BUILTINS_DIR)cd.c\
 			interpreter.c\
 			interpreter_utils.c\
 			m-shell_routine_utils.c\
+			m-shell_routine_inter_utils.c\
 			mem_utils.c\
 			shell_path_utils.c\
 			signals.c\

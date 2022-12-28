@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/12/09 19:00:37 by leferrei         ###   ########.fr       */
+/*   Updated: 2022/12/28 14:59:22 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ int		handle_in(int i, t_spl *spl);
 int		handle_out(int i, t_spl *spl, int success);
 int		handle_redirections(int i);
 int		handle_redirections(int i);
+int		init_data(int argc, char **argv, t_ms **data, char **envp);
 int		is_alphastr(char *str);
 int		isvalidcmd(char *s, t_spl *spl);
 int		open_outfile(t_spl *spl, int i, int j);
@@ -114,7 +115,7 @@ t_spl	cmd_split(char *s);
 void	alloc_redir_arrays(t_spl *spl);
 void	await_pid_returns(t_ms *data, int *pids, t_spl *spl, int i);
 void	check_free_zeroout(void **ptr);
-void	cleanup_exec_data(t_ms *data, t_spl *spl, char **read_line);
+int		cleanup_exec_data(t_ms *data, t_spl *spl, char **read_line);
 void	dupwithoutredirs(t_spl *spl);
 void	exec_child_pid(int in_fd, int out_fd, int i, char ***cmd_argv);
 void	exit_status(int status, t_ms *data, unsigned int print_exit);
@@ -124,7 +125,6 @@ void	free_data(t_ms *data);
 void	free_inout_strs(char ****files, int ***types);
 void	ft_parsing(char *str);
 void	ft_str_swap(char ***s1, char ***s2);
-void	init_data(int argc, char **argv, t_ms **data, char **envp);
 void	init_redir_arrays(t_spl *spl);
 void	init_spl(t_spl *spl);
 void	interpret_strings(char **strs, t_ms *data);
@@ -132,7 +132,9 @@ void	manage_redirs(t_spl *spl);
 void	print_free_3darray(char ****str_array, int fd);
 void	select_builtin(int i, t_ms *data, t_cmdd *cmds, int nil);
 void	sighandler(int signum);
-void	split_inter(t_spl *spl, int i);
+int		split_inter(t_spl *spl, int i);
 void	free_hd_pid_mem(t_ms *data, t_spl *spl, char *file_path);
+void	free_split_inter_data(t_spl *spl, char **split_out, int i, int toggle);
+char	**alloc_result_mem( t_spl *spl, int i, char **split_out);
 
 #endif
