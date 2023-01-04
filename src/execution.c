@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:17:06 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/09 19:05:56 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/04 17:54:35 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,13 @@ void	exec_child_pid(int in_fd, int out_fd, int i, char ***cmd_argv)
 
 	spl = get_cmdsplit(0);
 	data = get_struct(0);
+	close(data->pip[0]);
+	if (!cmd_argv[i][0])
+		exit_status(0, data, 0);
 	redirs_status = pre_sys_exec_prep(in_fd, out_fd, i, cmd_argv);
 	if (redirs_status == -1
 		&& ft_putstr_fd("No such file or directory\n", STDERR_FILENO))
 		exit(126);
-	if (!cmd_argv[i][0])
-		exit_status(0, data, 0);
 	exec_path = (get_executable_path(data, cmd_argv[i][0], g_envs));
 	execve(exec_path, cmd_argv[i], g_envs);
 	check_free_zeroout((void **)&exec_path);
@@ -85,6 +86,8 @@ int	exec_sys_func(char ***cmd_argv, int *i, int pip[2])
 	int		out_fd;
 
 	in_fd = pip[0];
+	if (pip[1] > 1)
+		close(pip[1]);
 	if (pipe(pip) == -1)
 		return (-2);
 	out_fd = pip[1];

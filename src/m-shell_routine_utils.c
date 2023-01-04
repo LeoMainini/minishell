@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:21:34 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/28 14:55:33 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/04 17:22:09 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int	init_data(int argc, char **argv, t_ms **data, char **envp)
 	(void)argc;
 	(void)argv;
 	*data = (t_ms *)ft_calloc(1, sizeof(t_ms));
-	if (!*data)
+	if (!*data || pipe((*data)->pip) == -1)
 		return (0);
 	get_struct(data);
 	(*data)->ret = 0;

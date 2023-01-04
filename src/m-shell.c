@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/28 14:59:03 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/04 17:37:57 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,18 @@ char	**g_envs;
 
 int	execute_cmd(t_ms *data, t_spl *spl, int i)
 {
+	int	pid;
+	
 	interpret_strings(spl->ss[i], data);
 	if (!split_inter(spl, i)
 		&& ft_putstr_fd("Error expanding command value\n", STDERR_FILENO))
 		return (0);
 	if (!execute_builtin(spl->ss, i, data, data->pip))
 	{
-		data->pids = save_pid(&(data->pids),
-				exec_sys_func(spl->ss, &i, data->pip), 0, data);
+		pid = exec_sys_func(spl->ss, &i, data->pip);
+		// ft_putstr_fd("NEW PID = ", STDERR_FILENO);
+		// ft_putendl_fd(ft_itoa(pid), STDERR_FILENO);
+		data->pids = save_pid(&(data->pids), pid , 0, data);
 		if (!data->pids)
 			return (0);
 	}
