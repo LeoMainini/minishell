@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:17:06 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/04 17:54:35 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/09 16:46:49 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,6 @@ int	exec_sys_func(char ***cmd_argv, int *i, int pip[2])
 	int		out_fd;
 
 	in_fd = pip[0];
-	if (pip[1] > 1)
-		close(pip[1]);
 	if (pipe(pip) == -1)
 		return (-2);
 	out_fd = pip[1];

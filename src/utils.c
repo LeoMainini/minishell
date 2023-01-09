@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 17:26:35 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/04 18:03:10 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/09 17:18:58 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ int	set_ret_return(t_ms *data, int code)
 
 int	cleanup_exec_data(t_ms *data, t_spl *spl, char **read_line)
 {
-	close(data->pip[0]);
+	if (data->pip[0] > 1)
+		close(data->pip[0]);
 	free_cmdsplit(spl, data);
 	check_free_zeroout((void **)&*read_line);
 	return (1);

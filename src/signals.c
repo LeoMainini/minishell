@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:59:48 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/12/11 13:25:47 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/09 15:54:27 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	sighandler(int signum)
 {
 	if (signum == SIGINT)
 	{
-		printf("\n");
+		ft_putstr_fd("\n", 0);
 		rl_on_new_line();
 		rl_replace_line("", 1);
 		rl_redisplay();
