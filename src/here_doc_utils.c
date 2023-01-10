@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:13:13 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/04 17:58:18 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/10 17:10:10 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void	hd_process_routine(int fd, char *limit, t_ms *data, char *file_path)
 	char	**parse_d;
 	t_spl	*spl;
 
+	signal(SIGINT, cmd_sighandler);
 	spl = get_cmdsplit(0);
 	close(data->pip[1]);
 	close(data->pip[0]);
@@ -64,6 +65,7 @@ int	handle_hd(t_ms *data, char *limit)
 	int			fd;
 	int			pid;
 	char		*file_path;
+	int			status;
 
 	file_path = create_hd_fp();
 	fd = open(file_path, O_CREAT | O_TRUNC | O_RDWR,
@@ -73,7 +75,10 @@ int	handle_hd(t_ms *data, char *limit)
 		return (0);
 	if (!pid)
 		hd_process_routine(fd, limit, data, file_path);
-	waitpid(pid, 0, 0);
+	waitpid(pid, &status, 0);
+	printf("heredoc status = %d\n", status);
+	if (status == 256 * 20)
+		return (-1);
 	fd = open(file_path, O_RDONLY);
 	check_free_zeroout((void **)&file_path);
 	return (fd);
@@ -85,6 +90,7 @@ int	*perform_hd_chain(t_ms *data)
 	static int	*hds;
 	int			i;
 	int			j;
+	int			ret;
 
 	if (!data)
 		return (hds);
@@ -102,7 +108,12 @@ int	*perform_hd_chain(t_ms *data)
 			if (!spl->input_files[i][j + 1] && spl->input_types[i][j])
 				hds[i] = handle_hd(data, spl->input_files[i][j]);
 			else if (spl->input_types[i][j])
-				handle_hd(data, spl->input_files[i][j]);
+				ret = handle_hd(data, spl->input_files[i][j]);
+			if (ret == -1 || hds[i] == -1)
+			{
+				free(hds);
+				return ((int *)2);
+			}
 		}
 	}
 	return (hds);

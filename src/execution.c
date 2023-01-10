@@ -6,11 +6,12 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:17:06 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/09 16:46:49 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/10 16:31:53 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <signal.h>
 
 extern char	**g_envs;
 
@@ -60,6 +61,7 @@ void	exec_child_pid(int in_fd, int out_fd, int i, char ***cmd_argv)
 	t_ms	*data;
 	t_spl	*spl;
 
+	signal(SIGINT, cmd_sighandler);
 	spl = get_cmdsplit(0);
 	data = get_struct(0);
 	close(data->pip[0]);

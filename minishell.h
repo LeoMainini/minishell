@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/12/28 14:59:22 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/10 16:31:32 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,5 +136,6 @@ int		split_inter(t_spl *spl, int i);
 void	free_hd_pid_mem(t_ms *data, t_spl *spl, char *file_path);
 void	free_split_inter_data(t_spl *spl, char **split_out, int i, int toggle);
 char	**alloc_result_mem( t_spl *spl, int i, char **split_out);
+void	cmd_sighandler(int	signum);
 
 #endif

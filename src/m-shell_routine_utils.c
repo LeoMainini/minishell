@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:21:34 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/09 15:46:22 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/10 17:12:12 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,10 @@ void	await_pid_returns(t_ms *data, int *pids, t_spl *spl, int i)
 	status = 0;
 	while (pids[j])
 		j++;
-	while (j > 0)
+	if (j > 0 && pids[--j])
 		waitpid(pids[--j], &status, 0);
+	while (j > 0)
+		waitpid(pids[--j], 0, 0);
 	check_free_zeroout((void **)&pids);
 	data->pids_written = 0;
 	if (spl->ss && spl->ss[0] && WIFSIGNALED(status)
@@ -131,14 +133,16 @@ int	handle_exec_data(char **read_line, t_ms *data, t_spl **spl)
 	data->pip[1] = -1;
 	save_pid(0, 0, 1, data);
 	data->pids = (int *)ft_calloc(1, sizeof(int));
-	if (!data->pids || !*spl)
+	if (!data->pids || !*spl || hd_status == (int *)2)
 	{
-		if (hd_status)
-			free(hd_status);
-		return (0);
+		//check_free_zeroout((void **)&data->pids);
+		//free_cmdsplit(*spl, data);
+		if (hd_status == (int *)2)
+			data->ret = 130;
+		if (hd_status && hd_status > (int *)2)
+			check_free_zeroout((void **)&hd_status);
+		return (2);
 	}
-	if (!hd_status && ft_putstr_fd("Hd execution failed\n", STDERR_FILENO))
-		return (0);
 	data->pids_written = 0;
 	return (1);
 }
