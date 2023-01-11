@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:13:13 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/10 17:10:10 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/11 17:09:26 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,11 @@ void	hd_process_routine(int fd, char *limit, t_ms *data, char *file_path)
 
 	signal(SIGINT, cmd_sighandler);
 	spl = get_cmdsplit(0);
-	close(data->pip[1]);
-	close(data->pip[0]);
+	if (data->pip[0] > 2 && data->pip[1] > 2)
+	{
+		//close(data->pip[0]);
+		//close(data->pip[1]);
+	}
 	if (fd == -1)
 		exit(0);
 	parse_d = parse_stdin_tolimit(limit);
@@ -62,10 +65,10 @@ void	hd_process_routine(int fd, char *limit, t_ms *data, char *file_path)
 
 int	handle_hd(t_ms *data, char *limit)
 {
-	int			fd;
-	int			pid;
-	char		*file_path;
-	int			status;
+	int		fd;
+	int		pid;
+	char	*file_path;
+	int		status;
 
 	file_path = create_hd_fp();
 	fd = open(file_path, O_CREAT | O_TRUNC | O_RDWR,
@@ -75,8 +78,7 @@ int	handle_hd(t_ms *data, char *limit)
 		return (0);
 	if (!pid)
 		hd_process_routine(fd, limit, data, file_path);
-	waitpid(pid, &status, 0);
-	printf("heredoc status = %d\n", status);
+	waitpid(pid, (int *)&status, 0);
 	if (status == 256 * 20)
 		return (-1);
 	fd = open(file_path, O_RDONLY);
@@ -100,6 +102,7 @@ int	*perform_hd_chain(t_ms *data)
 		return (0);
 	data->hds = hds;
 	i = -1;
+	ret = 0;
 	while (spl->input_files && spl->input_files[++i])
 	{
 		j = -1;

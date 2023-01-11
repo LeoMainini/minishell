@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:17:06 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/10 16:31:53 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/11 17:06:20 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,10 @@ void	exec_child_pid(int in_fd, int out_fd, int i, char ***cmd_argv)
 	t_ms	*data;
 	t_spl	*spl;
 
-	signal(SIGINT, cmd_sighandler);
-	spl = get_cmdsplit(0);
 	data = get_struct(0);
 	close(data->pip[0]);
+	signal(SIGINT, cmd_sighandler);
+	spl = get_cmdsplit(0);
 	if (!cmd_argv[i][0])
 		exit_status(0, data, 0);
 	redirs_status = pre_sys_exec_prep(in_fd, out_fd, i, cmd_argv);
@@ -95,6 +95,10 @@ int	exec_sys_func(char ***cmd_argv, int *i, int pip[2])
 	if (!pid)
 		exec_child_pid(in_fd, out_fd, *i, cmd_argv);
 	else
+	{
+		if (in_fd > 0)
+			close(in_fd);
 		close(pip[1]);
+	}
 	return (pid);
 }

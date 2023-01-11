@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:21:34 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/10 17:12:12 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/11 17:03:39 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	await_pid_returns(t_ms *data, int *pids, t_spl *spl, int i)
 	status = 0;
 	while (pids[j])
 		j++;
-	if (j > 0 && pids[--j])
+	if (j > 0)
 		waitpid(pids[--j], &status, 0);
 	while (j > 0)
 		waitpid(pids[--j], 0, 0);
@@ -98,7 +98,7 @@ int	init_data(int argc, char **argv, t_ms **data, char **envp)
 	(void)argc;
 	(void)argv;
 	*data = (t_ms *)ft_calloc(1, sizeof(t_ms));
-	if (!*data || pipe((*data)->pip) == -1)
+	if (!*data)
 		return (0);
 	get_struct(data);
 	(*data)->ret = 0;
@@ -107,7 +107,7 @@ int	init_data(int argc, char **argv, t_ms **data, char **envp)
 	(*data)->rl_addr = 0;
 	(*data)->in_child = 0;
 	signal(SIGINT, sighandler);
-	signal(SIGQUIT, sighandler);
+	signal(SIGQUIT, SIG_IGN);
 	g_envs = duplicate_envp(envp, 0, 0);
 	if (!g_envs)
 		return (0);
@@ -135,8 +135,7 @@ int	handle_exec_data(char **read_line, t_ms *data, t_spl **spl)
 	data->pids = (int *)ft_calloc(1, sizeof(int));
 	if (!data->pids || !*spl || hd_status == (int *)2)
 	{
-		//check_free_zeroout((void **)&data->pids);
-		//free_cmdsplit(*spl, data);
+
 		if (hd_status == (int *)2)
 			data->ret = 130;
 		if (hd_status && hd_status > (int *)2)
