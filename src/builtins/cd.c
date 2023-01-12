@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:37:49 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/09 17:50:19 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/12 16:48:07 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,13 @@ extern char	**g_envs;
 int	change_back(t_ms *data, char *pwd, int fd, int before_pipe)
 {
 	t_cmdd	temp;
+	char	**old_pwd;
 	int		i;
 
-	ft_putendl_fd(*(get_env("OLDPWD", data)) + 7, fd);
+	old_pwd = get_env("OLDPWD", data);
+	if (!old_pwd)
+		return (0);
+	ft_putendl_fd((*old_pwd) + 7, fd);
 	if (before_pipe)
 		return (1);
 	temp.args = ft_calloc(3, sizeof(char *));
@@ -28,7 +32,7 @@ int	change_back(t_ms *data, char *pwd, int fd, int before_pipe)
 		return (0);
 	temp.args[0] = ft_strdup("export");
 	temp.args[1] = ft_strjoin("OLDPWD=", pwd);
-	chdir(*(get_env("OLDPWD", data)) + 7);
+	chdir((*old_pwd) + 7);
 	i = export(&temp, data, 0);
 	free (temp.args[1]);
 	free (temp.args[0]);
@@ -58,7 +62,7 @@ int	exec_dir_change(t_cmdd *argd, t_ms *data, int before_pipe)
 	}
 	if (i == 3 && argd->args[1])
 		if (!change_back(data, pwd, argd->out_fd, before_pipe)
-			&& ft_putstr_fd("Failed to change directory\n", STDERR_FILENO))
+			&& ft_putstr_fd("Failed to change directory or OLDPWD not set\n", STDERR_FILENO))
 			result = 1;
 	check_free_zeroout((void **)&pwd);
 	return (result);
@@ -67,12 +71,16 @@ int	exec_dir_change(t_cmdd *argd, t_ms *data, int before_pipe)
 int	change_dir(t_cmdd *argd, t_ms *data, int before_pipe)
 {
 	int		result;
+	char	**home;
 
 	if (!argd->args[1])
 	{
 		if (!before_pipe)
 		{
-			chdir(*(get_env("HOME", data)) + 5);
+			home = get_env("HOME", data);
+			if (!home && ft_putstr_fd("cd: HOME not set\n", STDERR_FILENO))
+				return (set_ret_return(data, 1));
+			chdir(*home + 5);
 			if (!set_pwd(data))
 				return (set_ret_return(data, 1));
 		}

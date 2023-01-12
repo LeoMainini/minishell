@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:29:45 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/04 18:08:19 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/12 16:17:58 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	is_alphastr(char *str)
 	i = -1;
 	while (str[++i])
 		if ((str[i] < 'a' || str[i] > 'z') && (str[i] < 'A' || str[i] > 'Z')
-			&& (str[i] < '0' || str[i] > '9'))
+			&& (str[i] < '0' || str[i] > '9') && str[i] != '_')
 			return (0);
 	return (1);
 }

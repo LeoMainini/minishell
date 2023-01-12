@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 13:20:54 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/04 18:20:34 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/12 16:20:47 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ char	*get_var_name(t_cmdd *argd, int i)
 
 int	name_invalid(char *name, int print)
 {
-	if (!ft_isalpha(name[0]) || !ft_strlen(name)
-		|| !is_alphastr(&name[1]))
+	if (!(ft_isalpha(name[0]) || name[0] == '_')
+		|| !ft_strlen(name)	|| !is_alphastr(name))
 	{
 		if (!print)
 			return (1);
