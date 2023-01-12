@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:34:10 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/09 19:04:44 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/12 15:36:45 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ int	exit_shell(t_cmdd *argd, t_ms *data, int before_pipe)
 		if (!before_pipe)
 			free_data_exit_status(0, data, 1);
 	i = 0;
+	argd->args[1] = ft_strtrim(argd->args[1], " \t\v\f\r\n");
 	while (argd->args[++i])
 		if (!check_alpha(argd, before_pipe, data, i))
 			continue ;
