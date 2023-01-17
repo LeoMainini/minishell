@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:13:13 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/11 17:09:26 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/17 17:26:43 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,6 @@ int	strs_to_fd(char **array, int fd)
 	return (1);
 }
 
-void	free_hd_subp_mem(t_ms *data, t_spl *spl, char *file_path)
-{
-	free_data(data);
-	free_cmdsplit(spl, data);
-	free(file_path);
-	exit(0);
-}
-
 void	hd_process_routine(int fd, char *limit, t_ms *data, char *file_path)
 {
 	char	**parse_d;
@@ -48,16 +40,11 @@ void	hd_process_routine(int fd, char *limit, t_ms *data, char *file_path)
 
 	signal(SIGINT, cmd_sighandler);
 	spl = get_cmdsplit(0);
-	if (data->pip[0] > 2 && data->pip[1] > 2)
-	{
-		//close(data->pip[0]);
-		//close(data->pip[1]);
-	}
 	if (fd == -1)
 		exit(0);
 	parse_d = parse_stdin_tolimit(limit);
 	if (!parse_d)
-		free_hd_subp_mem(data, spl, file_path);
+		return (free_hd_subp_mem(data, spl, &file_path));
 	strs_to_fd(parse_d, fd);
 	close(fd);
 	free_hd_pid_mem(data, spl, file_path);
@@ -70,7 +57,7 @@ int	handle_hd(t_ms *data, char *limit)
 	char	*file_path;
 	int		status;
 
-	file_path = create_hd_fp();
+	file_path = save_get_fp(create_hd_fp());
 	fd = open(file_path, O_CREAT | O_TRUNC | O_RDWR,
 			S_IRWXU | S_IRWXG | S_IRWXO);
 	pid = fork();
@@ -86,13 +73,32 @@ int	handle_hd(t_ms *data, char *limit)
 	return (fd);
 }
 
+int	perform_cmd_hds(t_ms *data, int **hds, int i)
+{
+	int		ret;
+	t_spl	*spl;
+	int		j;
+
+	ret = 0;
+	j = -1;
+	spl = get_cmdsplit(0);
+	while (spl->input_files[i][++j])
+	{
+		if (!spl->input_files[i][j + 1] && spl->input_types[i][j])
+			(*hds)[i] = handle_hd(data, spl->input_files[i][j]);
+		else if (spl->input_types[i][j])
+			ret = handle_hd(data, spl->input_files[i][j]);
+		if (ret == -1 || (*hds)[i] == -1)
+			return (0);
+	}
+	return (1);
+}
+
 int	*perform_hd_chain(t_ms *data)
 {
 	t_spl		*spl;
 	static int	*hds;
 	int			i;
-	int			j;
-	int			ret;
 
 	if (!data)
 		return (hds);
@@ -102,22 +108,8 @@ int	*perform_hd_chain(t_ms *data)
 		return (0);
 	data->hds = hds;
 	i = -1;
-	ret = 0;
 	while (spl->input_files && spl->input_files[++i])
-	{
-		j = -1;
-		while (spl->input_files[i][++j])
-		{
-			if (!spl->input_files[i][j + 1] && spl->input_types[i][j])
-				hds[i] = handle_hd(data, spl->input_files[i][j]);
-			else if (spl->input_types[i][j])
-				ret = handle_hd(data, spl->input_files[i][j]);
-			if (ret == -1 || hds[i] == -1)
-			{
-				free(hds);
-				return ((int *)2);
-			}
-		}
-	}
+		if (!perform_cmd_hds(data, &hds, i))
+			return ((int *)2);
 	return (hds);
 }

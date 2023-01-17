@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 15:25:54 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/09 19:06:22 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/17 16:52:58 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,4 +80,12 @@ void	free_hd_pid_mem(t_ms *data, t_spl *spl, char *file_path)
 	check_free_zeroout((void **)&file_path);
 	free_cmdsplit(spl, data);
 	exit_status(0, data, 0);
+}
+
+void	free_hd_subp_mem(t_ms *data, t_spl *spl, char **file_path)
+{
+	free_data(data);
+	free_cmdsplit(spl, data);
+	free(*file_path);
+	exit(0);
 }

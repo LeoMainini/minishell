@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 13:20:54 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/12 16:20:47 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/17 17:41:20 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ char	*get_var_name(t_cmdd *argd, int i)
 
 int	name_invalid(char *name, int print)
 {
-	if (!(ft_isalpha(name[0]) || name[0] == '_')
-		|| !ft_strlen(name)	|| !is_alphastr(name))
+	if (!(ft_isalpha(name[0]) || name[0] == '_') || !ft_strlen(name)
+		|| !is_alphastr(name) || ft_strchr(name, '='))
 	{
 		if (!print)
 			return (1);
@@ -56,6 +56,8 @@ void	add_genv_value(char **envi, t_cmdd *argd, int i, char *name)
 		check_free_zeroout((void **)&name);
 		envi = g_envs;
 		g_envs = duplicate_envp(g_envs, 1, 1);
+		if (!g_envs)
+			return ;
 		check_free_zeroout((void **)&envi);
 		last_i = 0;
 		while (g_envs[last_i])
@@ -88,6 +90,7 @@ int	export(t_cmdd *argd, t_ms *data, int before_pipe)
 		}
 		envi = get_env(name, data);
 		add_genv_value(envi, argd, i, name);
+
 	}
 	return (set_ret_return(data, result));
 }

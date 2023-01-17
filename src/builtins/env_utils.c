@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 14:29:49 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/12 16:36:29 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/17 16:10:15 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ char	**get_sep_env_values(char *str)
 	if (ft_strchr(str, '='))
 	{
 		index = ft_calloc(3, sizeof(char *));
+		if (!index)
+			return (0);
 		index[0] = ft_substr(str, 0, (ft_strchr(str, '=') - str));
 		index[1] = ft_substr(str, (ft_strchr(str, '=') - str) + 1,
 				ft_strlen(str) - (ft_strchr(str, '=') - str));
@@ -29,6 +31,8 @@ char	**get_sep_env_values(char *str)
 	else
 	{
 		index = ft_calloc(2, sizeof(char *));
+		if (!index)
+			return (0);
 		index[0] = ft_strdup(str);
 		index[1] = 0;
 	}
@@ -48,6 +52,8 @@ int	get_index(char	*env)
 	{
 		k = -1;
 		sep_env = get_sep_env_values(g_envs[i]);
+		if (!sep_env)
+			return (-1);
 		if (!scmp((const char *)env, (const char *)(sep_env[0])))
 		{
 			while (sep_env[++k])

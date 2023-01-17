@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 16:35:28 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/09 17:50:19 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/17 16:16:38 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,15 @@ char	*get_pwd(void)
 
 	i = 1;
 	pwd = (char *)ft_calloc(i, sizeof(char));
+	if (!pwd)
+		return (0);
 	resp = getcwd(pwd, i);
 	while (!resp && i++)
 	{
 		check_free_zeroout((void **)&pwd);
 		pwd = (char *)ft_calloc(i, sizeof(char));
+		if (!pwd)
+			return (0);
 		resp = getcwd(pwd, i);
 	}
 	return (pwd);
@@ -39,7 +43,7 @@ int	pwd(t_cmdd *argd, t_ms *data)
 		return (set_ret_return(data, 1));
 	pwd = get_pwd();
 	if (!pwd)
-		return (set_ret_return(data, 1));
+		return (set_ret_return(data, 0));
 	ft_putendl_fd(pwd, argd->out_fd);
 	check_free_zeroout((void **)&pwd);
 	return (set_ret_return(data, 0));
@@ -59,6 +63,8 @@ int	set_pwd(t_ms *data)
 		return (0);
 	temp.args[0] = ft_strdup("export");
 	temp.args[1] = ft_strjoin("PWD=", pwd);
+	if (!temp.args[0] || !temp.args[1])
+		return (0);
 	i = export(&temp, data, 0);
 	check_free_zeroout((void **)&pwd);
 	free (temp.args[1]);

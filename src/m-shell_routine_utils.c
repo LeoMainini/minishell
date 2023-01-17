@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:21:34 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/11 17:03:39 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/17 17:22:37 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,11 +135,11 @@ int	handle_exec_data(char **read_line, t_ms *data, t_spl **spl)
 	data->pids = (int *)ft_calloc(1, sizeof(int));
 	if (!data->pids || !*spl || hd_status == (int *)2)
 	{
-
 		if (hd_status == (int *)2)
 			data->ret = 130;
 		if (hd_status && hd_status > (int *)2)
 			check_free_zeroout((void **)&hd_status);
+		check_free_zeroout((void **)&data->pids);
 		return (2);
 	}
 	data->pids_written = 0;

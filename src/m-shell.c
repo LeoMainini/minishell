@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/11 17:05:07 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/17 17:32:00 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ int	execute_cmd(t_ms *data, t_spl *spl, int i)
 	}
 	return (1);
 }
-
 // illegal prompt for showing returns
 // char	*display_prompt(t_ms	*data)
 // {
@@ -46,12 +45,11 @@ int	execute_cmd(t_ms *data, t_spl *spl, int i)
 // 	char	*user_name;
 // 	char	*line;
 // 	char	*ret_value_str;
-
+//
 // 	user_var = ft_strdup("USER");
 // 	user_name = get_env_value(user_var, data);
 // 	if (data->ret)
 // 	{
-		
 // 		data->prompt = ft_strfree_join(&user_name, "\033[1;31m :: ");
 // 		ret_value_str = ft_itoa(data->ret);
 // 		if (ret_value_str)
@@ -82,6 +80,28 @@ char	*display_prompt(t_ms	*data)
 	return (line);
 }
 
+int	handle_hd_sigint(int status, t_spl *spl, t_ms *data, char **read_line)
+{
+	if (status == 2 && cleanup_exec_data(data, spl, read_line))
+	{
+		signal(SIGINT, sighandler);
+		*read_line = display_prompt(data);
+		return (1);
+	}
+	return (0);
+}
+
+void	cleanup_reprompt(char **read_line, t_spl *spl, int i)
+{
+	t_ms	*data;
+
+	data = get_struct(0);
+	await_pid_returns(data, data->pids, spl, i);
+	signal(SIGINT, sighandler);
+	cleanup_exec_data(data, spl, read_line);
+	*read_line = display_prompt(data);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	char		*read_line;
@@ -97,21 +117,14 @@ int	main(int argc, char **argv, char **envp)
 	{
 		signal(SIGINT, SIG_IGN);
 		status = handle_exec_data(&read_line, data, &spl);
-		if (status == 2 && cleanup_exec_data(data, spl, &read_line))
-		{
-			signal(SIGINT, sighandler);
-			read_line = display_prompt(data);
+		if (handle_hd_sigint(status, spl, data, &read_line))
 			continue ;
-		}
 		i = -1;
 		while (spl->ss && spl->ss[++i] && status != 2)
 			status = execute_cmd(data, spl, i);
 		if (!status && cleanup_exec_data(data, spl, &read_line))
 			break ;
-		await_pid_returns(data, data->pids, spl, i);
-		signal(SIGINT, sighandler);
-		cleanup_exec_data(data, spl, &read_line);
-		read_line = display_prompt(data);
+		cleanup_reprompt(&read_line, spl, i);
 	}
 	exit_status(0, data, 1);
 }

@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2023/01/11 15:19:16 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/17 17:40:41 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,10 @@ void	sighandler(int signum);
 int		split_inter(t_spl *spl, int i);
 void	free_hd_pid_mem(t_ms *data, t_spl *spl, char *file_path);
 void	free_split_inter_data(t_spl *spl, char **split_out, int i, int toggle);
-char	**alloc_result_mem( t_spl *spl, int i, char **split_out);
-void	cmd_sighandler(int	signum);
+char	**alloc_result_mem(t_spl *spl, int i, char **split_out);
+void	cmd_sighandler(int signum);
+void	free_hd_subp_mem(t_ms *data, t_spl *spl, char **file_path);
+char	*save_get_fp(char *fp);
+int	name_invalid(char *name, int print);
 
 #endif

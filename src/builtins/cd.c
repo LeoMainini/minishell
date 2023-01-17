@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:37:49 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/12 16:48:07 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/17 17:50:48 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,13 @@ int	exec_dir_change(t_cmdd *argd, t_ms *data, int before_pipe)
 	if (i == 2 && argd->args[1] && !before_pipe)
 	{
 		absolute_path = rel_to_abs_pwd(argd, 1, pwd);
-		chdir(absolute_path);
+		if (absolute_path)
+			chdir(absolute_path);
 		check_free_zeroout((void **)&absolute_path);
 	}
 	if (i == 3 && argd->args[1])
 		if (!change_back(data, pwd, argd->out_fd, before_pipe)
-			&& ft_putstr_fd("Failed to change directory or OLDPWD not set\n", STDERR_FILENO))
+			&& ft_putstr_fd("Failed or OLDPWD not set\n", STDERR_FILENO))
 			result = 1;
 	check_free_zeroout((void **)&pwd);
 	return (result);

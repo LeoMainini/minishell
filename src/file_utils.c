@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 15:04:40 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/09 17:50:19 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/17 17:28:15 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,13 @@ char	*create_hd_fp(void)
 	temp = ft_strjoin("/tmp/hd_data", char_i);
 	check_free_zeroout((void **)&char_i);
 	return (temp);
+}
+
+char	*save_get_fp(char *fp)
+{
+	static char	*fps;
+
+	if (fp)
+		fps = fp;
+	return (fps);
 }

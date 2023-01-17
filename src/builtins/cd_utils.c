@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 14:47:35 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/09 17:50:19 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/17 16:05:35 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ char	*rel_to_abs_pwd(t_cmdd *argd, int i, char *pwd)
 		k++;
 	k = k - sb;
 	absolute = join_chunks(pwd_chunks, "/", k);
+	if (!absolute)
+		return (0);
 	k = -1;
 	while (pwd_chunks[++k])
 		check_free_zeroout((void **)&pwd_chunks[k]);

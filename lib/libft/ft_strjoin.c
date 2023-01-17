@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com>   +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 14:17:02 by leferrei          #+#    #+#             */
-/*   Updated: 2022/02/23 17:30:53 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/17 16:06:42 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	while ((s2)[j] != '\0')
 		j++;
 	result = (char *)malloc((i + j + 1) * sizeof(*result));
-	if (result == NULL)
+	if (!result)
 		return (NULL);
 	result[i + j] = '\0';
 	k = -1;
