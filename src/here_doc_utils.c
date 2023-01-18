@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:13:13 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/17 17:26:43 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/18 16:13:47 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ int	handle_hd(t_ms *data, char *limit)
 	char	*file_path;
 	int		status;
 
-	file_path = save_get_fp(create_hd_fp());
+	file_path = create_hd_fp();
+	save_get_fp(file_path);
 	fd = open(file_path, O_CREAT | O_TRUNC | O_RDWR,
 			S_IRWXU | S_IRWXG | S_IRWXO);
 	pid = fork();
@@ -67,7 +68,10 @@ int	handle_hd(t_ms *data, char *limit)
 		hd_process_routine(fd, limit, data, file_path);
 	waitpid(pid, (int *)&status, 0);
 	if (status == 256 * 20)
+	{
+		check_free_zeroout((void **)&file_path);
 		return (-1);
+	}
 	fd = open(file_path, O_RDONLY);
 	check_free_zeroout((void **)&file_path);
 	return (fd);
