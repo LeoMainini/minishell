@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2023/01/17 17:40:41 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/18 15:26:30 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,6 @@ char	**alloc_result_mem(t_spl *spl, int i, char **split_out);
 void	cmd_sighandler(int signum);
 void	free_hd_subp_mem(t_ms *data, t_spl *spl, char **file_path);
 char	*save_get_fp(char *fp);
-int	name_invalid(char *name, int print);
+int		name_invalid(char *name, int print);
 
 #endif

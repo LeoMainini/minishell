@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 14:29:49 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/17 16:10:15 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/18 15:39:24 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,19 @@ char	**get_sep_env_values(char *str)
 	return (index);
 }
 
+void	free_sep_env_mem(char ***sep_env)
+{
+	int	k;
+
+	k = -1;
+	while ((*sep_env)[++k])
+		check_free_zeroout((void **)&(*sep_env)[k]);
+	check_free_zeroout((void **)sep_env);
+}
+
 int	get_index(char	*env)
 {
 	int		i;
-	int		k;
 	int		result;
 	char	**sep_env;
 
@@ -50,21 +59,16 @@ int	get_index(char	*env)
 	result = -1;
 	while (g_envs[++i])
 	{
-		k = -1;
 		sep_env = get_sep_env_values(g_envs[i]);
 		if (!sep_env)
 			return (-1);
 		if (!scmp((const char *)env, (const char *)(sep_env[0])))
 		{
-			while (sep_env[++k])
-				check_free_zeroout((void **)&sep_env[k]);
-			check_free_zeroout((void **)&sep_env);
+			free_sep_env_mem(&sep_env);
 			result = i;
 			break ;
 		}
-		while (sep_env[++k])
-			check_free_zeroout((void **)&sep_env[k]);
-		check_free_zeroout((void **)&sep_env);
+		free_sep_env_mem(&sep_env);
 	}
 	return (result);
 }
@@ -88,32 +92,4 @@ void	ft_str_swap(char ***s1, char ***s2)
 	temp = *s1;
 	*s1 = *s2;
 	*s2 = temp;
-}
-
-void	print_free_3darray(char ****str_array, int fd)
-{
-	int		i;
-
-	i = -1;
-	while ((*str_array)[++i])
-	{
-		if ((*str_array)[i][1])
-		{
-			ft_putstr_fd("declare -x ", fd);
-			ft_putstr_fd((*str_array)[i][0], fd);
-			ft_putstr_fd("=\"", fd);
-			ft_putstr_fd((*str_array)[i][1], fd);
-			ft_putstr_fd("\"\n", fd);
-			check_free_zeroout((void **)&(*str_array)[i][0]);
-			check_free_zeroout((void **)&(*str_array)[i][1]);
-		}
-		else
-		{
-			ft_putstr_fd("declare -x ", fd);
-			ft_putendl_fd((*str_array)[i][0], fd);
-			check_free_zeroout((void **)&(*str_array)[i][0]);
-		}
-		check_free_zeroout((void **)&(*str_array)[i]);
-	}
-	check_free_zeroout((void **)&(*str_array));
 }

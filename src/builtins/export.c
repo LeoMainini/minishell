@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 13:20:54 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/17 17:41:20 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/18 15:35:56 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,14 +66,40 @@ void	add_genv_value(char **envi, t_cmdd *argd, int i, char *name)
 	}
 }
 
+void	print_free_3darray(char ****str_array, int fd)
+{
+	int		i;
+
+	i = -1;
+	while ((*str_array)[++i])
+	{
+		if ((*str_array)[i][1])
+		{
+			ft_putstr_fd("declare -x ", fd);
+			ft_putstr_fd((*str_array)[i][0], fd);
+			ft_putstr_fd("=\"", fd);
+			ft_putstr_fd((*str_array)[i][1], fd);
+			ft_putstr_fd("\"\n", fd);
+			check_free_zeroout((void **)&(*str_array)[i][0]);
+			check_free_zeroout((void **)&(*str_array)[i][1]);
+		}
+		else
+		{
+			ft_putstr_fd("declare -x ", fd);
+			ft_putendl_fd((*str_array)[i][0], fd);
+			check_free_zeroout((void **)&(*str_array)[i][0]);
+		}
+		check_free_zeroout((void **)&(*str_array)[i]);
+	}
+	check_free_zeroout((void **)&(*str_array));
+}
+
 int	export(t_cmdd *argd, t_ms *data, int before_pipe)
 {
-	char	**envi;
 	char	*name;
 	int		i;
 	int		result;
 
-	envi = 0;
 	result = 0;
 	if (!argd->args[1])
 		return (print_sorted_envs(argd->out_fd));
@@ -88,9 +114,7 @@ int	export(t_cmdd *argd, t_ms *data, int before_pipe)
 			check_free_zeroout((void **)&name);
 			continue ;
 		}
-		envi = get_env(name, data);
-		add_genv_value(envi, argd, i, name);
-
+		add_genv_value(get_env(name, data), argd, i, name);
 	}
 	return (set_ret_return(data, result));
 }
