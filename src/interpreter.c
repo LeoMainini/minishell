@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 16:52:29 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/04 18:04:47 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/19 16:59:20 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ int	convert_to_value(char **str, int i, t_ms *data)
 	while ((*str)[(i + 1) + j] && !ispc((*str)[(i + 1) + j])
 		&& (*str)[(i + 1) + j] != '"' && (*str)[(i + 1) + j] != 39
 		&& (*str)[(i + 1) + j] != '$'
-		&& (ft_isalnum((*str)[(i + 1) + j]) || (*str)[(i + 1) + j] == '?'))
+		&& (ft_isalnum((*str)[(i + 1) + j]) || (*str)[(i + 1) + j] == '?'
+			|| (*str)[(i + 1) + j] == '_'))
 		j++;
 	if (!j && !ft_strncmp(&(*str)[i], "$$", 2))
 	{

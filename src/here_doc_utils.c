@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:13:13 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/18 16:13:47 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/21 16:37:24 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,13 @@ void	hd_process_routine(int fd, char *limit, t_ms *data, char *file_path)
 	char	**parse_d;
 	t_spl	*spl;
 
-	signal(SIGINT, cmd_sighandler);
+	signal(SIGINT, hd_sighandler);
 	spl = get_cmdsplit(0);
 	if (fd == -1)
+	{
+		check_free_zeroout((void **)file_path);
 		exit(0);
+	}
 	parse_d = parse_stdin_tolimit(limit);
 	if (!parse_d)
 		return (free_hd_subp_mem(data, spl, &file_path));
@@ -92,6 +95,8 @@ int	perform_cmd_hds(t_ms *data, int **hds, int i)
 			(*hds)[i] = handle_hd(data, spl->input_files[i][j]);
 		else if (spl->input_types[i][j])
 			ret = handle_hd(data, spl->input_files[i][j]);
+		else
+			check_file_existing(spl->input_files[i][j]);
 		if (ret == -1 || (*hds)[i] == -1)
 			return (0);
 	}

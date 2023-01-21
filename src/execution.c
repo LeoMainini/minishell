@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:17:06 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/12 14:52:20 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/21 16:38:50 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,8 @@ int	execute_builtin(char ***cmd_argvs, int k, t_ms *data, int pip[2])
 	if (!i)
 		return (0);
 	redirs_status = pre_exec_prep(cmd_argvs, k, pip, &cmds);
-	if (redirs_status == -1 && !close(pip[1])
-		&& ft_putstr_fd("No such file or directory\n", STDERR_FILENO))
-		return (set_ret_return(data, 126));
+	if (redirs_status == -1 && !close(pip[1]))
+		return (set_ret_return(data, 1));
 	if (cmds.out_fd == STDOUT_FILENO && pip[0] > 1)
 		close(pip[0]);
 	select_builtin(i, data, &cmds, (cmd_argvs[k + 1] != 0));
@@ -64,12 +63,12 @@ void	exec_child_pid(int in_fd, int out_fd, int i, char ***cmd_argv)
 	data = get_struct(0);
 	close(data->pip[0]);
 	signal(SIGINT, cmd_sighandler);
+	signal(SIGQUIT, cmd_sighandler);
 	spl = get_cmdsplit(0);
 	if (!cmd_argv[i][0])
 		exit_status(0, data, 0);
 	redirs_status = pre_sys_exec_prep(in_fd, out_fd, i, cmd_argv);
-	if (redirs_status == -1
-		&& ft_putstr_fd("No such file or directory\n", STDERR_FILENO))
+	if (redirs_status == -1)
 		exit(126);
 	exec_path = (get_executable_path(data, cmd_argv[i][0], g_envs));
 	execve(exec_path, cmd_argv[i], g_envs);

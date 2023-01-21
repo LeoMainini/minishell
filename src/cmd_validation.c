@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_validation.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 17:07:13 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/12/06 15:39:27 by bcarreir         ###   ########.fr       */
+/*   Updated: 2023/01/21 17:36:39 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,11 @@ int	isvalidcmd(char *s, t_spl *spl)
 	int	j;
 	int	k;
 
+	j = 0;
+	while (s[j] && ispc(s[j]) && s[j] == '\n')
+		j++;
+	if (!s[j])
+		return (1);
 	if (*s)
 		spl->cmd_count++;
 	j = 0;

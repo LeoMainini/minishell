@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 14:47:35 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/17 16:05:35 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/21 16:40:42 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	check_folder(t_cmdd *argd, int i)
 	if (!scmp(argd->args[1], "-"))
 		return (3);
 	if (access(argd->args[i], F_OK)
-		&& ft_putstr_fd("File not found\n", STDERR_FILENO))
+		&& ft_putstr_fd("File or folder not found\n", STDERR_FILENO))
 		return (0);
 	temp = ft_strjoin(argd->args[i], "/.");
 	if ((access(argd->args[i], X_OK) || access(temp, F_OK))

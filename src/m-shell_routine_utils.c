@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:21:34 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/17 17:22:37 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/21 16:44:36 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,18 +84,17 @@ void	await_pid_returns(t_ms *data, int *pids, t_spl *spl, int i)
 	if (spl->ss && spl->ss[0] && WIFSIGNALED(status)
 		&& !check_builtin(spl->ss[i - 1][0]))
 	{
-		if (WTERMSIG(status) == SIGINT)
+		if (WTERMSIG(status) == SIGINT && printf("\n"))
 			data->ret = 130;
-		if (WTERMSIG(status) == SIGQUIT)
+		if (WTERMSIG(status) == SIGQUIT && printf("\n"))
 			data->ret = 131;
 	}
 	else if (spl->ss && spl->ss[0] && !check_builtin(spl->ss[i - 1][0]))
 		data->ret = WEXITSTATUS(status);
 }
 
-int	init_data(int argc, char **argv, t_ms **data, char **envp)
+int	init_data(t_ms **data, char **argv, char **envp)
 {
-	(void)argc;
 	(void)argv;
 	*data = (t_ms *)ft_calloc(1, sizeof(t_ms));
 	if (!*data)
@@ -110,38 +109,15 @@ int	init_data(int argc, char **argv, t_ms **data, char **envp)
 	signal(SIGQUIT, SIG_IGN);
 	g_envs = duplicate_envp(envp, 0, 0);
 	if (!g_envs)
+	{
+		check_free_zeroout((void **)data);
 		return (0);
+	}
 	(*data)->path = find_shell_path(g_envs);
 	if (!(*data)->path)
 	{
 		check_free_zeroout((void **)data);
 		return (0);
 	}
-	return (1);
-}
-
-int	handle_exec_data(char **read_line, t_ms *data, t_spl **spl)
-{
-	int	*hd_status;
-
-	add_history(*read_line);
-	data->rl_addr = read_line;
-	*spl = set_cmdsplit(*read_line);
-	get_cmdsplit(*spl);
-	hd_status = perform_hd_chain(data);
-	data->pip[0] = -1;
-	data->pip[1] = -1;
-	save_pid(0, 0, 1, data);
-	data->pids = (int *)ft_calloc(1, sizeof(int));
-	if (!data->pids || !*spl || hd_status == (int *)2)
-	{
-		if (hd_status == (int *)2)
-			data->ret = 130;
-		if (hd_status && hd_status > (int *)2)
-			check_free_zeroout((void **)&hd_status);
-		check_free_zeroout((void **)&data->pids);
-		return (2);
-	}
-	data->pids_written = 0;
 	return (1);
 }
