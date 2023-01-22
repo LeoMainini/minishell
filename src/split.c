@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2023/01/21 17:35:43 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/22 20:01:50 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ t_spl	cmd_split(char *s)
 	i = 0;
 	if (verify_alloc_ss(s, &spl))
 	{
+		check_free_zeroout((void **)&spl.str);
 		free_cmdarray(&spl);
 		return (spl);
 	}
