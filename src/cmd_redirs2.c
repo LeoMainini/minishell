@@ -6,7 +6,7 @@
 /*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 17:12:50 by bcarreir          #+#    #+#             */
-/*   Updated: 2022/12/06 15:27:18 by bcarreir         ###   ########.fr       */
+/*   Updated: 2023/01/23 17:13:22 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,17 @@
 void	alloc_redir_arrays(t_spl *spl)
 {
 	spl->output_files = ft_calloc(sizeof(char **), (spl->cmd_count + 1));
-	if (!spl->output_files)
-		return ;
 	spl->input_files = ft_calloc(sizeof(char **), (spl->cmd_count + 1));
-	if (!spl->input_files)
-		return ;
 	spl->output_types = ft_calloc(sizeof(int *), (spl->cmd_count + 1));
-	if (!spl->output_types)
-		return ;
 	spl->input_types = ft_calloc(sizeof(int *), (spl->cmd_count + 1));
-	if (!spl->input_types)
-		return ;
+	if (!spl->input_types || !spl->output_types || !spl->input_files
+		|| !spl->output_files)
+	{
+		check_free_zeroout((void **)spl->input_types);
+		check_free_zeroout((void **)spl->output_types);
+		check_free_zeroout((void **)spl->input_files);
+		check_free_zeroout((void **)spl->output_files);
+	}
 }
 
 void	dup_to_iolists(t_spl *spl, int l, int i, int o)
@@ -43,18 +43,39 @@ void	dup_to_iolists(t_spl *spl, int l, int i, int o)
 			{
 				spl->input_types[l][++i] = (!scmp(spl->ss[l][j], "<<"));
 				spl->input_files[l][i] = ft_strdup(spl->ss[l][j + 1]);
-				if (!spl->input_files[l][i])
-					return ;
 			}
 			else if (!scmp(spl->ss[l][j], ">") || !scmp(spl->ss[l][j], ">>"))
 			{
 				spl->output_types[l][++o] = (!scmp(spl->ss[l][j], ">>"));
 				spl->output_files[l][o] = ft_strdup(spl->ss[l][j + 1]);
-				if (!spl->output_files[l][o])
-					return ;
 			}
+			if ((o >= 0 && i >= 0 && j >= 0) && (!spl->input_files[l][i] || !spl->output_files[l][o]
+				|| !spl->output_types[l][o] || !spl->input_types[l][i]))
+				return (free_inout_strs(&spl->input_files, &spl->input_types));
 		}
 	}
+}
+
+void	free_redir_arrays(t_spl *spl)
+{
+	int	j;
+
+	j = -1;
+	while (spl->input_types[++j])
+		check_free_zeroout((void **)spl->input_types[j]);
+	j = -1;
+	while (spl->output_types[++j])
+		check_free_zeroout((void **)spl->output_types[j]);
+	j = -1;
+	while (spl->input_files[++j])
+		check_free_zeroout((void **)spl->input_files[j]);
+	j = -1;
+	while (spl->output_files[++j])
+		check_free_zeroout((void **)spl->output_files[j]);
+	check_free_zeroout((void **)spl->input_types);
+	check_free_zeroout((void **)spl->output_types);
+	check_free_zeroout((void **)spl->input_files);
+	check_free_zeroout((void **)spl->output_files);
 }
 
 void	init_redir_arrays(t_spl *spl)
@@ -81,7 +102,7 @@ void	init_redir_arrays(t_spl *spl)
 		spl->output_types[l] = ft_calloc(spl->redir_out + 1, sizeof(int));
 		if (!spl->input_files[l] || !spl->output_files[l]
 			|| !spl->input_types[l] || !spl->output_types[l])
-			return ;
+			return (free_redir_arrays(spl));
 	}
 	dup_to_iolists(spl, -1, -1, -1);
 }
