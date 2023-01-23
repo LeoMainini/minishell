@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:34:10 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/21 17:22:38 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/23 15:52:22 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ int	check_numeric(char *str)
 		return (0);
 	return (1);
 }
-
 
 void	free_data_exit_status(int status, t_ms *data, int print_exit)
 {

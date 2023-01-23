@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2023/01/22 20:09:09 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/23 16:36:28 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,7 @@ void	free_hd_pid_mem(t_ms *data, t_spl *spl, char *file_path);
 void	free_hd_subp_mem(t_ms *data, t_spl *spl, char **file_path);
 void	free_inout_strs(char ****files, int ***types);
 void	free_split_inter_data(t_spl *spl, char **split_out, int i, int toggle);
+void	free_strarray(char **stra);
 void	ft_parsing(char *str);
 void	ft_str_swap(char ***s1, char ***s2);
 void	hd_sighandler(int signum);

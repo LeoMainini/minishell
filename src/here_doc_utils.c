@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:13:13 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/21 16:37:24 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/23 16:02:34 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void	hd_process_routine(int fd, char *limit, t_ms *data, char *file_path)
 	parse_d = parse_stdin_tolimit(limit);
 	if (!parse_d)
 		return (free_hd_subp_mem(data, spl, &file_path));
+	interpret_strings(parse_d, data);
 	strs_to_fd(parse_d, fd);
 	close(fd);
 	free_hd_pid_mem(data, spl, file_path);

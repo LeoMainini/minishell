@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m-shell_routine_utils.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 16:21:34 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/21 16:44:36 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/23 16:54:41 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,12 @@ int	split_inter(t_spl *spl, int i)
 	int		j;
 
 	split_out = ft_split(spl->ss[i][0], ' ');
+	if (!split_out)
+		return (0);
 	result = alloc_result_mem(spl, i, split_out);
 	if (!result)
 	{
+		free_strarray(split_out);
 		free_split_inter_data(spl, split_out, i, 0);
 		return (0);
 	}

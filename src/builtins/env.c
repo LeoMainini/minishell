@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:29:45 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/12 16:17:58 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/23 16:53:31 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ int	print_sorted_envs(int fd)
 	while (g_envs[i])
 		i++;
 	split_envs = (char ***)ft_calloc(i + 1, sizeof(char *));
+	if (!split_envs)
+		return (0);
 	i = -1;
 	while (g_envs[++i])
 		split_envs[i] = get_sep_env_values(g_envs[i]);

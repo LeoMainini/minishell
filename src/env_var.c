@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_var.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 14:53:40 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/09 17:50:19 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/23 16:37:10 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,13 @@ char	**duplicate_envp(char **envs, int offset, int freeable)
 	while (i--)
 	{
 		temp[i] = ft_strdup(envs[i]);
+		if (!temp[i])
+		{
+			free_strarray(temp);
+			if (freeable)
+				free_strarray(g_envs);
+			return (0);
+		}
 		if (freeable)
 			check_free_zeroout((void **)&envs[i]);
 	}

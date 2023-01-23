@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m-shell.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/21 16:44:14 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/23 16:41:09 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,14 @@ char	*display_prompt(t_ms *data)
 	char	*prompt;
 
 	user_var = ft_strdup("USER");
+	if (!user_var)
+		return (0);
 	user_name = get_env_value(user_var, data);
+	if (!user_name)
+		return (0);
 	prompt = ft_strfree_join(&user_name, " :: $> ");
+	if (!prompt)
+		return (0);
 	line = readline(prompt);
 	free(prompt);
 	return (line);

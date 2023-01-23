@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 14:47:35 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/21 16:40:42 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/23 16:56:22 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,11 @@ int	steps_back(t_cmdd *argd, int i)
 	k = -1;
 	steps_back = 0;
 	file_path = ft_split(argd->args[i], '/');
-	while (file_path[++k])
+	while (file_path && file_path[++k])
 		if (!scmp(file_path[k], ".."))
 			steps_back++;
 	k = -1;
-	while (file_path[++k])
+	while (file_path && file_path[++k])
 		check_free_zeroout((void **)&file_path[k]);
 	check_free_zeroout((void **)&file_path);
 	return (steps_back);
@@ -65,15 +65,17 @@ char	*rel_to_abs_pwd(t_cmdd *argd, int i, char *pwd)
 
 	sb = steps_back(argd, i);
 	pwd_chunks = ft_split(pwd, '/');
+	if (!pwd_chunks)
+		return (0);
 	k = 0;
-	while (pwd_chunks[k])
+	while (pwd_chunks && pwd_chunks[k])
 		k++;
 	k = k - sb;
 	absolute = join_chunks(pwd_chunks, "/", k);
 	if (!absolute)
 		return (0);
 	k = -1;
-	while (pwd_chunks[++k])
+	while (pwd_chunks && pwd_chunks[++k])
 		check_free_zeroout((void **)&pwd_chunks[k]);
 	check_free_zeroout((void **)&pwd_chunks);
 	return (absolute);

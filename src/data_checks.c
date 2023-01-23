@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   data_checks.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/21 16:34:06 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/21 16:43:14 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/23 16:33:36 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,15 @@ int	check_file_existing(char *cmd)
 		return (0);
 	}
 	check_free_zeroout((void **)&temp);
+	return (1);
+}
+
+int	cleanup_exec_data(t_ms *data, t_spl *spl, char **read_line)
+{
+	if (data->pip[0] > 1)
+		close(data->pip[0]);
+	free_cmdsplit(spl, data);
+	check_free_zeroout((void **)&*read_line);
 	return (1);
 }
 

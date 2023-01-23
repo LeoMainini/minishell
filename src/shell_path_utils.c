@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell_path_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 15:13:20 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/09 17:50:19 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/23 16:55:12 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ char	*clean_path(char **dirty_path, char *extra)
 	}
 	size = (long)eo_path - (long)*dirty_path;
 	c_path = (char *)ft_calloc(size + 1, sizeof(char));
+	if (!c_path)
+		return (0);
 	ft_memmove(c_path, *dirty_path, size);
 	check_free_zeroout((void **)&*dirty_path);
 	return (c_path);
@@ -44,7 +46,7 @@ char	*find_shell_path(char **envp)
 		if (!ft_strncmp(envp[i], "PATH", 4))
 			all_paths = ft_split(envp[i] + 5, ':');
 	i = -1;
-	while (all_paths[++i])
+	while (all_paths && all_paths[++i])
 	{
 		temp = ft_strfree_join(&all_paths[i], "/ls");
 		if (!access(temp, F_OK | X_OK) && !output)

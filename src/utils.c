@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 17:26:35 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/09 17:18:58 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/23 16:35:46 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,14 @@ int	set_ret_return(t_ms *data, int code)
 	return (code);
 }
 
-int	cleanup_exec_data(t_ms *data, t_spl *spl, char **read_line)
+void	free_strarray(char **stra)
 {
-	if (data->pip[0] > 1)
-		close(data->pip[0]);
-	free_cmdsplit(spl, data);
-	check_free_zeroout((void **)&*read_line);
-	return (1);
+	int	i;
+
+	i = -1;
+	while (stra[++i])
+		check_free_zeroout((void **)&stra[i]);
+	free(stra);
 }
 
 void	exit_status(int status, t_ms *data, unsigned int print_exit)

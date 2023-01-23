@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_validation.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 17:07:13 by bcarreir          #+#    #+#             */
-/*   Updated: 2023/01/21 17:36:39 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/23 16:16:10 by bcarreir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,9 @@ int	isvalidcmd(char *s, t_spl *spl)
 	{
 		if (s[j] == 34 || s[j] == 39)
 		{
-			if (ffquotedtext(spl, s, &j, s[j]))
-			{
-				printf("parse error missing quotes\n");
+			if (ffquotedtext(spl, s, &j, s[j])
+				&& printf("parse error missing quotes\n"))
 				return (1);
-			}
 			continue ;
 		}
 		if (invalidpipe(s, spl, &j, &k))
