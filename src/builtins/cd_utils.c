@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 14:47:35 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/23 16:56:22 by bcarreir         ###   ########.fr       */
+/*   Updated: 2023/01/24 17:55:42 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,31 @@ int	steps_back(t_cmdd *argd, int i)
 	return (steps_back);
 }
 
+char	*join_path_to_abs(t_cmdd *argd, char *rel_path, int sb)
+{
+	char	**path_chunks;
+	char	*path;
+	char	*temp;
+
+	if (!rel_path)
+		return (0);
+	if (rel_path[ft_strlen(rel_path) - 1] == '/')
+		rel_path[ft_strlen(rel_path) - 1] = 0;
+	printf("rel path = %s\n", rel_path);
+	path_chunks = ft_split(argd->args[1], '/');
+	if (!path_chunks)
+		return (0);
+	path = join_chunks(&path_chunks[sb], "/", -1);
+	free_strarray(path_chunks);
+	printf("path = %p\n", path);
+	temp = ft_strfree_join(&rel_path, path);
+	printf("absolute path = %s\n", temp);
+	free(path);
+	if (!temp)
+		return (0);
+	return (temp);
+}
+
 char	*rel_to_abs_pwd(t_cmdd *argd, int i, char *pwd)
 {
 	int		sb;
@@ -65,18 +90,17 @@ char	*rel_to_abs_pwd(t_cmdd *argd, int i, char *pwd)
 
 	sb = steps_back(argd, i);
 	pwd_chunks = ft_split(pwd, '/');
+	printf("steps bask = %d\n", sb);
 	if (!pwd_chunks)
 		return (0);
 	k = 0;
 	while (pwd_chunks && pwd_chunks[k])
 		k++;
 	k = k - sb;
-	absolute = join_chunks(pwd_chunks, "/", k);
+	absolute = join_path_to_abs(argd, join_chunks(pwd_chunks, "/", k), sb);
+	free_strarray(pwd_chunks);
 	if (!absolute)
 		return (0);
-	k = -1;
-	while (pwd_chunks && pwd_chunks[++k])
-		check_free_zeroout((void **)&pwd_chunks[k]);
-	check_free_zeroout((void **)&pwd_chunks);
+	printf("complete absolute = %s\n", absolute);
 	return (absolute);
 }

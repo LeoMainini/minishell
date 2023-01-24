@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:34:32 by leferrei          #+#    #+#             */
-/*   Updated: 2022/12/05 15:31:53 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/24 17:44:51 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,10 @@ char	*ft_strfree_join(char **s1, char *s2)
 {
 	char	*result;
 
-	result = ft_strjoin(*s1, s2);
+	if (s2)
+		result = ft_strjoin(*s1, s2);
+	else
+		result = ft_strdup(*s1);
 	free(*s1);
 	return (result);
 }
