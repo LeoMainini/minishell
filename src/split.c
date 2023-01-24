@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: benmonico <benmonico@student.42.fr>        +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:45:17 by bcarreir          #+#    #+#             */
-/*   Updated: 2023/01/24 02:21:56 by benmonico        ###   ########.fr       */
+/*   Updated: 2023/01/24 16:28:15 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	verify_alloc_ss(char *s, t_spl *spl)
 	if (!spl->str)
 		spl->str = ft_strdup(s);
 	spl->ss = ft_calloc(sizeof(char **), (spl->cmd_count + 1));
-	if (check_free_spl_strings)
+	if (check_free_spl_strings(spl))
 		return (1);
 	l = -1;
 	while (++l < spl->cmd_count)

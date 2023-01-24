@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   m-shell.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 16:23:29 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/23 16:41:09 by bcarreir         ###   ########.fr       */
+/*   Updated: 2023/01/24 16:39:50 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ int	execute_cmd(t_ms *data, t_spl *spl, int i)
 	if (!split_inter(spl, i)
 		&& ft_putstr_fd("Error expanding command value\n", STDERR_FILENO))
 		return (0);
-	if (!execute_builtin(spl->ss, i, data, data->pip))
+	if (!execute_builtin(spl->ss, i, data, data->pip)
+		&& ft_strlen(spl->ss[i][0]))
 	{
 		pid = exec_sys_func(spl->ss, &i, data->pip);
 		data->pids = save_pid(&(data->pids), pid, 0, data);

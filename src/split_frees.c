@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_frees.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: benmonico <benmonico@student.42.fr>        +#+  +:+       +#+        */
+/*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 02:19:57 by benmonico         #+#    #+#             */
-/*   Updated: 2023/01/24 02:21:35 by benmonico        ###   ########.fr       */
+/*   Updated: 2023/01/24 16:28:51 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ int	check_free_spl_strings(t_spl *spl)
 {
 	if (!spl->ss || !spl->str)
 	{		
-		check_free_zeroout(spl->ss);
-		check_free_zeroout(spl->str);
+		check_free_zeroout((void **)spl->ss);
+		check_free_zeroout((void **)spl->str);
 		return (1);
 	}
 	return (0);
