@@ -3,30 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_redirs2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: benmonico <benmonico@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 17:12:50 by bcarreir          #+#    #+#             */
-/*   Updated: 2023/01/23 17:13:22 by bcarreir         ###   ########.fr       */
+/*   Updated: 2023/01/24 02:21:52 by benmonico        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	alloc_redir_arrays(t_spl *spl)
-{
-	spl->output_files = ft_calloc(sizeof(char **), (spl->cmd_count + 1));
-	spl->input_files = ft_calloc(sizeof(char **), (spl->cmd_count + 1));
-	spl->output_types = ft_calloc(sizeof(int *), (spl->cmd_count + 1));
-	spl->input_types = ft_calloc(sizeof(int *), (spl->cmd_count + 1));
-	if (!spl->input_types || !spl->output_types || !spl->input_files
-		|| !spl->output_files)
-	{
-		check_free_zeroout((void **)spl->input_types);
-		check_free_zeroout((void **)spl->output_types);
-		check_free_zeroout((void **)spl->input_files);
-		check_free_zeroout((void **)spl->output_files);
-	}
-}
 
 void	dup_to_iolists(t_spl *spl, int l, int i, int o)
 {
@@ -49,7 +33,8 @@ void	dup_to_iolists(t_spl *spl, int l, int i, int o)
 				spl->output_types[l][++o] = (!scmp(spl->ss[l][j], ">>"));
 				spl->output_files[l][o] = ft_strdup(spl->ss[l][j + 1]);
 			}
-			if ((o >= 0 && i >= 0 && j >= 0) && (!spl->input_files[l][i] || !spl->output_files[l][o]
+			if ((o >= 0 && i >= 0 && j >= 0) && (!spl->input_files[l][i]
+				|| !spl->output_files[l][o]
 				|| !spl->output_types[l][o] || !spl->input_types[l][i]))
 				return (free_inout_strs(&spl->input_files, &spl->input_types));
 		}

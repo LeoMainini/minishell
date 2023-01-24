@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+         #
+#    By: benmonico <benmonico@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/04 17:50:39 by leferrei          #+#    #+#              #
-#    Updated: 2023/01/21 17:37:25 by leferrei         ###   ########.fr        #
+#    Updated: 2023/01/24 02:21:47 by benmonico        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -85,6 +85,7 @@ SOURCES = 	$(BUILTINS_DIR)cd.c\
 			shell_path_utils.c\
 			signals.c\
 			split.c\
+			split_frees.c\
 			stdin_parsing.c\
 			system_exec_utils.c\
 			utils.c

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarreir <bcarreir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: benmonico <benmonico@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:55:01 by bcarreir          #+#    #+#             */
-/*   Updated: 2023/01/23 16:36:28 by bcarreir         ###   ########.fr       */
+/*   Updated: 2023/01/24 02:21:08 by benmonico        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ int		check_builtin(char *cmd);
 int		check_cmd_executable(char *cmd);
 int		check_file_existing(char *cmd);
 int		check_folder(t_cmdd *argd, int i);
+int		check_free_spl_strings(t_spl *spl);
 int		cleanup_exec_data(t_ms *data, t_spl *spl, char **read_line);
 int		echo(t_cmdd *argd, t_ms *data);
 int		env(t_cmdd *argd, t_ms *data);
