@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 18:37:49 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/24 17:56:04 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/26 13:55:06 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ int	exec_dir_change(t_cmdd *argd, t_ms *data, int before_pipe)
 	int		i;
 
 	result = 0;
+	if (argd->args[2])
+		return (set_ret_return(data, 1));
 	i = check_folder(argd, 1);
 	if (!i)
 		return (set_ret_return(data, 1));

@@ -6,7 +6,7 @@
 /*   By: leferrei <leferrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 14:55:17 by leferrei          #+#    #+#             */
-/*   Updated: 2023/01/04 17:16:10 by leferrei         ###   ########.fr       */
+/*   Updated: 2023/01/26 13:55:32 by leferrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,8 @@ int	pre_sys_exec_prep(int in_fd, int out_fd, int i, char ***cmd_argv)
 	redirs_status = handle_redirections(i);
 	if (in_fd > -1 && redirs_status != 1 && redirs_status != 3 && i)
 		dup2(in_fd, STDIN_FILENO);
+	if (perform_hd_chain(0)[i] > 2)
+		close(perform_hd_chain(0)[i]);
 	if (cmd_argv[i + 1] && redirs_status != 2 && redirs_status != 3)
 		dup2(out_fd, STDOUT_FILENO);
 	if (i)
